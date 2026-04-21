@@ -273,3 +273,85 @@ ValueError: time data "Apr 20 '26" does not match format '%Y-%m-%d'
 2026-04-21 23:10:36 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: AXTI
 2026-04-21 23:10:36 | INFO     | main |   Scan [mean_reversion]: 18 hits | Top: OBAI
 2026-04-21 23:10:36 | INFO     | main | JOB DONE: Signals | 777 scored | 0.1s
+2026-04-21 23:16:07 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-21 23:16:07 | INFO     | main | ============================================================
+2026-04-21 23:16:07 | INFO     | main | JOB START: Signal generation
+2026-04-21 23:16:07 | INFO     | main |   Scoring 777 tickers...
+2026-04-21 23:16:07 | INFO     | signals.scorer | Scored 777 tickers
+2026-04-21 23:16:07 | INFO     | signals.scanner | Running all scans...
+2026-04-21 23:16:07 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-21 23:16:07 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-21 23:16:07 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-21 23:16:07 | INFO     | signals.scanner |   mean_reversion: 18 candidates
+2026-04-21 23:16:07 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-21 23:16:07 | INFO     | main |   STRONG_BUY: 0 | BUY: 75 | REVERSION: 12
+2026-04-21 23:16:07 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: AXTI
+2026-04-21 23:16:07 | INFO     | main |   Scan [mean_reversion]: 18 hits | Top: OBAI
+2026-04-21 23:16:07 | INFO     | main | JOB DONE: Signals | 777 scored | 0.1s
+2026-04-21 23:17:33 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-21 23:17:33 | INFO     | main | ============================================================
+2026-04-21 23:17:33 | INFO     | main | JOB START: Screener scrape
+2026-04-21 23:17:33 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-21 23:18:17 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-21 23:19:56 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-21 23:20:01 | INFO     | main |   Stored 777 rows for Technology
+2026-04-21 23:20:01 | INFO     | main | JOB DONE: Screener | 777 rows | 147.8s
+2026-04-21 23:20:01 | INFO     | main | ============================================================
+2026-04-21 23:20:01 | INFO     | main | JOB START: Insider trade scrape
+2026-04-21 23:20:01 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Buy, pages=5)
+2026-04-21 23:20:01 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-21 23:20:04 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-21 23:20:08 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-21 23:20:11 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-21 23:20:14 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-21 23:20:17 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-21 23:20:21 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Sale, pages=5)
+2026-04-21 23:20:21 | INFO     | scrapers.insider_scraper |   Page 1: 177 rows
+2026-04-21 23:20:24 | INFO     | scrapers.insider_scraper |   Page 2: 177 rows
+2026-04-21 23:20:28 | INFO     | scrapers.insider_scraper |   Page 3: 177 rows
+2026-04-21 23:20:31 | INFO     | scrapers.insider_scraper |   Page 4: 177 rows
+2026-04-21 23:20:34 | INFO     | scrapers.insider_scraper |   Page 5: 177 rows
+2026-04-21 23:20:38 | INFO     | scrapers.insider_scraper | Total insider rows: 885
+2026-04-21 23:20:40 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Option Exercise, pages=5)
+2026-04-21 23:20:41 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-21 23:20:44 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-21 23:20:48 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-21 23:20:51 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-21 23:20:54 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-21 23:20:57 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | Total unique insider trades: 403
+2026-04-21 23:21:00 | INFO     | main |   Stored 403 new insider trade rows
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: AVEX | 5 Buys | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: ARXS | 7 Buys | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: KLRA | 4 Buys | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CHCO | 4 Buys | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CGTX | 3 Buys | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PCSA | 6 Buys | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: YORW | 7 Buys | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: BEAT | 8 Buys | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: VIRC | 3 Buys | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: AUBN | 4 Buys | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PRCH | 3 Sales | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: H | 3 Sales | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: HPE | 3 Sales | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: BK | 4 Sales | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: TRV | 3 Sales | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: JBL | 3 Sales | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: SOPH | 7 Sales | $0
+2026-04-21 23:21:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: SYNA | 3 Sales | $0
+2026-04-21 23:21:00 | INFO     | main | JOB DONE: Insider | 403 rows | 10 buy | 8 sell | 59.7s
+2026-04-21 23:21:00 | INFO     | main | ============================================================
+2026-04-21 23:21:00 | INFO     | main | JOB START: Signal generation
+2026-04-21 23:21:00 | INFO     | main |   Scoring 777 tickers...
+2026-04-21 23:21:00 | INFO     | signals.scorer | Scored 777 tickers
+2026-04-21 23:21:01 | INFO     | signals.scanner | Running all scans...
+2026-04-21 23:21:01 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-21 23:21:01 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-21 23:21:01 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-21 23:21:01 | INFO     | signals.scanner |   mean_reversion: 18 candidates
+2026-04-21 23:21:01 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-21 23:21:01 | INFO     | main |   STRONG_BUY: 0 | BUY: 75 | REVERSION: 12
+2026-04-21 23:21:01 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: AXTI
+2026-04-21 23:21:01 | INFO     | main |   Scan [mean_reversion]: 18 hits | Top: OBAI
+2026-04-21 23:21:01 | INFO     | main | JOB DONE: Signals | 777 scored | 0.2s
+2026-04-21 23:21:01 | INFO     | main | One-shot complete.
