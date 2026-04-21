@@ -111,6 +111,53 @@ def initialise_schema(db_path: str) -> None:
         )
     """)
 
+    # ── News sentiment (Phase 3) ─────────────────────────────────
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS news_sentiment (
+            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            scraped_at      TEXT    NOT NULL,
+            ticker          TEXT    NOT NULL,
+            headline        TEXT,
+            source          TEXT,
+            published       TEXT,
+            sentiment       REAL,
+            url             TEXT
+        )
+    """)
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS idx_news_ticker
+        ON news_sentiment (ticker, scraped_at)
+    """)
+
+    # ── Ticker sentiment summary (Phase 3) ───────────────────────
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS ticker_sentiment (
+            id              INTEGER PRIMARY KEY AUTOINCREMENT,
+            scored_at       TEXT    NOT NULL,
+            ticker          TEXT    NOT NULL,
+            avg_sentiment   REAL,
+            bullish_count   INTEGER,
+            bearish_count   INTEGER,
+            neutral_count   INTEGER,
+            article_count   INTEGER,
+            UNIQUE (ticker, scored_at)
+        )
+    """)
+
+    # ── Economic calendar (Phase 3) ───────────────────────────────
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS economic_calendar (
+            id               INTEGER PRIMARY KEY AUTOINCREMENT,
+            scraped_at       TEXT    NOT NULL,
+            event_date       TEXT    NOT NULL,
+            event_name       TEXT,
+            impact           TEXT,
+            affected_sectors TEXT,
+            forecast         TEXT,
+            previous         TEXT
+        )
+    """)
+
     # ── Signal scores (Phase 2) ───────────────────────────────────
     cur.execute("""
         CREATE TABLE IF NOT EXISTS signal_scores (
@@ -362,6 +409,90 @@ def get_cluster_signals(db_path: str, days: int = 14) -> list[dict]:
         WHERE detected_at >= datetime('now', ?)
         ORDER BY total_value DESC
     """, (f"-{days} days",))
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return rows
+
+
+# ── Phase 3: News & Calendar helpers ─────────────────────────────
+
+def insert_news_articles(db_path: str, articles: list[dict]) -> int:
+    if not articles: return 0
+    conn = get_connection(db_path)
+    now  = datetime.now().isoformat()
+    conn.executemany("""
+        INSERT INTO news_sentiment
+            (scraped_at, ticker, headline, source, published, sentiment, url)
+        VALUES (:scraped_at,:ticker,:headline,:source,:published,:sentiment,:url)
+    """, [{**a, "scraped_at": now} for a in articles])
+    conn.commit()
+    inserted = conn.total_changes
+    conn.close()
+    return inserted
+
+
+def insert_ticker_sentiment(db_path: str, rows: list[dict]) -> int:
+    if not rows: return 0
+    conn = get_connection(db_path)
+    now  = datetime.now().isoformat()
+    conn.executemany("""
+        INSERT OR REPLACE INTO ticker_sentiment
+            (scored_at, ticker, avg_sentiment, bullish_count,
+             bearish_count, neutral_count, article_count)
+        VALUES (:scored_at,:ticker,:avg_sentiment,:bullish_count,
+                :bearish_count,:neutral_count,:article_count)
+    """, [{**r, "scored_at": now} for r in rows])
+    conn.commit()
+    conn.close()
+    return len(rows)
+
+
+def insert_calendar_events(db_path: str, events: list[dict]) -> int:
+    if not events: return 0
+    conn = get_connection(db_path)
+    now  = datetime.now().isoformat()
+    conn.executemany("""
+        INSERT INTO economic_calendar
+            (scraped_at, event_date, event_name, impact, affected_sectors, forecast, previous)
+        VALUES (:scraped_at,:event_date,:event_name,:impact,:affected_sectors,:forecast,:previous)
+    """, [{**e, "scraped_at": now,
+           "affected_sectors": ",".join(e.get("affected_sectors",[]))} for e in events])
+    conn.commit()
+    conn.close()
+    return len(events)
+
+
+def get_ticker_sentiment(db_path: str, tickers: list[str] = None) -> list[dict]:
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    if tickers:
+        placeholders = ",".join("?" * len(tickers))
+        cur.execute(f"""
+            SELECT * FROM ticker_sentiment
+            WHERE scored_at = (SELECT MAX(scored_at) FROM ticker_sentiment)
+              AND ticker IN ({placeholders})
+            ORDER BY avg_sentiment DESC
+        """, tickers)
+    else:
+        cur.execute("""
+            SELECT * FROM ticker_sentiment
+            WHERE scored_at = (SELECT MAX(scored_at) FROM ticker_sentiment)
+            ORDER BY avg_sentiment DESC
+        """)
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return rows
+
+
+def get_upcoming_events(db_path: str, days: int = 7) -> list[dict]:
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute("""
+        SELECT * FROM economic_calendar
+        WHERE event_date BETWEEN date('now') AND date('now', ?)
+          AND scraped_at = (SELECT MAX(scraped_at) FROM economic_calendar)
+        ORDER BY event_date, impact DESC
+    """, (f"+{days} days",))
     rows = [dict(r) for r in cur.fetchall()]
     conn.close()
     return rows
