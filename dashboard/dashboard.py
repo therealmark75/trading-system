@@ -154,7 +154,8 @@ def show_db_overview():
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("view", nargs="?", default="all",
-        choices=["all","overview","sectors","signals","insiders","scores","strong_buys","reversion"])
+        choices=["all","overview","sectors","signals","insiders","scores",
+                 "strong_buys","reversion","news","calendar"])
     parser.add_argument("--days",   type=int, default=14)
     parser.add_argument("--limit",  type=int, default=25)
     parser.add_argument("--rating", help="Filter scores by rating")
@@ -172,6 +173,63 @@ def main():
     if v == "strong_buys":        show_top_signals(rating="STRONG_BUY", limit=args.limit)
     if v == "reversion":          show_top_signals(rating="REVERSION",  limit=args.limit)
     if v == "scores":             show_top_signals(rating=args.rating,   limit=args.limit)
+    if v in ("news",    "all"):   show_news_sentiment(limit=args.limit)
+    if v in ("calendar","all"):   show_calendar(days=args.days)
 
 if __name__ == "__main__":
     main()
+
+
+def show_news_sentiment(limit=20):
+    from database.db import get_ticker_sentiment, get_connection
+    rows = get_ticker_sentiment(DATABASE_PATH)
+    if not rows:
+        console.print("[yellow]No news sentiment data yet. Run: python main.py news[/yellow]")
+        return
+
+    tbl = Table(title="News Sentiment (latest)", box=box.ROUNDED, show_lines=True)
+    tbl.add_column("Ticker",    style="bold cyan")
+    tbl.add_column("Avg Sentiment", justify="right")
+    tbl.add_column("Bullish",   justify="right", style="green")
+    tbl.add_column("Bearish",   justify="right", style="red")
+    tbl.add_column("Articles",  justify="right")
+
+    for r in rows[:limit]:
+        s = r.get("avg_sentiment", 0)
+        colour = "green" if s > 0.05 else ("red" if s < -0.05 else "yellow")
+        bar    = "█" * min(10, int(abs(s) * 20))
+        tbl.add_row(
+            r.get("ticker",""),
+            f"[{colour}]{s:+.3f} {bar}[/{colour}]",
+            str(r.get("bullish_count",0)),
+            str(r.get("bearish_count",0)),
+            str(r.get("article_count",0)),
+        )
+    console.print(tbl)
+
+
+def show_calendar(days=7):
+    from database.db import get_upcoming_events
+    events = get_upcoming_events(DATABASE_PATH, days=days)
+    if not events:
+        console.print(f"[yellow]No calendar events. Run: python main.py news[/yellow]")
+        return
+
+    tbl = Table(title=f"Economic Calendar (next {days} days)", box=box.ROUNDED, show_lines=True)
+    tbl.add_column("Date",    no_wrap=True)
+    tbl.add_column("Event",   max_width=40)
+    tbl.add_column("Impact",  style="bold")
+    tbl.add_column("Sectors", max_width=35)
+    tbl.add_column("Forecast")
+
+    impact_colours = {"HIGH": "bold red", "MEDIUM": "yellow", "LOW": "dim", "NONE": "dim"}
+    for e in events:
+        ic = impact_colours.get(e.get("impact",""), "white")
+        tbl.add_row(
+            e.get("event_date",""),
+            e.get("event_name",""),
+            f"[{ic}]{e.get('impact','')}[/{ic}]",
+            e.get("affected_sectors",""),
+            e.get("forecast","") or "-",
+        )
+    console.print(tbl)
