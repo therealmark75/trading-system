@@ -14,7 +14,7 @@
 # ─────────────────────────────────────────────────
 
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timezone, timedelta
 from dataclasses import dataclass, field
 
 logger = logging.getLogger(__name__)
@@ -167,7 +167,7 @@ def score_insider(ticker: str, insider_trades: list[dict],
     Score 0-100 based on conviction-weighted insider activity.
     Buys add points, sales subtract, weighted by title seniority.
     """
-    cutoff = datetime.utcnow() - timedelta(days=window_days)
+    cutoff = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=window_days)
     relevant = [
         t for t in insider_trades
         if t.get("ticker") == ticker and t.get("transaction_date")
