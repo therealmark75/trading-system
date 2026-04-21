@@ -111,6 +111,32 @@ def initialise_schema(db_path: str) -> None:
         )
     """)
 
+    # ── Signal scores (Phase 2) ───────────────────────────────────
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS signal_scores (
+            id               INTEGER PRIMARY KEY AUTOINCREMENT,
+            scored_at        TEXT    NOT NULL,
+            ticker           TEXT    NOT NULL,
+            composite_score  REAL,
+            momentum_score   REAL,
+            quality_score    REAL,
+            insider_score    REAL,
+            reversion_score  REAL,
+            rating           TEXT,
+            flags            TEXT
+        )
+    """)
+
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS idx_signal_ticker_date
+        ON signal_scores (ticker, scored_at)
+    """)
+
+    cur.execute("""
+        CREATE INDEX IF NOT EXISTS idx_signal_rating
+        ON signal_scores (rating, scored_at)
+    """)
+
     # ── Run log (track each scrape job) ──────────────────────────
     cur.execute("""
         CREATE TABLE IF NOT EXISTS run_log (
@@ -205,6 +231,67 @@ def insert_insider_signal(db_path: str, signal: dict) -> None:
     """, signal)
     conn.commit()
     conn.close()
+
+
+def insert_signal_scores(db_path: str, rows: list[dict]) -> int:
+    """Insert signal score rows. Returns count inserted."""
+    if not rows:
+        return 0
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.executemany("""
+        INSERT INTO signal_scores
+            (scored_at, ticker, composite_score, momentum_score, quality_score,
+             insider_score, reversion_score, rating, flags)
+        VALUES
+            (:scored_at, :ticker, :composite_score, :momentum_score, :quality_score,
+             :insider_score, :reversion_score, :rating, :flags)
+    """, rows)
+    conn.commit()
+    inserted = cur.rowcount
+    conn.close()
+    return inserted
+
+
+def get_top_signals(db_path: str, rating: str = None, limit: int = 50) -> list[dict]:
+    """Return latest signal scores, optionally filtered by rating."""
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    if rating:
+        cur.execute("""
+            SELECT * FROM signal_scores
+            WHERE scored_at = (SELECT MAX(scored_at) FROM signal_scores)
+              AND rating = ?
+            ORDER BY composite_score DESC
+            LIMIT ?
+        """, (rating, limit))
+    else:
+        cur.execute("""
+            SELECT * FROM signal_scores
+            WHERE scored_at = (SELECT MAX(scored_at) FROM signal_scores)
+            ORDER BY composite_score DESC
+            LIMIT ?
+        """, (limit,))
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return rows
+
+
+def get_signal_summary(db_path: str) -> list[dict]:
+    """Rating distribution from latest signal run."""
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute("""
+        SELECT rating, COUNT(*) as count,
+               ROUND(AVG(composite_score),1) as avg_score
+        FROM signal_scores
+        WHERE scored_at = (SELECT MAX(scored_at) FROM signal_scores)
+        GROUP BY rating
+        ORDER BY avg_score DESC
+    """)
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return rows
 
 
 def log_run(db_path: str, job_name: str, status: str,
