@@ -1,0 +1,111 @@
+2026-04-22 09:50:29 | INFO     | backtest | ============================================================
+2026-04-22 09:50:29 | INFO     | backtest | BACKTEST START
+2026-04-22 09:50:29 | INFO     | backtest |   Ratings:    ['BUY']
+2026-04-22 09:50:29 | INFO     | backtest |   Hold days:  [5, 10, 20]
+2026-04-22 09:50:29 | INFO     | backtest |   Min score:  60.0
+2026-04-22 09:50:29 | INFO     | backtest |   Limit:      30 signals per combination
+2026-04-22 09:50:29 | INFO     | backtest | ============================================================
+2026-04-22 09:50:29 | INFO     | signals.backtester | 
+Backtesting BUY | 5-day hold...
+2026-04-22 09:50:29 | INFO     | signals.backtester | Backtesting 30 BUY signals over 5-day hold...
+2026-04-22 09:50:29 | INFO     | signals.backtester |   [1/30] ALTO | signal: 2026-04-22
+2026-04-22 09:50:30 | INFO     | signals.backtester |   [2/30] AMTX | signal: 2026-04-22
+2026-04-22 09:50:31 | INFO     | signals.backtester |   [3/30] BHP | signal: 2026-04-22
+2026-04-22 09:50:31 | INFO     | signals.backtester |   [4/30] CENX | signal: 2026-04-22
+2026-04-22 09:50:32 | INFO     | signals.backtester |   [5/30] CF | signal: 2026-04-22
+2026-04-22 09:50:33 | INFO     | signals.backtester |   [6/30] CSTM | signal: 2026-04-22
+2026-04-22 09:50:33 | INFO     | signals.backtester |   [7/30] ECVT | signal: 2026-04-22
+2026-04-22 09:50:34 | INFO     | signals.backtester |   [8/30] ESI | signal: 2026-04-22
+2026-04-22 09:50:34 | INFO     | signals.backtester |   [9/30] FCX | signal: 2026-04-22
+2026-04-22 09:50:35 | INFO     | signals.backtester |   [10/30] HWKN | signal: 2026-04-22
+2026-04-22 09:50:36 | INFO     | signals.backtester |   [11/30] IDR | signal: 2026-04-22
+2026-04-22 09:50:36 | INFO     | signals.backtester |   [12/30] LXU | signal: 2026-04-22
+2026-04-22 09:50:37 | INFO     | signals.backtester |   [13/30] MAKO | signal: 2026-04-22
+2026-04-22 09:50:37 | INFO     | signals.backtester |   [14/30] MTRN | signal: 2026-04-22
+2026-04-22 09:50:38 | INFO     | signals.backtester |   [15/30] ODC | signal: 2026-04-22
+2026-04-22 09:50:39 | INFO     | signals.backtester |   [16/30] REX | signal: 2026-04-22
+2026-04-22 09:50:39 | INFO     | signals.backtester |   [17/30] SQM | signal: 2026-04-22
+2026-04-22 09:50:40 | INFO     | signals.backtester |   [18/30] SSL | signal: 2026-04-22
+2026-04-22 09:50:41 | INFO     | signals.backtester |   [19/30] THM | signal: 2026-04-22
+2026-04-22 09:50:41 | INFO     | signals.backtester |   [20/30] UAN | signal: 2026-04-22
+2026-04-22 09:50:42 | INFO     | signals.backtester |   [21/30] VMET | signal: 2026-04-22
+2026-04-22 09:50:43 | INFO     | signals.backtester |   [22/30] VICR | signal: 2026-04-22
+2026-04-22 09:50:43 | INFO     | signals.backtester |   [23/30] DDD | signal: 2026-04-22
+2026-04-22 09:50:44 | INFO     | signals.backtester |   [24/30] XNDU | signal: 2026-04-22
+2026-04-22 09:50:44 | INFO     | signals.backtester |   [25/30] RNG | signal: 2026-04-22
+2026-04-22 09:50:45 | INFO     | signals.backtester |   [26/30] Q | signal: 2026-04-22
+2026-04-22 09:50:46 | INFO     | signals.backtester |   [27/30] INSG | signal: 2026-04-22
+2026-04-22 09:50:46 | INFO     | signals.backtester |   [28/30] INFQ | signal: 2026-04-22
+2026-04-22 09:50:47 | INFO     | signals.backtester |   [29/30] FOXX | signal: 2026-04-22
+2026-04-22 09:50:47 | INFO     | signals.backtester |   [30/30] DOCN | signal: 2026-04-22
+2026-04-22 09:50:48 | INFO     | signals.backtester |   BUY 5d: Win rate 0% | Avg return +0.00% | Profit factor 0
+2026-04-22 09:50:48 | INFO     | signals.backtester | 
+Backtesting BUY | 10-day hold...
+2026-04-22 09:50:48 | INFO     | signals.backtester | Backtesting 30 BUY signals over 10-day hold...
+2026-04-22 09:50:48 | INFO     | signals.backtester |   [1/30] ALTO | signal: 2026-04-22
+2026-04-22 09:50:49 | INFO     | signals.backtester |   [2/30] AMTX | signal: 2026-04-22
+2026-04-22 09:50:49 | INFO     | signals.backtester |   [3/30] BHP | signal: 2026-04-22
+2026-04-22 09:50:50 | INFO     | signals.backtester |   [4/30] CENX | signal: 2026-04-22
+2026-04-22 09:50:50 | INFO     | signals.backtester |   [5/30] CF | signal: 2026-04-22
+2026-04-22 09:50:51 | INFO     | signals.backtester |   [6/30] CSTM | signal: 2026-04-22
+2026-04-22 09:50:51 | INFO     | signals.backtester |   [7/30] ECVT | signal: 2026-04-22
+2026-04-22 09:50:52 | INFO     | signals.backtester |   [8/30] ESI | signal: 2026-04-22
+2026-04-22 09:50:52 | INFO     | signals.backtester |   [9/30] FCX | signal: 2026-04-22
+2026-04-22 09:50:53 | INFO     | signals.backtester |   [10/30] HWKN | signal: 2026-04-22
+2026-04-22 09:50:54 | INFO     | signals.backtester |   [11/30] IDR | signal: 2026-04-22
+2026-04-22 09:50:54 | INFO     | signals.backtester |   [12/30] LXU | signal: 2026-04-22
+2026-04-22 09:50:55 | INFO     | signals.backtester |   [13/30] MAKO | signal: 2026-04-22
+2026-04-22 09:50:55 | INFO     | signals.backtester |   [14/30] MTRN | signal: 2026-04-22
+2026-04-22 09:50:56 | INFO     | signals.backtester |   [15/30] ODC | signal: 2026-04-22
+2026-04-22 09:50:56 | INFO     | signals.backtester |   [16/30] REX | signal: 2026-04-22
+2026-04-22 09:50:57 | INFO     | signals.backtester |   [17/30] SQM | signal: 2026-04-22
+2026-04-22 09:50:58 | INFO     | signals.backtester |   [18/30] SSL | signal: 2026-04-22
+2026-04-22 09:50:58 | INFO     | signals.backtester |   [19/30] THM | signal: 2026-04-22
+2026-04-22 09:50:59 | INFO     | signals.backtester |   [20/30] UAN | signal: 2026-04-22
+2026-04-22 09:50:59 | INFO     | signals.backtester |   [21/30] VMET | signal: 2026-04-22
+2026-04-22 09:51:00 | INFO     | signals.backtester |   [22/30] VICR | signal: 2026-04-22
+2026-04-22 09:51:00 | INFO     | signals.backtester |   [23/30] DDD | signal: 2026-04-22
+2026-04-22 09:51:01 | INFO     | signals.backtester |   [24/30] XNDU | signal: 2026-04-22
+2026-04-22 09:51:02 | INFO     | signals.backtester |   [25/30] RNG | signal: 2026-04-22
+2026-04-22 09:51:02 | INFO     | signals.backtester |   [26/30] Q | signal: 2026-04-22
+2026-04-22 09:51:03 | INFO     | signals.backtester |   [27/30] INSG | signal: 2026-04-22
+2026-04-22 09:51:03 | INFO     | signals.backtester |   [28/30] INFQ | signal: 2026-04-22
+2026-04-22 09:51:04 | INFO     | signals.backtester |   [29/30] FOXX | signal: 2026-04-22
+2026-04-22 09:51:04 | INFO     | signals.backtester |   [30/30] DOCN | signal: 2026-04-22
+2026-04-22 09:51:05 | INFO     | signals.backtester |   BUY 10d: Win rate 0% | Avg return +0.00% | Profit factor 0
+2026-04-22 09:51:05 | INFO     | signals.backtester | 
+Backtesting BUY | 20-day hold...
+2026-04-22 09:51:05 | INFO     | signals.backtester | Backtesting 30 BUY signals over 20-day hold...
+2026-04-22 09:51:05 | INFO     | signals.backtester |   [1/30] ALTO | signal: 2026-04-22
+2026-04-22 09:51:05 | INFO     | signals.backtester |   [2/30] AMTX | signal: 2026-04-22
+2026-04-22 09:51:06 | INFO     | signals.backtester |   [3/30] BHP | signal: 2026-04-22
+2026-04-22 09:51:07 | INFO     | signals.backtester |   [4/30] CENX | signal: 2026-04-22
+2026-04-22 09:51:07 | INFO     | signals.backtester |   [5/30] CF | signal: 2026-04-22
+2026-04-22 09:51:08 | INFO     | signals.backtester |   [6/30] CSTM | signal: 2026-04-22
+2026-04-22 09:51:08 | INFO     | signals.backtester |   [7/30] ECVT | signal: 2026-04-22
+2026-04-22 09:51:09 | INFO     | signals.backtester |   [8/30] ESI | signal: 2026-04-22
+2026-04-22 09:51:09 | INFO     | signals.backtester |   [9/30] FCX | signal: 2026-04-22
+2026-04-22 09:51:10 | INFO     | signals.backtester |   [10/30] HWKN | signal: 2026-04-22
+2026-04-22 09:51:11 | INFO     | signals.backtester |   [11/30] IDR | signal: 2026-04-22
+2026-04-22 09:51:11 | INFO     | signals.backtester |   [12/30] LXU | signal: 2026-04-22
+2026-04-22 09:51:12 | INFO     | signals.backtester |   [13/30] MAKO | signal: 2026-04-22
+2026-04-22 09:51:12 | INFO     | signals.backtester |   [14/30] MTRN | signal: 2026-04-22
+2026-04-22 09:51:13 | INFO     | signals.backtester |   [15/30] ODC | signal: 2026-04-22
+2026-04-22 09:51:13 | INFO     | signals.backtester |   [16/30] REX | signal: 2026-04-22
+2026-04-22 09:51:14 | INFO     | signals.backtester |   [17/30] SQM | signal: 2026-04-22
+2026-04-22 09:51:14 | INFO     | signals.backtester |   [18/30] SSL | signal: 2026-04-22
+2026-04-22 09:51:15 | INFO     | signals.backtester |   [19/30] THM | signal: 2026-04-22
+2026-04-22 09:51:16 | INFO     | signals.backtester |   [20/30] UAN | signal: 2026-04-22
+2026-04-22 09:51:16 | INFO     | signals.backtester |   [21/30] VMET | signal: 2026-04-22
+2026-04-22 09:51:17 | INFO     | signals.backtester |   [22/30] VICR | signal: 2026-04-22
+2026-04-22 09:51:17 | INFO     | signals.backtester |   [23/30] DDD | signal: 2026-04-22
+2026-04-22 09:51:18 | INFO     | signals.backtester |   [24/30] XNDU | signal: 2026-04-22
+2026-04-22 09:51:18 | INFO     | signals.backtester |   [25/30] RNG | signal: 2026-04-22
+2026-04-22 09:51:19 | INFO     | signals.backtester |   [26/30] Q | signal: 2026-04-22
+2026-04-22 09:51:19 | INFO     | signals.backtester |   [27/30] INSG | signal: 2026-04-22
+2026-04-22 09:51:20 | INFO     | signals.backtester |   [28/30] INFQ | signal: 2026-04-22
+2026-04-22 09:51:21 | INFO     | signals.backtester |   [29/30] FOXX | signal: 2026-04-22
+2026-04-22 09:51:21 | INFO     | signals.backtester |   [30/30] DOCN | signal: 2026-04-22
+2026-04-22 09:51:22 | INFO     | signals.backtester |   BUY 20d: Win rate 0% | Avg return +0.00% | Profit factor 0
+2026-04-22 09:51:22 | INFO     | signals.backtester | Backtest results saved to database.
+2026-04-22 09:51:22 | INFO     | backtest | Backtest complete.
