@@ -706,3 +706,18 @@ ValueError: time data "Apr 20 '26" does not match format '%Y-%m-%d'
 2026-04-22 11:11:27 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
 2026-04-22 11:11:27 | INFO     | main |   Scan [mean_reversion]: 4 hits | Top: INHD
 2026-04-22 11:11:27 | INFO     | main | JOB DONE: Signals | 281 scored | 0.1s
+2026-04-22 12:48:01 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-22 12:48:01 | INFO     | main | ============================================================
+2026-04-22 12:48:01 | INFO     | main | JOB START: Signal generation
+2026-04-22 12:48:01 | INFO     | main |   Scoring 281 tickers...
+2026-04-22 12:48:01 | INFO     | signals.scorer | Scored 281 tickers
+2026-04-22 12:48:01 | INFO     | signals.scanner | Running all scans...
+2026-04-22 12:48:01 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-22 12:48:01 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-22 12:48:01 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-22 12:48:01 | INFO     | signals.scanner |   mean_reversion: 4 candidates
+2026-04-22 12:48:01 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-22 12:48:01 | INFO     | main |   STRONG_BUY: 0 | BUY: 21 | REVERSION: 3
+2026-04-22 12:48:01 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-22 12:48:01 | INFO     | main |   Scan [mean_reversion]: 4 hits | Top: INHD
+2026-04-22 12:48:01 | INFO     | main | JOB DONE: Signals | 281 scored | 0.1s
