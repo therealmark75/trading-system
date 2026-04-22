@@ -52,25 +52,54 @@ def show_signal_summary():
     console.print(tbl)
 
 def show_top_signals(rating=None, limit=25):
-    rows = get_top_signals(DATABASE_PATH, rating=rating, limit=limit)
+    rows = get_top_signals(DATABASE_PATH, rating=rating, limit=limit * 3)
     if not rows:
         console.print("[yellow]No signal data yet.[/yellow]")
         return
 
+    # Deduplicate by ticker, keep highest composite score
+    seen = {}
+    for r in rows:
+        t = r.get("ticker","")
+        if t not in seen or r.get("composite_score",0) > seen[t].get("composite_score",0):
+            seen[t] = r
+    rows = sorted(seen.values(), key=lambda x: x.get("composite_score",0), reverse=True)[:limit]
+
     title = f"Top Signals" + (f" — {rating}" if rating else " — All Ratings")
-    tbl = Table(title=title, box=box.ROUNDED, show_lines=True)
-    tbl.add_column("Ticker",    style="bold cyan", no_wrap=True)
-    tbl.add_column("Rating",    style="bold")
-    tbl.add_column("Composite", justify="right")
-    tbl.add_column("Momentum",  justify="right")
-    tbl.add_column("Quality",   justify="right")
-    tbl.add_column("Insider",   justify="right")
-    tbl.add_column("Reversion", justify="right")
-    tbl.add_column("Flags", max_width=50)
+    tbl = Table(title=title, box=box.ROUNDED, show_lines=True, expand=True)
+    tbl.add_column("Ticker",    style="bold cyan", no_wrap=True, min_width=6)
+    tbl.add_column("Rating",    style="bold",      no_wrap=True, min_width=10)
+    tbl.add_column("Score",     justify="right",   no_wrap=True, min_width=6)
+    tbl.add_column("Mom",       justify="right",   no_wrap=True, min_width=5)
+    tbl.add_column("Qual",      justify="right",   no_wrap=True, min_width=5)
+    tbl.add_column("Ins",       justify="right",   no_wrap=True, min_width=5)
+    tbl.add_column("Rev",       justify="right",   no_wrap=True, min_width=5)
+    tbl.add_column("Flags",     no_wrap=True,      ratio=1)
 
     for r in rows:
         colour = RATING_COLOUR.get(r.get("rating"), "white")
-        flags  = (r.get("flags") or "").replace("|", "  ")
+        # Convert pipe-separated flags to short emoji-style abbreviations
+        raw_flags = (r.get("flags") or "").split("|")
+        short_flags = []
+        for f in raw_flags:
+            f = f.strip()
+            if not f: continue
+            if "Above 50d"  in f: short_flags.append("↑50d")
+            elif "Below 50d" in f: short_flags.append("↓50d")
+            if "Above 200d"  in f: short_flags.append("↑200d")
+            elif "Below 200d" in f: short_flags.append("↓200d")
+            if "52-week high" in f: short_flags.append("🔝52wH")
+            if "52-week low"  in f: short_flags.append("📍52wL")
+            if "insider buying" in f.lower(): short_flags.append("★Ins")
+            if "insider selling" in f.lower(): short_flags.append("⚠Ins")
+            if "Overbought" in f: short_flags.append("⚠RSI+")
+            if "Oversold"   in f: short_flags.append("↩RSI-")
+            if "reversion"  in f.lower(): short_flags.append("↩Rev")
+            if "short interest" in f.lower(): short_flags.append("⚠Short")
+            if "analyst"    in f.lower(): short_flags.append("✓Rec")
+
+        flags_str = "  ".join(short_flags) if short_flags else "-"
+
         tbl.add_row(
             r.get("ticker",""),
             f"[{colour}]{r.get('rating','')}[/{colour}]",
@@ -79,7 +108,7 @@ def show_top_signals(rating=None, limit=25):
             fmt_score(r.get("quality_score")),
             fmt_score(r.get("insider_score")),
             fmt_score(r.get("reversion_score")),
-            f"[dim]{flags}[/dim]",
+            f"[dim]{flags_str}[/dim]",
         )
     console.print(tbl)
 
@@ -151,62 +180,6 @@ def show_db_overview():
            f"[green]Signal scores:[/green]  {ss:,}   [dim]last: {(lsg or 'never')[:16]}[/dim]")
     console.print(Panel(txt, title="[bold white]Database Overview[/bold white]", border_style="blue"))
 
-def show_news_sentiment(limit=20):
-    from database.db import get_ticker_sentiment, get_connection
-    rows = get_ticker_sentiment(DATABASE_PATH)
-    if not rows:
-        console.print("[yellow]No news sentiment data yet. Run: python main.py news[/yellow]")
-        return
-
-    tbl = Table(title="News Sentiment (latest)", box=box.ROUNDED, show_lines=True)
-    tbl.add_column("Ticker",    style="bold cyan")
-    tbl.add_column("Avg Sentiment", justify="right")
-    tbl.add_column("Bullish",   justify="right", style="green")
-    tbl.add_column("Bearish",   justify="right", style="red")
-    tbl.add_column("Articles",  justify="right")
-
-    for r in rows[:limit]:
-        s = r.get("avg_sentiment", 0)
-        colour = "green" if s > 0.05 else ("red" if s < -0.05 else "yellow")
-        bar    = "█" * min(10, int(abs(s) * 20))
-        tbl.add_row(
-            r.get("ticker",""),
-            f"[{colour}]{s:+.3f} {bar}[/{colour}]",
-            str(r.get("bullish_count",0)),
-            str(r.get("bearish_count",0)),
-            str(r.get("article_count",0)),
-        )
-    console.print(tbl)
-
-
-
-def show_calendar(days=7):
-    from database.db import get_upcoming_events
-    events = get_upcoming_events(DATABASE_PATH, days=days)
-    if not events:
-        console.print(f"[yellow]No calendar events. Run: python main.py news[/yellow]")
-        return
-
-    tbl = Table(title=f"Economic Calendar (next {days} days)", box=box.ROUNDED, show_lines=True)
-    tbl.add_column("Date",    no_wrap=True)
-    tbl.add_column("Event",   max_width=40)
-    tbl.add_column("Impact",  style="bold")
-    tbl.add_column("Sectors", max_width=35)
-    tbl.add_column("Forecast")
-
-    impact_colours = {"HIGH": "bold red", "MEDIUM": "yellow", "LOW": "dim", "NONE": "dim"}
-    for e in events:
-        ic = impact_colours.get(e.get("impact",""), "white")
-        tbl.add_row(
-            e.get("event_date",""),
-            e.get("event_name",""),
-            f"[{ic}]{e.get('impact','')}[/{ic}]",
-            e.get("affected_sectors",""),
-            e.get("forecast","") or "-",
-        )
-    console.print(tbl)
-
-
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("view", nargs="?", default="all",
@@ -235,3 +208,57 @@ def main():
 if __name__ == "__main__":
     main()
 
+
+def show_news_sentiment(limit=20):
+    from database.db import get_ticker_sentiment, get_connection
+    rows = get_ticker_sentiment(DATABASE_PATH)
+    if not rows:
+        console.print("[yellow]No news sentiment data yet. Run: python main.py news[/yellow]")
+        return
+
+    tbl = Table(title="News Sentiment (latest)", box=box.ROUNDED, show_lines=True)
+    tbl.add_column("Ticker",    style="bold cyan")
+    tbl.add_column("Avg Sentiment", justify="right")
+    tbl.add_column("Bullish",   justify="right", style="green")
+    tbl.add_column("Bearish",   justify="right", style="red")
+    tbl.add_column("Articles",  justify="right")
+
+    for r in rows[:limit]:
+        s = r.get("avg_sentiment", 0)
+        colour = "green" if s > 0.05 else ("red" if s < -0.05 else "yellow")
+        bar    = "█" * min(10, int(abs(s) * 20))
+        tbl.add_row(
+            r.get("ticker",""),
+            f"[{colour}]{s:+.3f} {bar}[/{colour}]",
+            str(r.get("bullish_count",0)),
+            str(r.get("bearish_count",0)),
+            str(r.get("article_count",0)),
+        )
+    console.print(tbl)
+
+
+def show_calendar(days=7):
+    from database.db import get_upcoming_events
+    events = get_upcoming_events(DATABASE_PATH, days=days)
+    if not events:
+        console.print(f"[yellow]No calendar events. Run: python main.py news[/yellow]")
+        return
+
+    tbl = Table(title=f"Economic Calendar (next {days} days)", box=box.ROUNDED, show_lines=True)
+    tbl.add_column("Date",    no_wrap=True)
+    tbl.add_column("Event",   max_width=40)
+    tbl.add_column("Impact",  style="bold")
+    tbl.add_column("Sectors", max_width=35)
+    tbl.add_column("Forecast")
+
+    impact_colours = {"HIGH": "bold red", "MEDIUM": "yellow", "LOW": "dim", "NONE": "dim"}
+    for e in events:
+        ic = impact_colours.get(e.get("impact",""), "white")
+        tbl.add_row(
+            e.get("event_date",""),
+            e.get("event_name",""),
+            f"[{ic}]{e.get('impact','')}[/{ic}]",
+            e.get("affected_sectors",""),
+            e.get("forecast","") or "-",
+        )
+    console.print(tbl)

@@ -306,16 +306,24 @@ def get_top_signals(db_path: str, rating: str = None, limit: int = 50) -> list[d
     cur  = conn.cursor()
     if rating:
         cur.execute("""
-            SELECT * FROM signal_scores
+            SELECT ticker, rating, MAX(composite_score) as composite_score,
+                   momentum_score, quality_score, insider_score,
+                   reversion_score, flags, MAX(scored_at) as scored_at
+            FROM signal_scores
             WHERE DATE(scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
               AND rating = ?
+            GROUP BY ticker
             ORDER BY composite_score DESC
             LIMIT ?
         """, (rating, limit))
     else:
         cur.execute("""
-            SELECT * FROM signal_scores
+            SELECT ticker, rating, MAX(composite_score) as composite_score,
+                   momentum_score, quality_score, insider_score,
+                   reversion_score, flags, MAX(scored_at) as scored_at
+            FROM signal_scores
             WHERE DATE(scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
+            GROUP BY ticker
             ORDER BY composite_score DESC
             LIMIT ?
         """, (limit,))
@@ -329,7 +337,7 @@ def get_signal_summary(db_path: str) -> list[dict]:
     conn = get_connection(db_path)
     cur  = conn.cursor()
     cur.execute("""
-        SELECT rating, COUNT(*) as count,
+        SELECT rating, COUNT(DISTINCT ticker) as count,
                ROUND(AVG(composite_score),1) as avg_score
         FROM signal_scores
         WHERE DATE(scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
