@@ -66,3 +66,24 @@ USER_AGENTS = [
 
 REQUEST_DELAY_SECONDS = 2.5   # polite crawl delay between requests
 REQUEST_TIMEOUT       = 20
+
+# ── Alert settings ────────────────────────────────
+# Fill these in to enable email alerts.
+# Use an App Password for Gmail (not your main password).
+# Gmail: myaccount.google.com → Security → App passwords
+
+ALERTS_ENABLED = False   # Set to True once email is configured
+
+ALERT_CONFIG = {
+    "smtp_host": "smtp.gmail.com",
+    "smtp_port": 465,
+    "smtp_user": "",           # your Gmail address
+    "smtp_pass": "",           # your Gmail App Password
+    "from_addr": "",           # your Gmail address
+    "to_addrs":  [],           # list of recipient emails e.g. ["you@email.com"]
+}
+
+# Alert thresholds - only alert when these conditions are met
+ALERT_MIN_COMPOSITE_SCORE = 68.0    # minimum score for signal alert
+ALERT_MIN_CLUSTER_INSIDERS = 5      # minimum insiders for cluster alert
+ALERT_STRONG_BUY_ONLY = False       # True = only alert STRONG_BUY, False = BUY too
