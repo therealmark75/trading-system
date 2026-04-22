@@ -151,35 +151,6 @@ def show_db_overview():
            f"[green]Signal scores:[/green]  {ss:,}   [dim]last: {(lsg or 'never')[:16]}[/dim]")
     console.print(Panel(txt, title="[bold white]Database Overview[/bold white]", border_style="blue"))
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("view", nargs="?", default="all",
-        choices=["all","overview","sectors","signals","insiders","scores",
-                 "strong_buys","reversion","news","calendar"])
-    parser.add_argument("--days",   type=int, default=14)
-    parser.add_argument("--limit",  type=int, default=25)
-    parser.add_argument("--rating", help="Filter scores by rating")
-    args = parser.parse_args()
-
-    console.rule("[bold blue]Trading System Dashboard[/bold blue]")
-    console.print(f"[dim]{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}[/dim]\n")
-
-    v = args.view
-    if v in ("overview","all"):   show_db_overview()
-    if v in ("sectors", "all"):   show_sector_summary()
-    if v in ("signals", "all"):   show_signals(days=args.days)
-    if v in ("scores",  "all"):   show_signal_summary()
-    if v in ("all",):             show_top_signals(limit=args.limit)
-    if v == "strong_buys":        show_top_signals(rating="STRONG_BUY", limit=args.limit)
-    if v == "reversion":          show_top_signals(rating="REVERSION",  limit=args.limit)
-    if v == "scores":             show_top_signals(rating=args.rating,   limit=args.limit)
-    if v in ("news",    "all"):   show_news_sentiment(limit=args.limit)
-    if v in ("calendar","all"):   show_calendar(days=args.days)
-
-if __name__ == "__main__":
-    main()
-
-
 def show_news_sentiment(limit=20):
     from database.db import get_ticker_sentiment, get_connection
     rows = get_ticker_sentiment(DATABASE_PATH)
@@ -208,6 +179,7 @@ def show_news_sentiment(limit=20):
     console.print(tbl)
 
 
+
 def show_calendar(days=7):
     from database.db import get_upcoming_events
     events = get_upcoming_events(DATABASE_PATH, days=days)
@@ -233,3 +205,33 @@ def show_calendar(days=7):
             e.get("forecast","") or "-",
         )
     console.print(tbl)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("view", nargs="?", default="all",
+        choices=["all","overview","sectors","signals","insiders","scores",
+                 "strong_buys","reversion","news","calendar"])
+    parser.add_argument("--days",   type=int, default=14)
+    parser.add_argument("--limit",  type=int, default=25)
+    parser.add_argument("--rating", help="Filter scores by rating")
+    args = parser.parse_args()
+
+    console.rule("[bold blue]Trading System Dashboard[/bold blue]")
+    console.print(f"[dim]{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}[/dim]\n")
+
+    v = args.view
+    if v in ("overview","all"):   show_db_overview()
+    if v in ("sectors", "all"):   show_sector_summary()
+    if v in ("signals", "all"):   show_signals(days=args.days)
+    if v in ("scores",  "all"):   show_signal_summary()
+    if v in ("all",):             show_top_signals(limit=args.limit)
+    if v == "strong_buys":        show_top_signals(rating="STRONG_BUY", limit=args.limit)
+    if v == "reversion":          show_top_signals(rating="REVERSION",  limit=args.limit)
+    if v == "scores":             show_top_signals(rating=args.rating,   limit=args.limit)
+    if v in ("news",    "all"):   show_news_sentiment(limit=args.limit)
+    if v in ("calendar","all"):   show_calendar(days=args.days)
+
+if __name__ == "__main__":
+    main()
+

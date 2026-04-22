@@ -307,7 +307,7 @@ def get_top_signals(db_path: str, rating: str = None, limit: int = 50) -> list[d
     if rating:
         cur.execute("""
             SELECT * FROM signal_scores
-            WHERE scored_at = (SELECT MAX(scored_at) FROM signal_scores)
+            WHERE DATE(scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
               AND rating = ?
             ORDER BY composite_score DESC
             LIMIT ?
@@ -315,7 +315,7 @@ def get_top_signals(db_path: str, rating: str = None, limit: int = 50) -> list[d
     else:
         cur.execute("""
             SELECT * FROM signal_scores
-            WHERE scored_at = (SELECT MAX(scored_at) FROM signal_scores)
+            WHERE DATE(scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
             ORDER BY composite_score DESC
             LIMIT ?
         """, (limit,))
@@ -332,7 +332,7 @@ def get_signal_summary(db_path: str) -> list[dict]:
         SELECT rating, COUNT(*) as count,
                ROUND(AVG(composite_score),1) as avg_score
         FROM signal_scores
-        WHERE scored_at = (SELECT MAX(scored_at) FROM signal_scores)
+        WHERE DATE(scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
         GROUP BY rating
         ORDER BY avg_score DESC
     """)

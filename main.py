@@ -1,6 +1,5 @@
-# main.py - Phase 1 + Phase 2
 import sys, time, logging, argparse
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from apscheduler.schedulers.blocking import BlockingScheduler
 from apscheduler.triggers.cron import CronTrigger
@@ -12,9 +11,13 @@ from config.settings import (DATABASE_PATH, SECTORS, SCREENER_SCRAPE_TIMES,
     LOG_DIR, LOG_LEVEL, REQUEST_DELAY_SECONDS)
 from database.db import (initialise_schema, insert_screener_rows,
     insert_insider_trades, insert_insider_signal, insert_signal_scores,
-    log_run, get_latest_screener, get_recent_insiders, get_cluster_signals)
+    insert_news_articles, insert_ticker_sentiment, insert_calendar_events,
+    log_run, get_latest_screener, get_recent_insiders, get_cluster_signals,
+    get_top_signals)
 from scrapers.screener_scraper import scrape_all_sectors
 from scrapers.insider_scraper import scrape_all_insider_types, detect_cluster_signals
+from scrapers.news_scraper import scrape_news_for_tickers
+from scrapers.calendar_scraper import scrape_economic_calendar
 from signals.scorer import score_all_tickers
 from signals.scanner import run_all_scans
 
@@ -78,16 +81,14 @@ def job_generate_signals(sector=None):
         screener_rows   = get_latest_screener(DATABASE_PATH, sector=sector)
         insider_trades  = get_recent_insiders(DATABASE_PATH, days=30)
         cluster_signals = get_cluster_signals(DATABASE_PATH, days=14)
-
         if not screener_rows:
             logger.warning("No screener data. Run scrape first.")
             return [], {}
-
         logger.info(f"  Scoring {len(screener_rows)} tickers...")
         signals = score_all_tickers(screener_rows, insider_trades)
-
+        batch_ts = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         score_rows = [{
-            "scored_at": datetime.utcnow().isoformat(),
+            "scored_at": batch_ts,
             "ticker": s.ticker,
             "composite_score": s.composite_score,
             "momentum_score": s.momentum_score,
@@ -98,23 +99,18 @@ def job_generate_signals(sector=None):
             "flags": "|".join(s.flags),
         } for s in signals]
         insert_signal_scores(DATABASE_PATH, score_rows)
-
         scan_results = run_all_scans(screener_rows, insider_trades, cluster_signals)
-
         strong_buys = [s for s in signals if s.rating == "STRONG_BUY"]
         buys        = [s for s in signals if s.rating == "BUY"]
         reversions  = [s for s in signals if s.rating == "REVERSION"]
         logger.info(f"  STRONG_BUY: {len(strong_buys)} | BUY: {len(buys)} | REVERSION: {len(reversions)}")
-
         if strong_buys:
             logger.info("  Top STRONG_BUY:")
             for s in strong_buys[:5]:
                 logger.info(f"    {s.ticker} | Score {s.composite_score} | RSI {s.rsi_14} | {' | '.join(s.flags[:2])}")
-
         for name, items in scan_results.items():
             if items:
                 logger.info(f"  Scan [{name}]: {len(items)} hits | Top: {items[0].ticker}")
-
         duration = time.time() - start
         log_run(DATABASE_PATH, "signal_generation", "SUCCESS", len(signals), duration_s=duration)
         logger.info(f"JOB DONE: Signals | {len(signals)} scored | {duration:.1f}s")
@@ -125,10 +121,55 @@ def job_generate_signals(sector=None):
         return [], {}
 
 
+def job_news_and_calendar(top_n=30):
+    start = time.time()
+    logger.info("=" * 60)
+    logger.info("JOB START: News & Calendar")
+    try:
+        top_signals = get_top_signals(DATABASE_PATH, limit=top_n)
+        logger.info(f"  Found {len(top_signals)} top signals to get news for")
+        tickers = [s["ticker"] for s in top_signals
+                   if s.get("rating") in ("BUY","STRONG_BUY","REVERSION")]
+        logger.info(f"  Scraping news for {len(tickers)} tickers: {tickers[:5]}")
+        if tickers:
+            news_data = scrape_news_for_tickers(tickers[:15], delay=2.0)
+            all_articles = []
+            sentiment_rows = []
+            for ticker, data in news_data.items():
+                all_articles.extend(data.get("articles", []))
+                sentiment_rows.append({
+                    "ticker":        ticker,
+                    "avg_sentiment": data["avg_sentiment"],
+                    "bullish_count": data["bullish_count"],
+                    "bearish_count": data["bearish_count"],
+                    "neutral_count": data["neutral_count"],
+                    "article_count": data["article_count"],
+                })
+            insert_news_articles(DATABASE_PATH, all_articles)
+            insert_ticker_sentiment(DATABASE_PATH, sentiment_rows)
+            logger.info(f"  Stored {len(all_articles)} articles, {len(sentiment_rows)} sentiment scores")
+            ranked = sorted(sentiment_rows, key=lambda x: x["avg_sentiment"], reverse=True)
+            if ranked:
+                logger.info(f"  Most bullish: {ranked[0]['ticker']} ({ranked[0]['avg_sentiment']:+.3f})")
+                logger.info(f"  Most bearish: {ranked[-1]['ticker']} ({ranked[-1]['avg_sentiment']:+.3f})")
+        events = scrape_economic_calendar(days_ahead=7)
+        if events:
+            insert_calendar_events(DATABASE_PATH, events)
+            logger.info(f"  {len(events)} calendar events stored")
+        duration = time.time() - start
+        log_run(DATABASE_PATH, "news_calendar", "SUCCESS", len(tickers), duration_s=duration)
+        logger.info(f"JOB DONE: News & Calendar | {duration:.1f}s")
+    except Exception as e:
+        logger.error(f"News/Calendar FAILED: {e}", exc_info=True)
+        log_run(DATABASE_PATH, "news_calendar", "FAILED", error_msg=str(e), duration_s=time.time()-start)
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Trading System Phase 1+2")
-    parser.add_argument("command", choices=["run-once", "signals", "scheduler", "report"])
+    parser = argparse.ArgumentParser(description="Trading System Phase 1+2+3")
+    parser.add_argument("command",
+        choices=["run-once", "signals", "news", "scheduler", "report"])
     parser.add_argument("--sector-only", metavar="SECTOR")
+    parser.add_argument("--skip-news", action="store_true")
     args = parser.parse_args()
 
     initialise_schema(DATABASE_PATH)
@@ -142,11 +183,17 @@ def main():
         job_generate_signals(sector=args.sector_only)
         return
 
+    if args.command == "news":
+        job_news_and_calendar()
+        return
+
     if args.command == "run-once":
         sectors = [args.sector_only] if args.sector_only else SECTORS
         job_scrape_screener(sectors=sectors)
         job_scrape_insiders()
         job_generate_signals(sector=args.sector_only)
+        if not args.skip_news:
+            job_news_and_calendar()
         logger.info("One-shot complete.")
         return
 
@@ -163,6 +210,7 @@ def main():
             m2 = (int(m)+30) % 60
             h2 = int(h) + (1 if int(m)+30 >= 60 else 0)
             scheduler.add_job(job_generate_signals, CronTrigger(hour=h2, minute=m2, day_of_week="mon-fri"), id=f"signals_{t}")
+        scheduler.add_job(job_news_and_calendar, CronTrigger(hour=17, minute=0, day_of_week="mon-fri"), id="news_daily")
         logger.info("Scheduler started.")
         try:
             scheduler.start()
