@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignalIntel — Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #080c14; --surface: #0d1520; --border: #1a2d45;
+            --accent: #00d4ff; --accent2: #00ff88; --danger: #ff3b5c;
+            --text: #e2eaf4; --muted: #4a6380;
+            --mono: 'Space Mono', monospace; --sans: 'DM Sans', sans-serif;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            background: var(--bg); color: var(--text);
+            font-family: var(--sans); min-height: 100vh;
+            display: flex; align-items: center; justify-content: center;
+            background-image:
+                linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: 12px; padding: 40px; width: 100%; max-width: 380px;
+        }
+        .logo {
+            font-family: var(--mono); font-size: 18px; color: var(--accent);
+            letter-spacing: 2px; text-transform: uppercase; text-align: center;
+            margin-bottom: 8px;
+        }
+        .logo span { color: var(--accent2); }
+        .subtitle {
+            text-align: center; color: var(--muted); font-size: 12px;
+            font-family: var(--mono); margin-bottom: 32px;
+        }
+        .flash {
+            background: rgba(255,59,92,0.1); border: 1px solid rgba(255,59,92,0.3);
+            color: var(--danger); padding: 10px 14px; border-radius: 6px;
+            font-size: 13px; margin-bottom: 20px;
+        }
+        label {
+            display: block; font-size: 11px; font-family: var(--mono);
+            text-transform: uppercase; letter-spacing: 1px; color: var(--muted);
+            margin-bottom: 6px;
+        }
+        input {
+            width: 100%; background: var(--bg); border: 1px solid var(--border);
+            border-radius: 6px; padding: 10px 14px; color: var(--text);
+            font-family: var(--sans); font-size: 14px; margin-bottom: 18px;
+            transition: border-color 0.15s; outline: none;
+        }
+        input:focus { border-color: var(--accent); }
+        .btn {
+            width: 100%; padding: 12px; border-radius: 6px; border: none;
+            background: var(--accent); color: var(--bg); font-family: var(--mono);
+            font-size: 13px; font-weight: 700; letter-spacing: 1px;
+            text-transform: uppercase; cursor: pointer; transition: opacity 0.15s;
+        }
+        .btn:hover { opacity: 0.85; }
+        .link-row {
+            text-align: center; margin-top: 20px; font-size: 13px; color: var(--muted);
+        }
+        .link-row a { color: var(--accent); text-decoration: none; }
+        .link-row a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+<div class="card">
+    <div class="logo">Signal<span>Intel</span></div>
+    <div class="subtitle">Market Intelligence Platform</div>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="flash">{{ messages[0] }}</div>
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+        <label>Username</label>
+        <input type="text" name="username" autocomplete="username" required>
+        <label>Password</label>
+        <input type="password" name="password" autocomplete="current-password" required>
+        <button type="submit" class="btn">Sign In</button>
+    </form>
+
+    <div class="link-row">
+        Don't have an account? <a href="/register">Create one</a>
+    </div>
+</div>
+</body>
+</html>

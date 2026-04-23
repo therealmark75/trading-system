@@ -504,3 +504,250 @@ def get_upcoming_events(db_path: str, days: int = 7) -> list[dict]:
     rows = [dict(r) for r in cur.fetchall()]
     conn.close()
     return rows
+
+
+# ── Phase 5: User auth & watchlists ──────────────────────────────
+
+def initialise_user_schema(db_path: str) -> None:
+    conn = get_connection(db_path)
+    conn.executescript("""
+        CREATE TABLE IF NOT EXISTS users (
+            id            INTEGER PRIMARY KEY AUTOINCREMENT,
+            username      TEXT    NOT NULL UNIQUE,
+            email         TEXT    NOT NULL UNIQUE,
+            password_hash TEXT    NOT NULL,
+            created_at    TEXT    NOT NULL,
+            is_active     INTEGER DEFAULT 1
+        );
+
+        CREATE TABLE IF NOT EXISTS watchlists (
+            id         INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id    INTEGER NOT NULL REFERENCES users(id),
+            ticker     TEXT    NOT NULL,
+            added_at   TEXT    NOT NULL,
+            notes      TEXT,
+            UNIQUE(user_id, ticker)
+        );
+
+        CREATE TABLE IF NOT EXISTS top_signals_of_day (
+            id             INTEGER PRIMARY KEY AUTOINCREMENT,
+            generated_at   TEXT NOT NULL,
+            signal_date    TEXT NOT NULL,
+            ticker         TEXT NOT NULL,
+            signal_type    TEXT NOT NULL,
+            composite_score REAL,
+            rating         TEXT,
+            reason         TEXT,
+            rank           INTEGER
+        );
+
+        CREATE INDEX IF NOT EXISTS idx_watchlist_user
+        ON watchlists (user_id);
+
+        CREATE INDEX IF NOT EXISTS idx_top_signals_date
+        ON top_signals_of_day (signal_date);
+    """)
+    conn.commit()
+    conn.close()
+
+
+def create_user(db_path: str, username: str, email: str, password_hash: str) -> int:
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute("""
+        INSERT INTO users (username, email, password_hash, created_at)
+        VALUES (?, ?, ?, ?)
+    """, (username, email, password_hash, datetime.now().isoformat()))
+    conn.commit()
+    user_id = cur.lastrowid
+    conn.close()
+    return user_id
+
+
+def get_user_by_username(db_path: str, username: str) -> dict | None:
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE username = ? AND is_active = 1", (username,))
+    row = cur.fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
+def get_user_by_id(db_path: str, user_id: int) -> dict | None:
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+    row = cur.fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
+def get_watchlist(db_path: str, user_id: int) -> list[dict]:
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute("""
+        SELECT w.ticker, w.added_at, w.notes,
+               ss.composite_score, ss.rating, ss.momentum_score,
+               ss.quality_score, ss.insider_score, ss.flags,
+               sn.price, sn.change_pct, sn.rsi_14
+        FROM watchlists w
+        LEFT JOIN (
+            SELECT ticker, MAX(scored_at) as max_ts
+            FROM signal_scores GROUP BY ticker
+        ) latest ON latest.ticker = w.ticker
+        LEFT JOIN signal_scores ss ON ss.ticker = w.ticker AND ss.scored_at = latest.max_ts
+        LEFT JOIN (
+            SELECT ticker, MAX(scraped_at) as max_ts
+            FROM screener_snapshots GROUP BY ticker
+        ) lsnap ON lsnap.ticker = w.ticker
+        LEFT JOIN screener_snapshots sn ON sn.ticker = w.ticker AND sn.scraped_at = lsnap.max_ts
+        WHERE w.user_id = ?
+        ORDER BY ss.composite_score DESC NULLS LAST
+    """, (user_id,))
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return rows
+
+
+def add_to_watchlist(db_path: str, user_id: int, ticker: str, notes: str = "") -> bool:
+    conn = get_connection(db_path)
+    try:
+        conn.execute("""
+            INSERT OR IGNORE INTO watchlists (user_id, ticker, added_at, notes)
+            VALUES (?, ?, ?, ?)
+        """, (user_id, ticker.upper(), datetime.now().isoformat(), notes))
+        conn.commit()
+        return True
+    except Exception:
+        return False
+    finally:
+        conn.close()
+
+
+def remove_from_watchlist(db_path: str, user_id: int, ticker: str) -> bool:
+    conn = get_connection(db_path)
+    conn.execute("DELETE FROM watchlists WHERE user_id = ? AND ticker = ?",
+                 (user_id, ticker.upper()))
+    conn.commit()
+    conn.close()
+    return True
+
+
+def get_top_signals_of_day(db_path: str, date: str = None) -> list[dict]:
+    if not date:
+        date = datetime.now().strftime("%Y-%m-%d")
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute("""
+        SELECT * FROM top_signals_of_day
+        WHERE signal_date = ?
+        ORDER BY rank
+    """, (date,))
+    rows = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return rows
+
+
+def generate_top_signals_of_day(db_path: str) -> list[dict]:
+    """Auto-generate today's top 10 signals: 5 buy + 5 short."""
+    conn  = get_connection(db_path)
+    cur   = conn.cursor()
+    today = datetime.now().strftime("%Y-%m-%d")
+
+    # Top 5 BUY signals (highest composite score with good insider + momentum)
+    cur.execute("""
+        SELECT ss.ticker, ss.composite_score, ss.rating,
+               ss.momentum_score, ss.insider_score, ss.flags,
+               sn.change_pct, sn.rsi_14, sn.short_interest_pct
+        FROM signal_scores ss
+        LEFT JOIN (
+            SELECT ticker, MAX(scraped_at) as max_ts FROM screener_snapshots GROUP BY ticker
+        ) lsnap ON lsnap.ticker = ss.ticker
+        LEFT JOIN screener_snapshots sn ON sn.ticker = ss.ticker AND sn.scraped_at = lsnap.max_ts
+        WHERE DATE(ss.scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
+          AND ss.rating IN ('BUY','STRONG_BUY')
+          AND ss.composite_score >= 62
+        GROUP BY ss.ticker
+        ORDER BY ss.composite_score DESC
+        LIMIT 5
+    """)
+    buy_signals = [dict(r) for r in cur.fetchall()]
+
+    # Top 5 SHORT signals (cluster sell + overbought + high short interest)
+    cur.execute("""
+        SELECT ss.ticker, ss.composite_score, ss.rating,
+               ss.momentum_score, ss.insider_score, ss.flags,
+               sn.change_pct, sn.rsi_14, sn.short_interest_pct
+        FROM signal_scores ss
+        LEFT JOIN (
+            SELECT ticker, MAX(scraped_at) as max_ts FROM screener_snapshots GROUP BY ticker
+        ) lsnap ON lsnap.ticker = ss.ticker
+        LEFT JOIN screener_snapshots sn ON sn.ticker = ss.ticker AND sn.scraped_at = lsnap.max_ts
+        WHERE DATE(ss.scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
+          AND (ss.rating IN ('SHORT_WATCH','AVOID') OR ss.insider_score < 35)
+        GROUP BY ss.ticker
+        ORDER BY ss.composite_score ASC
+        LIMIT 5
+    """)
+    short_signals = [dict(r) for r in cur.fetchall()]
+
+    # Delete today's existing top signals
+    conn.execute("DELETE FROM top_signals_of_day WHERE signal_date = ?", (today,))
+
+    results = []
+    now = datetime.now().isoformat()
+
+    for i, s in enumerate(buy_signals):
+        flags = (s.get("flags") or "").split("|")
+        reasons = []
+        if s.get("momentum_score", 0) >= 90: reasons.append("Strong momentum")
+        if s.get("insider_score", 0) >= 70:  reasons.append("Insider buying")
+        if s.get("rsi_14") and s["rsi_14"] < 50: reasons.append("Room to run")
+
+        row = {
+            "generated_at":   now,
+            "signal_date":    today,
+            "ticker":         s["ticker"],
+            "signal_type":    "BUY",
+            "composite_score":s["composite_score"],
+            "rating":         s["rating"],
+            "reason":         " · ".join(reasons) if reasons else "Multi-factor BUY signal",
+            "rank":           i + 1,
+        }
+        conn.execute("""
+            INSERT INTO top_signals_of_day
+                (generated_at, signal_date, ticker, signal_type,
+                 composite_score, rating, reason, rank)
+            VALUES (:generated_at,:signal_date,:ticker,:signal_type,
+                    :composite_score,:rating,:reason,:rank)
+        """, row)
+        results.append(row)
+
+    for i, s in enumerate(short_signals):
+        reasons = []
+        if s.get("rsi_14") and s["rsi_14"] > 65: reasons.append("Overbought RSI")
+        if s.get("short_interest_pct") and s["short_interest_pct"] > 15: reasons.append("High short interest")
+        if s.get("insider_score", 50) < 35: reasons.append("Insider selling")
+
+        row = {
+            "generated_at":   now,
+            "signal_date":    today,
+            "ticker":         s["ticker"],
+            "signal_type":    "SHORT",
+            "composite_score":s["composite_score"],
+            "rating":         s["rating"],
+            "reason":         " · ".join(reasons) if reasons else "Multi-factor SHORT signal",
+            "rank":           i + 6,
+        }
+        conn.execute("""
+            INSERT INTO top_signals_of_day
+                (generated_at, signal_date, ticker, signal_type,
+                 composite_score, rating, reason, rank)
+            VALUES (:generated_at,:signal_date,:ticker,:signal_type,
+                    :composite_score,:rating,:reason,:rank)
+        """, row)
+        results.append(row)
+
+    conn.commit()
+    conn.close()
+    return results
