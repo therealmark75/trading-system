@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Signal Intelligence</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:        #080c14;
+            --surface:   #0d1520;
+            --surface2:  #111d2e;
+            --border:    #1a2d45;
+            --accent:    #00d4ff;
+            --accent2:   #00ff88;
+            --warning:   #ff9500;
+            --danger:    #ff3b5c;
+            --text:      #e2eaf4;
+            --muted:     #4a6380;
+            --mono:      'Space Mono', monospace;
+            --sans:      'DM Sans', sans-serif;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--sans);
+            font-size: 14px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Grid background */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* ── Header ── */
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(8,12,20,0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+        }
+
+        .logo {
+            font-family: var(--mono);
+            font-size: 15px;
+            color: var(--accent);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .logo span { color: var(--accent2); }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .live-dot {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .live-dot::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent2);
+            box-shadow: 0 0 8px var(--accent2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.3; }
+        }
+
+        #last-updated {
+            font-family: var(--mono);
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        /* ── Nav tabs ── */
+        nav {
+            display: flex;
+            gap: 4px;
+            padding: 12px 24px;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            z-index: 1;
+        }
+
+        .tab {
+            padding: 6px 16px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            border: 1px solid transparent;
+            color: var(--muted);
+            transition: all 0.15s;
+            font-family: var(--mono);
+            text-transform: uppercase;
+        }
+
+        .tab:hover { color: var(--text); border-color: var(--border); }
+
+        .tab.active {
+            background: rgba(0,212,255,0.08);
+            border-color: rgba(0,212,255,0.3);
+            color: var(--accent);
+        }
+
+        /* ── Layout ── */
+        main {
+            position: relative;
+            z-index: 1;
+            padding: 20px 24px;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .panel {
+            display: none;
+        }
+        .panel.active { display: block; }
+
+        /* ── Stat cards ── */
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: var(--accent);
+            opacity: 0.4;
+        }
+
+        .stat-label {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-family: var(--mono);
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-sub {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        /* ── Section header ── */
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .section-title {
+            font-family: var(--mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--muted);
+        }
+
+        /* ── Rating badges ── */
+        .rating {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-family: var(--mono);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .rating-STRONG_BUY  { background: rgba(0,255,136,0.15); color: #00ff88; border: 1px solid rgba(0,255,136,0.3); }
+        .rating-BUY         { background: rgba(0,212,255,0.12); color: #00d4ff; border: 1px solid rgba(0,212,255,0.25); }
+        .rating-WATCH       { background: rgba(255,149,0,0.1);  color: #ff9500; border: 1px solid rgba(255,149,0,0.2); }
+        .rating-REVERSION   { background: rgba(175,82,222,0.12);color: #af52de; border: 1px solid rgba(175,82,222,0.25); }
+        .rating-AVOID       { background: rgba(255,59,92,0.1);  color: #ff3b5c; border: 1px solid rgba(255,59,92,0.2); }
+        .rating-SHORT_WATCH { background: rgba(255,59,92,0.2);  color: #ff3b5c; border: 1px solid rgba(255,59,92,0.4); }
+
+        /* ── Score bar ── */
+        .score-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .score-num {
+            font-family: var(--mono);
+            font-size: 13px;
+            min-width: 36px;
+            text-align: right;
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.6s ease;
+        }
+
+        /* ── Signal table ── */
+        .signal-table-wrap {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: var(--surface2);
+            padding: 10px 14px;
+            text-align: left;
+            font-family: var(--mono);
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--muted);
+            border-bottom: 1px solid var(--border);
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 10px 14px;
+            border-bottom: 1px solid rgba(26,45,69,0.5);
+            vertical-align: middle;
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        tr:hover td { background: rgba(0,212,255,0.03); }
+
+        .ticker-cell {
+            font-family: var(--mono);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            cursor: pointer;
+        }
+
+        .ticker-cell:hover { text-decoration: underline; }
+
+        /* Score colours */
+        .score-hi  { color: var(--accent2); }
+        .score-mid { color: var(--accent); }
+        .score-lo  { color: var(--warning); }
+        .score-bad { color: var(--danger); }
+
+        /* ── Sector heatmap ── */
+        .sector-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .sector-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sector-name {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .sector-change {
+            font-family: var(--mono);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .sector-meta {
+            display: flex;
+            gap: 12px;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .sector-bar {
+            position: absolute;
+            bottom: 0; left: 0;
+            height: 3px;
+            transition: width 0.6s;
+        }
+
+        /* ── Insider table ── */
+        .cluster-buy  { color: var(--accent2); }
+        .cluster-sell { color: var(--danger); }
+
+        /* ── News sentiment ── */
+        .sentiment-bar-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sentiment-track {
+            width: 80px;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sentiment-fill-pos {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            height: 100%;
+            background: var(--accent2);
+            border-radius: 0 3px 3px 0;
+        }
+
+        .sentiment-fill-neg {
+            position: absolute;
+            right: 50%;
+            top: 0;
+            height: 100%;
+            background: var(--danger);
+            border-radius: 3px 0 0 3px;
+        }
+
+        /* ── Filter bar ── */
+        .filter-bar {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-family: var(--mono);
+            font-size: 11px;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--muted);
+            transition: all 0.15s;
+        }
+
+        .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+        .filter-btn.active { background: rgba(0,212,255,0.1); border-color: var(--accent); color: var(--accent); }
+
+        /* ── Run log ── */
+        .log-entry {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 14px;
+            border-bottom: 1px solid rgba(26,45,69,0.5);
+            font-size: 12px;
+        }
+
+        .log-status {
+            font-family: var(--mono);
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 3px;
+        }
+
+        .status-SUCCESS { background: rgba(0,255,136,0.15); color: var(--accent2); }
+        .status-FAILED  { background: rgba(255,59,92,0.15);  color: var(--danger); }
+        .status-PARTIAL { background: rgba(255,149,0,0.15);  color: var(--warning); }
+
+        .log-time { font-family: var(--mono); color: var(--muted); font-size: 11px; }
+        .log-job  { font-weight: 500; }
+        .log-rows { font-family: var(--mono); color: var(--muted); margin-left: auto; font-size: 11px; }
+
+        /* ── Ticker detail modal ── */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.open { display: flex; }
+
+        .modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 700px;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .modal-ticker {
+            font-family: var(--mono);
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .modal-close {
+            cursor: pointer;
+            color: var(--muted);
+            font-size: 20px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--text);
+        }
+
+        .modal-close:hover { border-color: var(--danger); color: var(--danger); }
+
+        .modal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .modal-stat {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 12px;
+        }
+
+        .modal-stat-label {
+            font-family: var(--mono);
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .modal-stat-value {
+            font-family: var(--mono);
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        /* ── Loading ── */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--muted);
+            font-family: var(--mono);
+            font-size: 12px;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Scrollbar ── */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            header { padding: 0 14px; }
+            nav    { padding: 10px 14px; overflow-x: auto; }
+            main   { padding: 14px; }
+            .modal-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">Signal<span>Intel</span></div>
+    <div class="header-right">
+        <div class="live-dot">LIVE</div>
+        <div id="last-updated">Loading...</div>
+    </div>
+</header>
+
+<nav>
+    <div class="tab active" onclick="showPanel('signals')">Signals</div>
+    <div class="tab" onclick="showPanel('sectors')">Sectors</div>
+    <div class="tab" onclick="showPanel('insiders')">Insiders</div>
+    <div class="tab" onclick="showPanel('news')">News</div>
+    <div class="tab" onclick="showPanel('system')">System</div>
+</nav>
+
+<main>
+
+    <!-- ── SIGNALS PANEL ── -->
+    <div id="panel-signals" class="panel active">
+        <div class="stat-grid" id="signal-stats"></div>
+
+        <div class="section-header">
+            <div class="section-title">Top Signals</div>
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterSignals('ALL', this)">All</button>
+                <button class="filter-btn" onclick="filterSignals('STRONG_BUY', this)">Strong Buy</button>
+                <button class="filter-btn" onclick="filterSignals('BUY', this)">Buy</button>
+                <button class="filter-btn" onclick="filterSignals('REVERSION', this)">Reversion</button>
+                <button class="filter-btn" onclick="filterSignals('SHORT_WATCH', this)">Short Watch</button>
+            </div>
+        </div>
+
+        <div class="signal-table-wrap">
+            <div id="signal-table-content" class="loading">
+                <span class="spinner"></span>Loading signals...
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SECTORS PANEL ── -->
+    <div id="panel-sectors" class="panel">
+        <div class="section-header">
+            <div class="section-title">Sector Performance</div>
+        </div>
+        <div id="sector-grid" class="sector-grid"></div>
+    </div>
+
+    <!-- ── INSIDERS PANEL ── -->
+    <div id="panel-insiders" class="panel">
+        <div class="section-header">
+            <div class="section-title">Insider Cluster Signals (last 14 days)</div>
+        </div>
+        <div class="signal-table-wrap">
+            <div id="insider-table-content" class="loading">
+                <span class="spinner"></span>Loading...
+            </div>
+        </div>
+    </div>
+
+    <!-- ── NEWS PANEL ── -->
+    <div id="panel-news" class="panel">
+        <div class="section-header">
+            <div class="section-title">News Sentiment</div>
+        </div>
+        <div class="signal-table-wrap">
+            <div id="news-table-content" class="loading">
+                <span class="spinner"></span>Loading...
+            </div>
+        </div>
+    </div>
+
+    <!-- ── SYSTEM PANEL ── -->
+    <div id="panel-system" class="panel">
+        <div class="section-header">
+            <div class="section-title">System Overview</div>
+        </div>
+        <div class="stat-grid" id="system-stats"></div>
+        <div class="section-header" style="margin-top:20px">
+            <div class="section-title">Recent Job Runs</div>
+        </div>
+        <div class="signal-table-wrap">
+            <div id="run-log-content" class="loading">
+                <span class="spinner"></span>Loading...
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<!-- ── Ticker modal ── -->
+<div class="modal-overlay" id="ticker-modal" onclick="closeModal(event)">
+    <div class="modal">
+        <div class="modal-header">
+            <div class="modal-ticker" id="modal-ticker-name">-</div>
+            <button class="modal-close" onclick="document.getElementById('ticker-modal').classList.remove('open')">✕</button>
+        </div>
+        <div id="modal-content"></div>
+    </div>
+</div>
+
+<script>
+// ── State ──────────────────────────────────────────
+let allSignals = [];
+let currentFilter = 'ALL';
+
+// ── Utilities ──────────────────────────────────────
+const fmt = (v, dec=1) => v == null ? '-' : Number(v).toFixed(dec);
+const fmtPct = (v) => v == null ? '-' : (v >= 0 ? '+' : '') + Number(v).toFixed(2) + '%';
+const fmtK = (v) => {
+    if (v == null) return '-';
+    if (Math.abs(v) >= 1e9) return '$' + (v/1e9).toFixed(1) + 'B';
+    if (Math.abs(v) >= 1e6) return '$' + (v/1e6).toFixed(1) + 'M';
+    if (Math.abs(v) >= 1e3) return '$' + (v/1e3).toFixed(0) + 'K';
+    return '$' + Number(v).toFixed(0);
+};
+
+function scoreColour(s) {
+    if (s >= 70) return 'score-hi';
+    if (s >= 55) return 'score-mid';
+    if (s >= 45) return 'score-lo';
+    return 'score-bad';
+}
+
+function scoreBar(val, colour) {
+    const pct = Math.min(100, Math.max(0, val));
+    const c = val >= 70 ? '#00ff88' : val >= 55 ? '#00d4ff' : val >= 45 ? '#ff9500' : '#ff3b5c';
+    return `<div class="score-bar">
+        <span class="score-num ${scoreColour(val)}">${fmt(val)}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${c}"></div></div>
+    </div>`;
+}
+
+function timeAgo(ts) {
+    if (!ts) return '-';
+    const d = new Date(ts.replace('T',' ') + (ts.includes('+') ? '' : 'Z'));
+    const mins = Math.floor((Date.now() - d) / 60000);
+    if (mins < 2)   return 'just now';
+    if (mins < 60)  return mins + 'm ago';
+    if (mins < 1440)return Math.floor(mins/60) + 'h ago';
+    return Math.floor(mins/1440) + 'd ago';
+}
+
+// ── Navigation ─────────────────────────────────────
+function showPanel(name) {
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + name).classList.add('active');
+    event.target.classList.add('active');
+    loadPanel(name);
+}
+
+function loadPanel(name) {
+    if (name === 'signals')  loadSignals();
+    if (name === 'sectors')  loadSectors();
+    if (name === 'insiders') loadInsiders();
+    if (name === 'news')     loadNews();
+    if (name === 'system')   loadSystem();
+}
+
+// ── Signals ────────────────────────────────────────
+async function loadSignals() {
+    const res  = await fetch('/api/signals');
+    allSignals = await res.json();
+
+    const summary = await fetch('/api/signal_summary').then(r => r.json());
+
+    // Stat cards
+    const totalBuy = allSignals.filter(s => s.rating === 'BUY' || s.rating === 'STRONG_BUY').length;
+    const totalRev = allSignals.filter(s => s.rating === 'REVERSION').length;
+    const totalShort = allSignals.filter(s => s.rating === 'SHORT_WATCH').length;
+    const topScore = allSignals.length ? allSignals[0].composite_score : 0;
+
+    document.getElementById('signal-stats').innerHTML = `
+        <div class="stat-card">
+            <div class="stat-label">Total Tickers</div>
+            <div class="stat-value">${allSignals.length.toLocaleString()}</div>
+            <div class="stat-sub">scored today</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Buy Signals</div>
+            <div class="stat-value" style="color:var(--accent2)">${totalBuy}</div>
+            <div class="stat-sub">BUY + STRONG_BUY</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Reversion</div>
+            <div class="stat-value" style="color:#af52de">${totalRev}</div>
+            <div class="stat-sub">oversold candidates</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Short Watch</div>
+            <div class="stat-value" style="color:var(--danger)">${totalShort}</div>
+            <div class="stat-sub">bearish setups</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Top Score</div>
+            <div class="stat-value">${fmt(topScore)}</div>
+            <div class="stat-sub">${allSignals.length ? allSignals[0].ticker : '-'}</div>
+        </div>
+    `;
+
+    renderSignalTable(allSignals);
+    document.getElementById('last-updated').textContent = 'Updated ' + timeAgo(allSignals[0]?.scored_at);
+}
+
+function filterSignals(rating, btn) {
+    currentFilter = rating;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filtered = rating === 'ALL' ? allSignals : allSignals.filter(s => s.rating === rating);
+    renderSignalTable(filtered);
+}
+
+function renderSignalTable(signals) {
+    if (!signals.length) {
+        document.getElementById('signal-table-content').innerHTML = '<div class="loading">No signals found</div>';
+        return;
+    }
+
+    const rows = signals.slice(0, 100).map(s => {
+        const flags = (s.flag_list || []).map(f => {
+            if (f.includes('Above 50d'))  return '<span style="color:#00d4ff">↑50d</span>';
+            if (f.includes('Below 50d'))  return '<span style="color:#ff9500">↓50d</span>';
+            if (f.includes('Above 200d')) return '<span style="color:#00d4ff">↑200d</span>';
+            if (f.includes('Below 200d')) return '<span style="color:#ff9500">↓200d</span>';
+            if (f.includes('52-week high')) return '<span style="color:#00ff88">🔝</span>';
+            if (f.includes('52-week low'))  return '<span style="color:#af52de">📍</span>';
+            if (f.includes('insider buying')) return '<span style="color:#00ff88">★Ins</span>';
+            if (f.includes('Overbought'))   return '<span style="color:#ff9500">⚠RSI</span>';
+            if (f.includes('Oversold'))     return '<span style="color:#af52de">↩RSI</span>';
+            return '';
+        }).filter(Boolean).join(' ');
+
+        return `<tr>
+            <td><span class="ticker-cell" onclick="openTicker('${s.ticker}')">${s.ticker}</span></td>
+            <td><span class="rating rating-${s.rating}">${s.rating}</span></td>
+            <td>${scoreBar(s.composite_score)}</td>
+            <td><span class="${scoreColour(s.momentum_score)}">${fmt(s.momentum_score)}</span></td>
+            <td><span class="${scoreColour(s.quality_score)}">${fmt(s.quality_score)}</span></td>
+            <td><span class="${scoreColour(s.insider_score)}">${fmt(s.insider_score)}</span></td>
+            <td><span class="${scoreColour(s.reversion_score)}">${fmt(s.reversion_score)}</span></td>
+            <td style="font-size:12px">${flags || '<span style="color:var(--muted)">-</span>'}</td>
+        </tr>`;
+    }).join('');
+
+    document.getElementById('signal-table-content').innerHTML = `
+        <table>
+            <thead><tr>
+                <th>Ticker</th><th>Rating</th><th>Score</th>
+                <th>Mom</th><th>Qual</th><th>Insider</th><th>Rev</th><th>Flags</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+        </table>`;
+}
+
+// ── Sectors ────────────────────────────────────────
+async function loadSectors() {
+    const sectors = await fetch('/api/sectors').then(r => r.json());
+    const maxAbs  = Math.max(...sectors.map(s => Math.abs(s.avg_change || 0)));
+
+    document.getElementById('sector-grid').innerHTML = sectors.map(s => {
+        const chg     = s.avg_change || 0;
+        const pos     = chg >= 0;
+        const colour  = pos ? 'var(--accent2)' : 'var(--danger)';
+        const barPct  = maxAbs > 0 ? Math.abs(chg) / maxAbs * 100 : 0;
+        const total   = (s.gainers || 0) + (s.losers || 0);
+        const gPct    = total > 0 ? Math.round((s.gainers||0)/total*100) : 0;
+
+        return `<div class="sector-card">
+            <div class="sector-name">${s.sector}</div>
+            <div class="sector-change" style="color:${colour}">${fmtPct(chg)}</div>
+            <div class="sector-meta">
+                <span>${s.tickers} tickers</span>
+                <span>RSI ${s.avg_rsi || '-'}</span>
+                <span style="color:var(--accent2)">${s.gainers}↑</span>
+                <span style="color:var(--danger)">${s.losers}↓</span>
+            </div>
+            <div class="sector-bar" style="width:${barPct}%;background:${colour};opacity:0.6"></div>
+        </div>`;
+    }).join('');
+}
+
+// ── Insiders ───────────────────────────────────────
+async function loadInsiders() {
+    const signals = await fetch('/api/insider_signals').then(r => r.json());
+
+    if (!signals.length) {
+        document.getElementById('insider-table-content').innerHTML = '<div class="loading">No cluster signals in last 14 days</div>';
+        return;
+    }
+
+    const rows = signals.map(s => {
+        const isBuy  = s.signal_type?.includes('BUY');
+        const colour = isBuy ? 'var(--accent2)' : 'var(--danger)';
+        return `<tr>
+            <td><span class="ticker-cell" onclick="openTicker('${s.ticker}')">${s.ticker}</span></td>
+            <td><span style="color:${colour};font-family:var(--mono);font-size:11px;font-weight:700">${s.signal_type}</span></td>
+            <td style="font-family:var(--mono)">${s.insider_count}</td>
+            <td style="font-family:var(--mono);color:${colour}">${fmtK(s.total_value)}</td>
+            <td style="color:var(--muted);font-size:11px">${timeAgo(s.detected_at)}</td>
+        </tr>`;
+    }).join('');
+
+    document.getElementById('insider-table-content').innerHTML = `
+        <table>
+            <thead><tr>
+                <th>Ticker</th><th>Signal</th><th>Insiders</th><th>Value</th><th>Detected</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+        </table>`;
+}
+
+// ── News ───────────────────────────────────────────
+async function loadNews() {
+    const news = await fetch('/api/news').then(r => r.json());
+
+    if (!news.length) {
+        document.getElementById('news-table-content').innerHTML = '<div class="loading">No news sentiment data. Run: python main.py news</div>';
+        return;
+    }
+
+    const rows = news.map(n => {
+        const s      = n.avg_sentiment || 0;
+        const colour = s > 0.05 ? 'var(--accent2)' : s < -0.05 ? 'var(--danger)' : 'var(--muted)';
+        const barW   = Math.min(50, Math.abs(s) * 100);
+        const bar    = s >= 0
+            ? `<div class="sentiment-fill-pos" style="width:${barW}%;background:var(--accent2)"></div>`
+            : `<div class="sentiment-fill-neg" style="width:${barW}%;background:var(--danger)"></div>`;
+
+        return `<tr>
+            <td><span class="ticker-cell" onclick="openTicker('${n.ticker}')">${n.ticker}</span></td>
+            <td style="color:${colour};font-family:var(--mono)">${s >= 0 ? '+' : ''}${s.toFixed(3)}</td>
+            <td><div class="sentiment-track">${bar}</div></td>
+            <td style="color:var(--accent2)">${n.bullish_count}</td>
+            <td style="color:var(--danger)">${n.bearish_count}</td>
+            <td style="color:var(--muted)">${n.article_count}</td>
+        </tr>`;
+    }).join('');
+
+    document.getElementById('news-table-content').innerHTML = `
+        <table>
+            <thead><tr>
+                <th>Ticker</th><th>Sentiment</th><th>Bar</th><th>Bullish</th><th>Bearish</th><th>Articles</th>
+            </tr></thead>
+            <tbody>${rows}</tbody>
+        </table>`;
+}
+
+// ── System ─────────────────────────────────────────
+async function loadSystem() {
+    const overview = await fetch('/api/overview').then(r => r.json());
+    const runLog   = await fetch('/api/run_log').then(r => r.json());
+
+    document.getElementById('system-stats').innerHTML = `
+        <div class="stat-card">
+            <div class="stat-label">Screener Rows</div>
+            <div class="stat-value">${(overview.screener_rows||0).toLocaleString()}</div>
+            <div class="stat-sub">${timeAgo(overview.last_screener)}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Unique Tickers</div>
+            <div class="stat-value">${(overview.unique_tickers||0).toLocaleString()}</div>
+            <div class="stat-sub">in database</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Insider Trades</div>
+            <div class="stat-value">${(overview.insider_trades||0).toLocaleString()}</div>
+            <div class="stat-sub">${timeAgo(overview.last_insider)}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Signal Scores</div>
+            <div class="stat-value">${(overview.signal_scores||0).toLocaleString()}</div>
+            <div class="stat-sub">${timeAgo(overview.last_scored)}</div>
+        </div>
+    `;
+
+    if (!runLog.length) {
+        document.getElementById('run-log-content').innerHTML = '<div class="loading">No run history yet</div>';
+        return;
+    }
+
+    const rows = runLog.map(r => `
+        <div class="log-entry">
+            <span class="log-time">${(r.run_at||'').slice(0,16).replace('T',' ')}</span>
+            <span class="log-status status-${r.status}">${r.status}</span>
+            <span class="log-job">${(r.job_name||'').replace(/_/g,' ')}</span>
+            <span class="log-rows">${r.rows_added ? r.rows_added.toLocaleString() + ' rows' : ''}</span>
+            <span style="color:var(--muted);font-size:11px;font-family:var(--mono)">${r.duration_s ? r.duration_s.toFixed(1) + 's' : ''}</span>
+        </div>`).join('');
+
+    document.getElementById('run-log-content').innerHTML = `<div>${rows}</div>`;
+}
+
+// ── Ticker modal ────────────────────────────────────
+async function openTicker(ticker) {
+    document.getElementById('ticker-modal').classList.add('open');
+    document.getElementById('modal-ticker-name').textContent = ticker;
+    document.getElementById('modal-content').innerHTML = '<div class="loading"><span class="spinner"></span>Loading...</div>';
+
+    const data = await fetch(`/api/ticker/${ticker}`).then(r => r.json());
+    const s    = data.signal   || {};
+    const sc   = data.screener || {};
+
+    const insiderRows = (data.insiders || []).slice(0, 8).map(i => {
+        const isBuy = i.transaction_type === 'Buy';
+        return `<tr>
+            <td style="color:var(--muted);font-size:11px">${i.transaction_date || '-'}</td>
+            <td style="font-size:12px">${i.insider_name || '-'}</td>
+            <td style="font-size:11px;color:var(--muted)">${i.insider_title || '-'}</td>
+            <td style="color:${isBuy ? 'var(--accent2)' : 'var(--danger)'};font-family:var(--mono);font-size:11px">${i.transaction_type}</td>
+            <td style="font-family:var(--mono);font-size:11px">${fmtK(i.value)}</td>
+        </tr>`;
+    }).join('');
+
+    document.getElementById('modal-content').innerHTML = `
+        <div class="modal-grid">
+            <div class="modal-stat">
+                <div class="modal-stat-label">Signal Rating</div>
+                <div class="modal-stat-value"><span class="rating rating-${s.rating}">${s.rating || '-'}</span></div>
+            </div>
+            <div class="modal-stat">
+                <div class="modal-stat-label">Composite Score</div>
+                <div class="modal-stat-value ${scoreColour(s.composite_score)}">${fmt(s.composite_score)}</div>
+            </div>
+            <div class="modal-stat">
+                <div class="modal-stat-label">Price</div>
+                <div class="modal-stat-value">$${fmt(sc.price, 2)}</div>
+            </div>
+            <div class="modal-stat">
+                <div class="modal-stat-label">Change</div>
+                <div class="modal-stat-value" style="color:${(sc.change_pct||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtPct(sc.change_pct)}</div>
+            </div>
+            <div class="modal-stat">
+                <div class="modal-stat-label">RSI (14)</div>
+                <div class="modal-stat-value">${fmt(sc.rsi_14)}</div>
+            </div>
+            <div class="modal-stat">
+                <div class="modal-stat-label">50d SMA</div>
+                <div class="modal-stat-value" style="color:${(sc.sma_50_pct||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtPct(sc.sma_50_pct)}</div>
+            </div>
+        </div>
+
+        ${insiderRows ? `
+        <div class="section-header"><div class="section-title">Recent Insider Activity</div></div>
+        <div class="signal-table-wrap" style="margin-bottom:16px">
+            <table>
+                <thead><tr><th>Date</th><th>Insider</th><th>Title</th><th>Type</th><th>Value</th></tr></thead>
+                <tbody>${insiderRows}</tbody>
+            </table>
+        </div>` : ''}
+    `;
+}
+
+function closeModal(e) {
+    if (e.target === document.getElementById('ticker-modal')) {
+        document.getElementById('ticker-modal').classList.remove('open');
+    }
+}
+
+// ── Init ───────────────────────────────────────────
+loadSignals();
+
+// Auto-refresh every 5 minutes
+setInterval(() => {
+    const active = document.querySelector('.panel.active')?.id?.replace('panel-','');
+    if (active) loadPanel(active);
+}, 5 * 60 * 1000);
+</script>
+
+</body>
+</html>

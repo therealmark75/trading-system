@@ -723,3 +723,93 @@ ValueError: time data "Apr 20 '26" does not match format '%Y-%m-%d'
 2026-04-22 12:48:01 | INFO     | main | JOB DONE: Signals | 281 scored | 0.1s
 2026-04-22 15:56:10 | WARNING  | apscheduler.executors.default | Run time of job "job_scrape_screener (trigger: cron[day_of_week='mon-fri', hour='12', minute='0'], next run at: 2026-04-23 12:00:00 BST)" was missed by 3:56:10.637777
 2026-04-22 15:56:10 | WARNING  | apscheduler.executors.default | Run time of job "job_generate_signals (trigger: cron[day_of_week='mon-fri', hour='12', minute='30'], next run at: 2026-04-23 12:30:00 BST)" was missed by 3:26:10.661098
+2026-04-22 16:30:06 | WARNING  | apscheduler.executors.default | Run time of job "job_scrape_screener (trigger: cron[day_of_week='mon-fri', hour='16', minute='30'], next run at: 2026-04-23 16:30:00 BST)" was missed by 0:00:05.958840
+2026-04-22 17:00:00 | INFO     | apscheduler.executors.default | Running job "job_scrape_insiders (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-23 17:00:00 BST)" (scheduled at 2026-04-22 17:00:00+01:00)
+2026-04-22 17:00:00 | INFO     | apscheduler.executors.default | Running job "job_news_and_calendar (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-23 17:00:00 BST)" (scheduled at 2026-04-22 17:00:00+01:00)
+2026-04-22 17:00:00 | INFO     | main | ============================================================
+2026-04-22 17:00:00 | INFO     | main | ============================================================
+2026-04-22 17:00:00 | INFO     | main | JOB START: Insider trade scrape
+2026-04-22 17:00:00 | INFO     | main | JOB START: News & Calendar
+2026-04-22 17:00:00 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Buy, pages=5)
+2026-04-22 17:00:00 | INFO     | apscheduler.executors.default | Running job "job_generate_signals (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-23 17:00:00 BST)" (scheduled at 2026-04-22 17:00:00+01:00)
+2026-04-22 17:00:00 | INFO     | main | ============================================================
+2026-04-22 17:00:00 | INFO     | main | JOB START: Signal generation
+2026-04-22 17:00:00 | INFO     | main |   Found 30 top signals to get news for
+2026-04-22 17:00:00 | INFO     | main |   Scraping news for 30 tickers: ['FIEE', 'FIEE', 'FIEE', 'FIEE', 'FIEE']
+2026-04-22 17:00:00 | INFO     | scrapers.news_scraper |   News [1/15]: FIEE
+2026-04-22 17:00:00 | INFO     | main |   Scoring 281 tickers...
+2026-04-22 17:00:00 | INFO     | signals.scorer | Scored 281 tickers
+2026-04-22 17:00:00 | INFO     | signals.scanner | Running all scans...
+2026-04-22 17:00:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-22 17:00:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-22 17:00:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-22 17:00:00 | INFO     | signals.scanner |   mean_reversion: 4 candidates
+2026-04-22 17:00:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-22 17:00:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 21 | REVERSION: 3
+2026-04-22 17:00:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-22 17:00:00 | INFO     | main |   Scan [mean_reversion]: 4 hits | Top: INHD
+2026-04-22 17:00:00 | INFO     | main | JOB DONE: Signals | 281 scored | 0.2s
+2026-04-22 17:00:00 | INFO     | apscheduler.executors.default | Job "job_generate_signals (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-23 17:00:00 BST)" executed successfully
+2026-04-22 17:00:01 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-22 17:00:04 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-22 17:00:07 | INFO     | scrapers.news_scraper |   News [2/15]: FIEE
+2026-04-22 17:00:07 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-22 17:00:11 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-22 17:00:13 | INFO     | scrapers.news_scraper |   News [3/15]: FIEE
+2026-04-22 17:00:14 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-22 17:00:17 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-22 17:00:19 | INFO     | scrapers.news_scraper |   News [4/15]: FIEE
+2026-04-22 17:00:20 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Sale, pages=5)
+2026-04-22 17:00:21 | INFO     | scrapers.insider_scraper |   Page 1: 164 rows
+2026-04-22 17:00:24 | INFO     | scrapers.insider_scraper |   Page 2: 164 rows
+2026-04-22 17:00:26 | INFO     | scrapers.news_scraper |   News [5/15]: FIEE
+2026-04-22 17:00:28 | INFO     | scrapers.insider_scraper |   Page 3: 164 rows
+2026-04-22 17:00:31 | INFO     | scrapers.insider_scraper |   Page 4: 164 rows
+2026-04-22 17:00:32 | INFO     | scrapers.news_scraper |   News [6/15]: GLOO
+2026-04-22 17:00:34 | INFO     | scrapers.insider_scraper |   Page 5: 164 rows
+2026-04-22 17:00:37 | INFO     | scrapers.insider_scraper | Total insider rows: 820
+2026-04-22 17:00:38 | INFO     | scrapers.news_scraper |   News [7/15]: GLOO
+2026-04-22 17:00:40 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Option Exercise, pages=5)
+2026-04-22 17:00:41 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-22 17:00:44 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-22 17:00:45 | INFO     | scrapers.news_scraper |   News [8/15]: GLOO
+2026-04-22 17:00:47 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-22 17:00:51 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-22 17:00:52 | INFO     | scrapers.news_scraper |   News [9/15]: GLOO
+2026-04-22 17:00:54 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-22 17:00:57 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-22 17:00:58 | INFO     | scrapers.news_scraper |   News [10/15]: GLOO
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | Total unique insider trades: 401
+2026-04-22 17:01:00 | INFO     | main |   Stored 33 new insider trade rows
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: BMI | 4 Buys | $654,778
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: AVEX | 5 Buys | $1,483,000
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: ARXS | 7 Buys | $5,643,792
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: KLRA | 4 Buys | $318,750,016
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CHCO | 4 Buys | $57,873
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CGTX | 3 Buys | $32,492
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PCSA | 6 Buys | $30,065
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: YORW | 7 Buys | $44,116
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: BEAT | 8 Buys | $905,000
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: AUBN | 4 Buys | $5,551
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: SE | 4 Sales | $26,287,542
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: AEHR | 3 Sales | $7,563,795
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: MARA | 3 Sales | $1,013,218
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PRCH | 3 Sales | $1,426,099
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: H | 3 Sales | $48,932,004
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: HPE | 3 Sales | $5,105,537
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: BK | 4 Sales | $6,568,423
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: TRV | 3 Sales | $5,864,346
+2026-04-22 17:01:00 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: SOPH | 7 Sales | $39,354
+2026-04-22 17:01:00 | INFO     | main | JOB DONE: Insider | 33 rows | 10 buy | 9 sell | 60.4s
+2026-04-22 17:01:00 | INFO     | apscheduler.executors.default | Job "job_scrape_insiders (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-23 17:00:00 BST)" executed successfully
+2026-04-22 17:01:05 | INFO     | scrapers.news_scraper |   News [11/15]: MU
+2026-04-22 17:01:12 | INFO     | scrapers.news_scraper |   News [12/15]: MU
+2026-04-22 17:01:18 | INFO     | scrapers.news_scraper |   News [13/15]: MU
+2026-04-22 17:01:25 | INFO     | scrapers.news_scraper |   News [14/15]: MU
+2026-04-22 17:01:31 | INFO     | scrapers.news_scraper |   News [15/15]: MU
+2026-04-22 17:01:38 | INFO     | main |   Stored 72 articles, 3 sentiment scores
+2026-04-22 17:01:38 | INFO     | main |   Most bullish: MU (+0.258)
+2026-04-22 17:01:38 | INFO     | main |   Most bearish: FIEE (+0.000)
+2026-04-22 17:01:38 | WARNING  | scrapers.calendar_scraper | Could not find calendar table
+2026-04-22 17:01:38 | INFO     | main | JOB DONE: News & Calendar | 98.6s
+2026-04-22 17:01:38 | INFO     | apscheduler.executors.default | Job "job_news_and_calendar (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-23 17:00:00 BST)" executed successfully
