@@ -721,3 +721,5 @@ ValueError: time data "Apr 20 '26" does not match format '%Y-%m-%d'
 2026-04-22 12:48:01 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
 2026-04-22 12:48:01 | INFO     | main |   Scan [mean_reversion]: 4 hits | Top: INHD
 2026-04-22 12:48:01 | INFO     | main | JOB DONE: Signals | 281 scored | 0.1s
+2026-04-22 15:56:10 | WARNING  | apscheduler.executors.default | Run time of job "job_scrape_screener (trigger: cron[day_of_week='mon-fri', hour='12', minute='0'], next run at: 2026-04-23 12:00:00 BST)" was missed by 3:56:10.637777
+2026-04-22 15:56:10 | WARNING  | apscheduler.executors.default | Run time of job "job_generate_signals (trigger: cron[day_of_week='mon-fri', hour='12', minute='30'], next run at: 2026-04-23 12:30:00 BST)" was missed by 3:26:10.661098
