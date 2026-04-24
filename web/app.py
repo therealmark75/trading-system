@@ -191,14 +191,37 @@ LEFT JOIN (
         WHERE DATE(ss.scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
         GROUP BY ss.ticker
         ORDER BY ss.composite_score DESC
-        LIMIT 200
+        LIMIT 2000
     """)
     for r in rows:
         raw = (r.get("flags") or "").split("|")
         r["flag_list"] = [f.strip() for f in raw if f.strip()]
         r.pop("flags", None)
     return jsonify(rows)
-
+@app.route("/api/signals/sector/<sector>")
+@login_required
+def api_signals_by_sector(sector):
+    rows = db_query("""
+        SELECT ss.ticker, ss.rating, MAX(ss.composite_score) as composite_score,
+               ss.momentum_score, ss.quality_score, ss.insider_score,
+               ss.reversion_score, ss.flags, MAX(ss.scored_at) as scored_at,
+               sc.sector, sc.industry
+        FROM signal_scores ss
+        LEFT JOIN (
+            SELECT ticker, sector, industry
+            FROM screener_snapshots
+            GROUP BY ticker
+        ) sc ON ss.ticker = sc.ticker
+        WHERE DATE(ss.scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
+        AND sc.sector = ?
+        GROUP BY ss.ticker
+        ORDER BY ss.composite_score DESC
+    """, (sector,))
+    for r in rows:
+        raw = (r.get("flags") or "").split("|")
+        r["flag_list"] = [f.strip() for f in raw if f.strip()]
+        r.pop("flags", None)
+    return jsonify(rows)
 
 @app.route("/api/signals/<rating>")
 @login_required

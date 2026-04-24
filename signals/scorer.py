@@ -258,7 +258,7 @@ class TickerSignal:
     reversion_score:  float = 0.0
     composite_score:  float = 0.0
 
-    rating:           str   = "WATCH"
+    rating:           str   = "STRONG_HOLD"
     flags:            list  = field(default_factory=list)
 
     # Raw data for display
@@ -297,24 +297,27 @@ def assign_rating(composite: float, reversion: float,
                   insider: float) -> str:
     """
     Rating logic:
-    STRONG_BUY  — composite >= 72 AND insider >= 65
-    BUY         — composite >= 62
-    WATCH       — composite 45-62
-    AVOID       — composite < 45
-    SHORT_WATCH — composite < 38 AND insider <= 35 (insiders selling too)
-    REVERSION   — reversion >= 75 (oversold setup regardless of composite)
+    STRONG_BUY   — composite >= 72 AND insider >= 65
+BUY          — composite >= 62
+STRONG_HOLD  — composite 45-62
+SELL         — composite < 45
+WEAK_HOLD    — composite < 38 AND insider <= 35
+STRONG_SELL  — composite < 25 AND insider <= 20
+HOLD         — reversion >= 75
     """
     if reversion >= 75:
-        return "REVERSION"
+        return "HOLD"
     if composite >= 72 and insider >= 65:
         return "STRONG_BUY"
     if composite >= 62:
         return "BUY"
-    if composite < 38 and insider <= 35:
-        return "SHORT_WATCH"
-    if composite < 45:
-        return "AVOID"
-    return "WATCH"
+    if composite < 25 and insider <= 20:
+    return "STRONG_SELL"
+if composite < 38 and insider <= 35:
+    return "WEAK_HOLD"
+if composite < 45:
+    return "SELL"
+    return "STRONG_HOLD"
 
 
 def build_flags(row: dict, insider_score: float,
@@ -363,7 +366,7 @@ def score_all_tickers(
     screener_rows: list[dict],
     insider_trades: list[dict],
     weights: dict = None,
-) -> list[TickerSignal]:
+) :
     """
     Main entry point. Takes screener rows + insider trades,
     returns sorted list of TickerSignal objects.
