@@ -755,3 +755,18 @@ def generate_top_signals_of_day(db_path: str) -> list[dict]:
     conn.commit()
     conn.close()
     return results
+
+def prune_old_snapshots(db_path: str, days: int = 90) -> int:
+    """Delete screener snapshots older than `days` days. Returns rows deleted."""
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute(
+        "DELETE FROM screener_snapshots WHERE scraped_at < datetime('now', ? || ' days')",
+        (f'-{days}',)
+    )
+    deleted = cur.rowcount
+    conn.commit()
+    conn.close()
+    if deleted:
+        logger.info(f"Pruned {deleted} screener snapshots older than {days} days")
+    return deleted

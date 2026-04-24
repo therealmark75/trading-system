@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from config.settings import (DATABASE_PATH, SECTORS, SCREENER_SCRAPE_TIMES,
     INSIDER_SCRAPE_TIMES, INSIDER_CLUSTER_BUY_COUNT, INSIDER_CLUSTER_DAYS,
     LOG_DIR, LOG_LEVEL, REQUEST_DELAY_SECONDS)
-from database.db import (initialise_schema, insert_screener_rows, generate_top_signals_of_day,
+from database.db import (initialise_schema, insert_screener_rows, generate_top_signals_of_day, prune_old_snapshots,
     insert_insider_trades, insert_insider_signal, insert_signal_scores,
     insert_news_articles, insert_ticker_sentiment, insert_calendar_events,
     log_run, get_latest_screener, get_recent_insiders, get_cluster_signals,
@@ -46,6 +46,7 @@ def job_scrape_screener(sectors=None):
                 logger.info(f"  Stored {len(rows)} rows for {sector}")
         duration = time.time() - start
         log_run(DATABASE_PATH, "screener_scrape", "SUCCESS", total, duration_s=duration)
+        prune_old_snapshots(DATABASE_PATH)
         logger.info(f"JOB DONE: Screener | {total} rows | {duration:.1f}s")
     except Exception as e:
         logger.error(f"Screener FAILED: {e}", exc_info=True)
