@@ -187,7 +187,7 @@
         <div class="top10-section short">
             <h3>▼ Top 5 Short Signals</h3>
             <div id="top10-short">
-                {% for s in top_signals if s.rating in ['AVOID','SHORT_WATCH'] %}
+                {% for s in top_signals if s.rating in ['SELL','STRONG_SELL','WEAK_HOLD'] %}
                 {% if loop.index <= 5 %}
                 <div class="top10-card" onclick="openTicker('{{ s.ticker }}')">
                     <div class="top10-rank">#{{ loop.index }}</div>
@@ -319,14 +319,14 @@ async function loadSignals() {
     allSignals = await res.json();
 
     const totalBuy   = allSignals.filter(s=>['BUY','STRONG_BUY'].includes(s.rating)).length;
-    const totalRev   = allSignals.filter(s=>s.rating==='REVERSION').length;
-    const totalShort = allSignals.filter(s=>s.rating==='SHORT_WATCH').length;
+    const totalRev   = allSignals.filter(s=>s.rating==='HOLD').length;
+    const totalShort = allSignals.filter(s=>s.rating==='WEAK_HOLD').length;
 
     document.getElementById('signal-stats').innerHTML = `
         <div class="stat-card"><div class="stat-label">Total Tickers</div><div class="stat-value">${allSignals.length.toLocaleString()}</div><div class="stat-sub">scored today</div></div>
         <div class="stat-card"><div class="stat-label">Buy Signals</div><div class="stat-value" style="color:var(--accent2)">${totalBuy}</div><div class="stat-sub">BUY + STRONG BUY</div></div>
-        <div class="stat-card"><div class="stat-label">Reversion</div><div class="stat-value" style="color:var(--purple)">${totalRev}</div><div class="stat-sub">oversold bounce</div></div>
-        <div class="stat-card"><div class="stat-label">Short Watch</div><div class="stat-value" style="color:var(--danger)">${totalShort}</div><div class="stat-sub">bearish setups</div></div>
+        <div class="stat-card"><div class="stat-label">Hold</div><div class="stat-value" style="color:var(--purple)">${totalRev}</div><div class="stat-sub">oversold or reversion</div></div>
+        <div class="stat-card"><div class="stat-label">Weak Hold</div><div class="stat-value" style="color:var(--danger)">${totalShort}</div><div class="stat-sub">weak or sell signals</div></div>
         <div class="stat-card"><div class="stat-label">Top Score</div><div class="stat-value">${fmt(allSignals[0]?.composite_score)}</div><div class="stat-sub">${allSignals[0]?.ticker||'-'}</div></div>
     `;
     renderSignalTable(allSignals);
