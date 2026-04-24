@@ -178,10 +178,12 @@ def api_overview():
 @login_required
 def api_signals():
     rows = db_query("""
-        SELECT ticker, rating, MAX(composite_score) as composite_score,
-               momentum_score, quality_score, insider_score,
-               reversion_score, flags, MAX(scored_at) as scored_at
-        FROM signal_scores
+        SELECT ss.ticker, ss.rating, MAX(ss.composite_score) as composite_score,
+        ss.momentum_score, ss.quality_score, ss.insider_score,
+        ss.reversion_score, ss.flags, MAX(ss.scored_at) as scored_at,
+        sc.sector, sc.industry
+FROM signal_scores ss
+LEFT JOIN screener_snapshots sc ON ss.ticker = sc.ticker
         WHERE DATE(scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
         GROUP BY ticker
         ORDER BY composite_score DESC
