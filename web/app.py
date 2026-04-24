@@ -60,7 +60,18 @@ def index():
     top = get_top_signals_of_day(DATABASE_PATH, today)
     if not top:
         top = generate_top_signals_of_day(DATABASE_PATH)
-    return render_template("index.html", user=user, top_signals=top)
+    conn = get_connection(DATABASE_PATH)
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT COUNT(DISTINCT ticker) as total_tickers,
+               MAX(scored_at) as last_scored
+        FROM signal_scores
+    """)
+    stats = dict(cur.fetchone())
+    conn.close()
+    return render_template("index.html", user=user, top_signals=top,
+                           total_tickers=stats["total_tickers"],
+                           last_scored=stats["last_scored"])
 
 
 @app.route("/login", methods=["GET","POST"])
