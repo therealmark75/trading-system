@@ -312,13 +312,12 @@ HOLD         — reversion >= 75
     if composite >= 62:
         return "BUY"
     if composite < 25 and insider <= 20:
-    return "STRONG_SELL"
-if composite < 38 and insider <= 35:
-    return "WEAK_HOLD"
-if composite < 45:
-    return "SELL"
+        return "STRONG_SELL"
+    if composite < 38 and insider <= 35:
+        return "WEAK_HOLD"
+    if composite < 45:
+        return "SELL"
     return "STRONG_HOLD"
-
 
 def build_flags(row: dict, insider_score: float,
                 reversion_score: float) -> list[str]:
