@@ -101,7 +101,7 @@ def job_generate_signals(sector=None):
         strong_buys = [s for s in signals if s.rating == "STRONG_BUY"]
         buys        = [s for s in signals if s.rating == "BUY"]
         reversions  = [s for s in signals if s.rating == "REVERSION"]
-        logger.info(f"  STRONG_BUY: {len(strong_buys)} | BUY: {len(buys)} | REVERSION: {len(reversions)}")
+        logger.info(f"  STRONG_BUY: {len(strong_buys)} | BUY: {len(buys)} | HOLD: {len(reversions)}")
         for name, items in scan_results.items():
             if items: logger.info(f"  Scan [{name}]: {len(items)} hits | Top: {items[0].ticker}")
         duration = time.time() - start
@@ -204,7 +204,7 @@ def job_news_and_calendar(top_n: int = 30):
         strong_buys = [s for s in signals if s.rating == "STRONG_BUY"]
         buys        = [s for s in signals if s.rating == "BUY"]
         reversions  = [s for s in signals if s.rating == "REVERSION"]
-        logger.info(f"  STRONG_BUY: {len(strong_buys)} | BUY: {len(buys)} | REVERSION: {len(reversions)}")
+        logger.info(f"  STRONG_BUY: {len(strong_buys)} | BUY: {len(buys)} | HOLD: {len(reversions)}")
 
         if strong_buys:
             logger.info("  Top STRONG_BUY:")

@@ -688,7 +688,7 @@ def generate_top_signals_of_day(db_path: str) -> list[dict]:
         ) lsnap ON lsnap.ticker = ss.ticker
         LEFT JOIN screener_snapshots sn ON sn.ticker = ss.ticker AND sn.scraped_at = lsnap.max_ts
         WHERE DATE(ss.scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
-          AND (ss.rating IN ('SHORT_WATCH','AVOID') OR ss.insider_score < 35)
+          AND ss.rating IN ('STRONG_SELL','SELL','WEAK_HOLD')
         GROUP BY ss.ticker
         ORDER BY ss.composite_score ASC
         LIMIT 5
