@@ -74,6 +74,45 @@ def job_scrape_insiders():
         return [], []
 
 
+
+def job_generate_signals(sector=None):
+    start = time.time()
+    logger.info("=" * 60)
+    logger.info("JOB START: Signal generation")
+    try:
+        screener_rows   = get_latest_screener(DATABASE_PATH, sector=sector)
+        insider_trades  = get_recent_insiders(DATABASE_PATH, days=30)
+        cluster_signals = get_cluster_signals(DATABASE_PATH, days=14)
+        if not screener_rows:
+            logger.warning("No screener data. Run scrape first.")
+            return [], {}
+        logger.info(f"  Scoring {len(screener_rows)} tickers...")
+        signals = score_all_tickers(screener_rows, insider_trades)
+        batch_ts = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
+        score_rows = [{
+            "scored_at": batch_ts, "ticker": s.ticker,
+            "composite_score": s.composite_score, "momentum_score": s.momentum_score,
+            "quality_score": s.quality_score, "insider_score": s.insider_score,
+            "reversion_score": s.reversion_score, "rating": s.rating,
+            "flags": "|".join(s.flags),
+        } for s in signals]
+        insert_signal_scores(DATABASE_PATH, score_rows)
+        scan_results = run_all_scans(screener_rows, insider_trades, cluster_signals)
+        strong_buys = [s for s in signals if s.rating == "STRONG_BUY"]
+        buys        = [s for s in signals if s.rating == "BUY"]
+        reversions  = [s for s in signals if s.rating == "REVERSION"]
+        logger.info(f"  STRONG_BUY: {len(strong_buys)} | BUY: {len(buys)} | REVERSION: {len(reversions)}")
+        for name, items in scan_results.items():
+            if items: logger.info(f"  Scan [{name}]: {len(items)} hits | Top: {items[0].ticker}")
+        duration = time.time() - start
+        log_run(DATABASE_PATH, "signal_generation", "SUCCESS", len(signals), duration_s=duration)
+        logger.info(f"JOB DONE: Signals | {len(signals)} scored | {duration:.1f}s")
+        return signals, scan_results
+    except Exception as e:
+        logger.error(f"Signals FAILED: {e}", exc_info=True)
+        log_run(DATABASE_PATH, "signal_generation", "FAILED", error_msg=str(e), duration_s=time.time()-start)
+        return [], {}
+
 def job_news_and_calendar(top_n: int = 30):
     """Scrape news sentiment for top BUY signals + economic calendar."""
     start = time.time()
