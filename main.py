@@ -10,7 +10,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 from config.settings import (DATABASE_PATH, SECTORS, SCREENER_SCRAPE_TIMES,
     INSIDER_SCRAPE_TIMES, INSIDER_CLUSTER_BUY_COUNT, INSIDER_CLUSTER_DAYS,
     LOG_DIR, LOG_LEVEL, REQUEST_DELAY_SECONDS)
-from database.db import (initialise_schema, insert_screener_rows,
+from database.db import (initialise_schema, insert_screener_rows, generate_top_signals_of_day,
     insert_insider_trades, insert_insider_signal, insert_signal_scores,
     insert_news_articles, insert_ticker_sentiment, insert_calendar_events,
     log_run, get_latest_screener, get_recent_insiders, get_cluster_signals,
@@ -105,6 +105,8 @@ def job_generate_signals(sector=None):
         for name, items in scan_results.items():
             if items: logger.info(f"  Scan [{name}]: {len(items)} hits | Top: {items[0].ticker}")
         duration = time.time() - start
+        generate_top_signals_of_day(DATABASE_PATH)
+        logger.info("Top signals of day generated")
         log_run(DATABASE_PATH, "signal_generation", "SUCCESS", len(signals), duration_s=duration)
         logger.info(f"JOB DONE: Signals | {len(signals)} scored | {duration:.1f}s")
         return signals, scan_results
@@ -216,6 +218,8 @@ def job_news_and_calendar(top_n: int = 30):
                 logger.info(f"  Scan [{name}]: {len(items)} hits | Top: {items[0].ticker}")
 
         duration = time.time() - start
+        generate_top_signals_of_day(DATABASE_PATH)
+        logger.info("Top signals of day generated")
         log_run(DATABASE_PATH, "signal_generation", "SUCCESS", len(signals), duration_s=duration)
         logger.info(f"JOB DONE: Signals | {len(signals)} scored | {duration:.1f}s")
         return signals, scan_results

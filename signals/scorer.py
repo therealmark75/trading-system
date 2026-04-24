@@ -297,20 +297,20 @@ def assign_rating(composite: float, reversion: float,
                   insider: float) -> str:
     """
     Rating logic:
-    STRONG_BUY   — composite >= 72 AND insider >= 65
-BUY          — composite >= 62
-STRONG_HOLD  — composite 45-62
-SELL         — composite < 45
-WEAK_HOLD    — composite < 38 AND insider <= 35
-STRONG_SELL  — composite < 25 AND insider <= 20
-HOLD         — reversion >= 75
+    STRONG_BUY  — composite >= 72 AND insider >= 65
+    BUY         — composite >= 62
+    STRONG_HOLD — composite 45-62
+    SELL        — composite < 45
+    WEAK_HOLD   — composite < 38 AND insider <= 35
+    STRONG_SELL — composite < 25 AND insider <= 20
+    HOLD        — reversion >= 75
     """
-    if reversion >= 75:
-        return "HOLD"
     if composite >= 72 and insider >= 65:
         return "STRONG_BUY"
     if composite >= 62:
         return "BUY"
+    if reversion >= 75:
+        return "HOLD"
     if composite < 25 and insider <= 20:
         return "STRONG_SELL"
     if composite < 38 and insider <= 35:
