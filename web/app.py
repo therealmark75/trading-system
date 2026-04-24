@@ -111,6 +111,12 @@ def logout():
     return redirect(url_for("login"))
 
 
+@app.route("/ticker/<ticker>")
+@login_required
+def ticker_page(ticker):
+    return render_template("ticker.html", ticker=ticker.upper())
+
+
 @app.route("/watchlist")
 @login_required
 def watchlist():

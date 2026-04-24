@@ -492,65 +492,8 @@ async function loadSystem() {
 }
 
 // ── Ticker modal ────────────────────────────────────
-async function openTicker(ticker) {
-    document.getElementById('ticker-modal').classList.add('open');
-    document.getElementById('modal-ticker-name').textContent = ticker;
-    document.getElementById('modal-content').innerHTML='<div class="loading"><span class="spinner"></span>Loading...</div>';
-
-    const data = await fetch(`/api/ticker/${ticker}`).then(r=>r.json());
-    const s=data.signal||{},sc=data.screener||{};
-
-    const insiderRows=(data.insiders||[]).slice(0,6).map(i=>{
-        const buy=i.transaction_type==='Buy';
-        const c=buy?'var(--accent2)':'var(--danger)';
-        return `<tr>
-            <td style="color:var(--muted);font-size:11px">${i.transaction_date||'-'}</td>
-            <td style="font-size:12px;max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${i.insider_name||'-'}</td>
-            <td style="font-size:11px;color:var(--muted)">${i.insider_title||'-'}</td>
-            <td style="color:${c};font-family:var(--mono);font-size:11px">${i.transaction_type}</td>
-            <td style="font-family:var(--mono);font-size:11px;color:${c}">${fmtK(i.value)}</td>
-        </tr>`;
-    }).join('');
-
-    const wlBtn = data.in_watchlist
-        ? `<button class="btn-wl btn-remove" onclick="removeWl('${ticker}')">✕ Remove from Watchlist</button>`
-        : `<button class="btn-wl btn-add" onclick="addWl('${ticker}')">+ Add to Watchlist</button>`;
-
-    document.getElementById('modal-content').innerHTML=`
-        <div class="modal-grid">
-            <div class="modal-stat"><div class="modal-stat-label">Rating</div><div><span class="rating rating-${s.rating||''}">${s.rating||'-'}</span></div></div>
-            <div class="modal-stat"><div class="modal-stat-label">Score</div><div class="modal-stat-value ${scoreC(s.composite_score)}">${fmt(s.composite_score)}</div></div>
-            <div class="modal-stat"><div class="modal-stat-label">Price</div><div class="modal-stat-value">$${fmt(sc.price,2)}</div></div>
-            <div class="modal-stat"><div class="modal-stat-label">Change</div><div class="modal-stat-value" style="color:${(sc.change_pct||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.change_pct)}</div></div>
-            <div class="modal-stat"><div class="modal-stat-label">RSI (14)</div><div class="modal-stat-value">${fmt(sc.rsi_14)}</div></div>
-            <div class="modal-stat"><div class="modal-stat-label">50d SMA</div><div class="modal-stat-value" style="color:${(sc.sma_50_pct||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.sma_50_pct)}</div></div>
-            <div class="modal-stat"><div class="modal-stat-label">Analyst Rec</div><div class="modal-stat-value">${fmt(sc.analyst_recom)}/5</div></div>
-            <div class="modal-stat"><div class="modal-stat-label">Short Interest</div><div class="modal-stat-value" style="color:${(sc.short_interest_pct||0)>15?'var(--danger)':'var(--text)'}">${fmt(sc.short_interest_pct)}%</div></div>
-        </div>
-        ${insiderRows?`
-        <div class="section-title" style="margin-bottom:10px">Recent Insider Activity</div>
-        <div class="table-wrap" style="margin-bottom:16px"><table>
-            <thead><tr><th>Date</th><th>Insider</th><th>Title</th><th>Type</th><th>Value</th></tr></thead>
-            <tbody>${insiderRows}</tbody>
-        </table></div>`:''}
-        <div class="modal-actions" id="wl-actions">${wlBtn}</div>`;
-}
-
-async function addWl(ticker) {
-    await fetch('/api/watchlist/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ticker})});
-    document.getElementById('wl-actions').innerHTML=`<button class="btn-wl btn-remove" onclick="removeWl('${ticker}')">✕ Remove from Watchlist</button>
-        <span style="color:var(--accent2);font-family:var(--mono);font-size:11px;padding:8px">✓ Added!</span>`;
-}
-
-async function removeWl(ticker) {
-    await fetch('/api/watchlist/remove',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ticker})});
-    document.getElementById('wl-actions').innerHTML=`<button class="btn-wl btn-add" onclick="addWl('${ticker}')">+ Add to Watchlist</button>
-        <span style="color:var(--muted);font-family:var(--mono);font-size:11px;padding:8px">Removed</span>`;
-}
-
-function closeModal(e){
-    if(e.target===document.getElementById('ticker-modal'))
-        document.getElementById('ticker-modal').classList.remove('open');
+function openTicker(ticker) {
+    window.location.href = `/ticker/${ticker}`;
 }
 
 // Auto-refresh every 5 mins
