@@ -97,7 +97,7 @@ def register():
         elif get_user_by_username(DATABASE_PATH, username):
             flash("Username already taken")
         else:
-            pw_hash = generate_password_hash(password)
+            pw_hash = pw_hash = generate_password_hash(password, method='pbkdf2:sha256')
             user_id = create_user(DATABASE_PATH, username, email, pw_hash)
             session["user_id"]  = user_id
             session["username"] = username
@@ -351,4 +351,4 @@ if __name__ == "__main__":
     print("  SignalIntel Web Dashboard")
     print("  Open: http://localhost:5000")
     print("="*50 + "\n")
-    app.run(debug=False, host="0.0.0.0", port=5000)
+    app.run(debug=True, host="0.0.0.0", port=5001)
