@@ -80,7 +80,7 @@ def job_generate_signals(sector=None):
     logger.info("=" * 60)
     logger.info("JOB START: Signal generation")
     try:
-        screener_rows   = get_latest_screener(DATABASE_PATH, sector=sector)
+        screener_rows   = get_latest_screener(DATABASE_PATH, sector=None)
         insider_trades  = get_recent_insiders(DATABASE_PATH, days=30)
         cluster_signals = get_cluster_signals(DATABASE_PATH, days=14)
         if not screener_rows:
@@ -172,7 +172,7 @@ def job_news_and_calendar(top_n: int = 30):
     logger.info("=" * 60)
     logger.info("JOB START: Signal generation")
     try:
-        screener_rows   = get_latest_screener(DATABASE_PATH, sector=sector)
+        screener_rows   = get_latest_screener(DATABASE_PATH, sector=None)
         insider_trades  = get_recent_insiders(DATABASE_PATH, days=30)
         cluster_signals = get_cluster_signals(DATABASE_PATH, days=14)
 
