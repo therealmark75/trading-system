@@ -381,3 +381,186 @@ if __name__ == "__main__":
     print("  Open: http://localhost:5000")
     print("="*50 + "\n")
     app.run(debug=True, host="0.0.0.0", port=5001)
+
+# ── Portfolio API ────────────────────────────────────
+
+@app.route("/api/portfolios")
+@login_required
+def api_portfolios():
+    user = current_user()
+    rows = db_query("SELECT * FROM portfolios WHERE user_id = ? AND is_active = 1 ORDER BY created_at DESC", (user["id"],))
+    return jsonify(rows)
+
+@app.route("/api/portfolios/create", methods=["POST"])
+@login_required
+def api_create_portfolio():
+    user = current_user()
+    data = request.get_json()
+    count = db_query("SELECT COUNT(*) as c FROM portfolios WHERE user_id = ? AND is_active = 1", (user["id"],))
+    if count[0]["c"] >= 5:
+        return jsonify({"error": "Maximum 5 portfolios allowed"}), 400
+    name = data.get("name", "").strip()
+    if not name:
+        return jsonify({"error": "Portfolio name required"}), 400
+    balance = float(data.get("starting_balance", 10000))
+    conn = get_connection(DATABASE_PATH)
+    cur = conn.cursor()
+    cur.execute("INSERT INTO portfolios (user_id, name, description, starting_balance, cash_balance, created_at) VALUES (?,?,?,?,?,?)",
+        (user["id"], name, data.get("description",""), balance, balance, datetime.now().isoformat()))
+    conn.commit()
+    return jsonify({"id": cur.lastrowid, "message": "Portfolio created"})
+
+@app.route("/api/portfolios/<int:portfolio_id>")
+@login_required
+def api_portfolio_detail(portfolio_id):
+    user = current_user()
+    port = db_query("SELECT * FROM portfolios WHERE id = ? AND user_id = ?", (portfolio_id, user["id"]))
+    if not port:
+        return jsonify({"error": "Not found"}), 404
+    port = port[0]
+    holdings = db_query("""
+        SELECT h.*, s.price as current_price, sig.rating, sig.composite_score
+        FROM portfolio_holdings h
+        LEFT JOIN (SELECT ticker, price FROM screener_snapshots GROUP BY ticker) s ON h.ticker = s.ticker
+        LEFT JOIN (SELECT ticker, rating, composite_score FROM signal_scores 
+                   WHERE DATE(scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
+                   GROUP BY ticker) sig ON h.ticker = sig.ticker
+        WHERE h.portfolio_id = ?
+    """, (portfolio_id,))
+    transactions = db_query("SELECT * FROM portfolio_transactions WHERE portfolio_id = ? ORDER BY executed_at DESC LIMIT 50", (portfolio_id,))
+    
+    # Calculate P&L for each holding
+    total_value = port["cash_balance"]
+    for h in holdings:
+        cp = h.get("current_price") or h["avg_buy_price"]
+        if h["direction"] == "LONG":
+            pnl = (cp - h["avg_buy_price"]) * h["shares"] * h["leverage"]
+        else:
+            pnl = (h["avg_buy_price"] - cp) * h["shares"] * h["leverage"]
+        h["pnl"] = round(pnl, 2)
+        h["pnl_pct"] = round((pnl / (h["avg_buy_price"] * h["shares"])) * 100, 2)
+        h["current_price"] = cp
+        position_value = cp * h["shares"]
+        total_value += position_value
+    
+    port["total_value"] = round(total_value, 2)
+    port["total_return"] = round(total_value - port["starting_balance"], 2)
+    port["total_return_pct"] = round(((total_value - port["starting_balance"]) / port["starting_balance"]) * 100, 2)
+    
+    return jsonify({"portfolio": port, "holdings": holdings, "transactions": transactions})
+
+@app.route("/api/portfolios/<int:portfolio_id>/trade", methods=["POST"])
+@login_required
+def api_trade(portfolio_id):
+    user = current_user()
+    port = db_query("SELECT * FROM portfolios WHERE id = ? AND user_id = ?", (portfolio_id, user["id"]))
+    if not port:
+        return jsonify({"error": "Not found"}), 404
+    port = port[0]
+    data = request.get_json()
+    
+    ticker   = data.get("ticker","").upper()
+    action   = data.get("action","").upper()  # BUY, SELL, SHORT, COVER
+    shares   = float(data.get("shares", 0))
+    leverage = int(data.get("leverage", 1))
+    direction = "SHORT" if action in ["SHORT","COVER"] else "LONG"
+    
+    # Get current price
+    price_row = db_query("SELECT price FROM screener_snapshots WHERE ticker = ? ORDER BY scraped_at DESC LIMIT 1", (ticker,))
+    if not price_row:
+        return jsonify({"error": "Ticker not found"}), 404
+    price = float(price_row[0]["price"])
+    total = price * shares
+    margin_required = total / leverage
+
+    conn = get_connection(DATABASE_PATH)
+    cur = conn.cursor()
+
+    if action in ["BUY", "SHORT"]:
+        if port["cash_balance"] < margin_required:
+            return jsonify({"error": "Insufficient funds"}), 400
+        # Check existing holding
+        existing = db_query("SELECT * FROM portfolio_holdings WHERE portfolio_id = ? AND ticker = ? AND direction = ?",
+            (portfolio_id, ticker, direction))
+        if existing:
+            e = existing[0]
+            new_shares = e["shares"] + shares
+            new_avg = ((e["avg_buy_price"] * e["shares"]) + (price * shares)) / new_shares
+            cur.execute("UPDATE portfolio_holdings SET shares=?, avg_buy_price=?, current_price=?, margin_used=margin_used+? WHERE id=?",
+                (new_shares, new_avg, price, margin_required, e["id"]))
+        else:
+            cur.execute("INSERT INTO portfolio_holdings (portfolio_id, ticker, shares, avg_buy_price, current_price, direction, leverage, margin_used, opened_at) VALUES (?,?,?,?,?,?,?,?,?)",
+                (portfolio_id, ticker, shares, price, price, direction, leverage, margin_required, datetime.now().isoformat()))
+        cur.execute("UPDATE portfolios SET cash_balance=cash_balance-? WHERE id=?", (margin_required, portfolio_id))
+
+    elif action in ["SELL", "COVER"]:
+        existing = db_query("SELECT * FROM portfolio_holdings WHERE portfolio_id = ? AND ticker = ? AND direction = ?",
+            (portfolio_id, ticker, direction))
+        if not existing:
+            return jsonify({"error": "No position to close"}), 400
+        e = existing[0]
+        if shares > e["shares"]:
+            return jsonify({"error": "Cannot sell more than you hold"}), 400
+        if direction == "LONG":
+            pnl = (price - e["avg_buy_price"]) * shares * e["leverage"]
+        else:
+            pnl = (e["avg_buy_price"] - price) * shares * e["leverage"]
+        proceeds = (e["margin_used"] / e["shares"]) * shares + pnl
+        if e["shares"] - shares < 0.0001:
+            cur.execute("DELETE FROM portfolio_holdings WHERE id=?", (e["id"],))
+        else:
+            cur.execute("UPDATE portfolio_holdings SET shares=shares-?, margin_used=margin_used-? WHERE id=?",
+                (shares, (e["margin_used"]/e["shares"])*shares, e["id"]))
+        cur.execute("UPDATE portfolios SET cash_balance=cash_balance+? WHERE id=?", (proceeds, portfolio_id))
+
+    # Log transaction
+    cur.execute("INSERT INTO portfolio_transactions (portfolio_id, ticker, type, shares, price, total_value, leverage, direction, executed_at) VALUES (?,?,?,?,?,?,?,?,?)",
+        (portfolio_id, ticker, action, shares, price, total, leverage, direction, datetime.now().isoformat()))
+    
+    conn.commit()
+    return jsonify({"message": f"{action} executed", "price": price, "total": total})
+
+@app.route("/api/portfolios/<int:portfolio_id>/check_margins", methods=["POST"])
+@login_required  
+def api_check_margins(portfolio_id):
+    holdings = db_query("""
+        SELECT h.*, s.price as current_price
+        FROM portfolio_holdings h
+        LEFT JOIN (SELECT ticker, price FROM screener_snapshots GROUP BY ticker) s ON h.ticker = s.ticker
+        WHERE h.portfolio_id = ?
+    """, (portfolio_id,))
+    
+    margin_calls = []
+    conn = get_connection(DATABASE_PATH)
+    cur = conn.cursor()
+    
+    for h in holdings:
+        cp = h.get("current_price") or h["avg_buy_price"]
+        if h["direction"] == "LONG":
+            pnl = (cp - h["avg_buy_price"]) * h["shares"] * h["leverage"]
+        else:
+            pnl = (h["avg_buy_price"] - cp) * h["shares"] * h["leverage"]
+        margin_loss_pct = abs(pnl) / h["margin_used"] * 100 if h["margin_used"] > 0 else 0
+        
+        if pnl < 0 and margin_loss_pct >= 100:
+            # BUST - auto liquidate
+            cur.execute("DELETE FROM portfolio_holdings WHERE id=?", (h["id"],))
+            cur.execute("UPDATE portfolios SET cash_balance=cash_balance+? WHERE id=?", 
+                (max(0, h["margin_used"] + pnl), portfolio_id))
+            cur.execute("INSERT INTO margin_calls (portfolio_id, holding_id, ticker, margin_level, status, issued_at, resolved_at) VALUES (?,?,?,?,?,?,?)",
+                (portfolio_id, h["id"], h["ticker"], margin_loss_pct, "BUSTED", datetime.now().isoformat(), datetime.now().isoformat()))
+            margin_calls.append({"ticker": h["ticker"], "status": "BUSTED"})
+        elif pnl < 0 and margin_loss_pct >= 75:
+            cur.execute("INSERT OR IGNORE INTO margin_calls (portfolio_id, holding_id, ticker, margin_level, status, issued_at) VALUES (?,?,?,?,?,?)",
+                (portfolio_id, h["id"], h["ticker"], margin_loss_pct, "WARNING", datetime.now().isoformat()))
+            margin_calls.append({"ticker": h["ticker"], "status": "WARNING", "margin_level": margin_loss_pct})
+    
+    conn.commit()
+    # Check if portfolio is fully bust
+    port = db_query("SELECT * FROM portfolios WHERE id=?", (portfolio_id,))
+    if port and port[0]["cash_balance"] <= 0 and not holdings:
+        cur.execute("UPDATE portfolios SET is_active=0 WHERE id=?", (portfolio_id,))
+        conn.commit()
+        return jsonify({"bust": True, "margin_calls": margin_calls})
+    
+    return jsonify({"bust": False, "margin_calls": margin_calls})
