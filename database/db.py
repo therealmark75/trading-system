@@ -690,7 +690,7 @@ def generate_top_signals_of_day(db_path: str) -> list[dict]:
         WHERE DATE(ss.scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
           AND ss.rating IN ('STRONG_SELL','SELL','WEAK_HOLD')
         GROUP BY ss.ticker
-        ORDER BY ss.composite_score ASC
+        ORDER BY CASE ss.rating WHEN 'STRONG_SELL' THEN 1 WHEN 'SELL' THEN 2 WHEN 'WEAK_HOLD' THEN 3 ELSE 4 END ASC, ss.composite_score ASC
         LIMIT 5
     """)
     short_signals = [dict(r) for r in cur.fetchall()]
