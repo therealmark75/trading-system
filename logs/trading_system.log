@@ -813,3 +813,409 @@ ValueError: time data "Apr 20 '26" does not match format '%Y-%m-%d'
 2026-04-22 17:01:38 | WARNING  | scrapers.calendar_scraper | Could not find calendar table
 2026-04-22 17:01:38 | INFO     | main | JOB DONE: News & Calendar | 98.6s
 2026-04-22 17:01:38 | INFO     | apscheduler.executors.default | Job "job_news_and_calendar (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-23 17:00:00 BST)" executed successfully
+2026-04-24 11:08:08 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-24 11:08:08 | INFO     | main | ============================================================
+2026-04-24 11:08:08 | INFO     | main | JOB START: Screener scrape
+2026-04-24 11:08:08 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-24 11:08:54 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-24 11:10:34 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-24 11:10:39 | INFO     | main |   Stored 777 rows for Technology
+2026-04-24 11:10:39 | INFO     | main | JOB DONE: Screener | 777 rows | 150.8s
+2026-04-24 11:10:39 | INFO     | main | ============================================================
+2026-04-24 11:10:39 | INFO     | main | JOB START: Insider trade scrape
+2026-04-24 11:10:39 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Buy, pages=5)
+2026-04-24 11:10:39 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-24 11:10:42 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-24 11:10:45 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-24 11:10:49 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-24 11:10:53 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-24 11:10:56 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-24 11:10:59 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Sale, pages=5)
+2026-04-24 11:10:59 | INFO     | scrapers.insider_scraper |   Page 1: 149 rows
+2026-04-24 11:11:02 | INFO     | scrapers.insider_scraper |   Page 2: 149 rows
+2026-04-24 11:11:05 | INFO     | scrapers.insider_scraper |   Page 3: 149 rows
+2026-04-24 11:11:09 | INFO     | scrapers.insider_scraper |   Page 4: 149 rows
+2026-04-24 11:11:12 | INFO     | scrapers.insider_scraper |   Page 5: 149 rows
+2026-04-24 11:11:15 | INFO     | scrapers.insider_scraper | Total insider rows: 745
+2026-04-24 11:11:18 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Option Exercise, pages=5)
+2026-04-24 11:11:19 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-24 11:11:22 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-24 11:11:25 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-24 11:11:29 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-24 11:11:32 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-24 11:11:35 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-24 11:11:37 | INFO     | scrapers.insider_scraper | Total unique insider trades: 408
+2026-04-24 11:11:37 | INFO     | main |   Stored 300 new insider trade rows
+2026-04-24 11:11:37 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: BMI | 5 Buys | $777,128
+2026-04-24 11:11:37 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: KLRA | 5 Buys | $326,750,016
+2026-04-24 11:11:37 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: GAMB | 3 Buys | $27,404
+2026-04-24 11:11:37 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: AVEX | 5 Buys | $1,483,000
+2026-04-24 11:11:37 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: ARXS | 7 Buys | $5,643,792
+2026-04-24 11:11:37 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CHCO | 4 Buys | $57,873
+2026-04-24 11:11:37 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CGTX | 3 Buys | $32,492
+2026-04-24 11:11:37 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PCSA | 6 Buys | $30,065
+2026-04-24 11:11:37 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: YORW | 4 Buys | $38,261
+2026-04-24 11:11:37 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: SE | 3 Sales | $1,965,520
+2026-04-24 11:11:37 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: DSP | 4 Sales | $1,101,976
+2026-04-24 11:11:37 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CRWV | 4 Sales | $280,664,823
+2026-04-24 11:11:37 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PRCH | 3 Sales | $1,557,197
+2026-04-24 11:11:37 | INFO     | main | JOB DONE: Insider | 300 rows | 9 buy | 4 sell | 58.4s
+2026-04-24 11:15:58 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-24 11:15:58 | INFO     | main | ============================================================
+2026-04-24 11:15:58 | INFO     | main | JOB START: Signal generation
+2026-04-24 11:15:59 | INFO     | main |   Scoring 777 tickers...
+2026-04-24 11:15:59 | INFO     | signals.scorer | Scored 777 tickers
+2026-04-24 11:15:59 | INFO     | signals.scanner | Running all scans...
+2026-04-24 11:15:59 | INFO     | signals.scanner |   insider_oversold: 1 candidates
+2026-04-24 11:15:59 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-24 11:15:59 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-24 11:15:59 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-04-24 11:15:59 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-24 11:15:59 | INFO     | main |   STRONG_BUY: 0 | BUY: 69 | REVERSION: 27
+2026-04-24 11:15:59 | INFO     | main |   Scan [insider_oversold]: 1 hits | Top: BMI
+2026-04-24 11:15:59 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: RYDE
+2026-04-24 11:15:59 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: EFOR
+2026-04-24 11:15:59 | INFO     | main | JOB DONE: Signals | 777 scored | 0.2s
+2026-04-24 22:01:28 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:01:28 | INFO     | main | Scheduled jobs:
+2026-04-24 22:01:28 | INFO     | main |   Screener 08:00
+2026-04-24 22:01:28 | INFO     | main |   Screener 12:00
+2026-04-24 22:01:28 | INFO     | main |   Screener 16:30
+2026-04-24 22:01:28 | INFO     | main |   Insider 09:00
+2026-04-24 22:01:28 | INFO     | main |   Insider 17:00
+2026-04-24 22:01:28 | INFO     | main |   Signals 08:30
+2026-04-24 22:01:28 | INFO     | main |   Signals 12:30
+2026-04-24 22:01:28 | INFO     | main |   Signals 17:00
+2026-04-24 22:01:28 | INFO     | main |   News & Calendar 17:30
+2026-04-24 22:01:28 | INFO     | main |   Startup signal generation
+2026-04-24 22:01:28 | INFO     | main | Scheduler running. Press Ctrl+C to stop.
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Added job "Screener 08:00" to job store "default"
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Added job "Screener 12:00" to job store "default"
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Added job "Screener 16:30" to job store "default"
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Added job "Insider 09:00" to job store "default"
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Added job "Insider 17:00" to job store "default"
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Added job "Signals 08:30" to job store "default"
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Added job "Signals 12:30" to job store "default"
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Added job "Signals 17:00" to job store "default"
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Added job "News & Calendar 17:30" to job store "default"
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Added job "Startup signal generation" to job store "default"
+2026-04-24 22:01:28 | INFO     | apscheduler.scheduler | Scheduler started
+2026-04-24 22:01:33 | INFO     | apscheduler.executors.default | Running job "Startup signal generation (trigger: date[2026-04-24 22:01:33 BST], next run at: 2026-04-24 22:01:33 BST)" (scheduled at 2026-04-24 22:01:33.419135+01:00)
+2026-04-24 22:01:33 | INFO     | apscheduler.scheduler | Removed job startup_signals
+2026-04-24 22:01:33 | INFO     | main | ============================================================
+2026-04-24 22:01:33 | INFO     | main | JOB START: Signal generation
+2026-04-24 22:01:33 | INFO     | main |   Scoring 777 tickers...
+2026-04-24 22:01:33 | INFO     | signals.scorer | Scored 777 tickers
+2026-04-24 22:01:33 | INFO     | signals.scanner | Running all scans...
+2026-04-24 22:01:33 | INFO     | signals.scanner |   insider_oversold: 1 candidates
+2026-04-24 22:01:33 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-24 22:01:33 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-24 22:01:33 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-04-24 22:01:33 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-24 22:01:33 | INFO     | main |   STRONG_BUY: 0 | BUY: 69 | REVERSION: 27
+2026-04-24 22:01:33 | INFO     | main |   Scan [insider_oversold]: 1 hits | Top: BMI
+2026-04-24 22:01:33 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: RYDE
+2026-04-24 22:01:33 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: EFOR
+2026-04-24 22:01:33 | INFO     | main | JOB DONE: Signals | 777 scored | 0.2s
+2026-04-24 22:01:33 | INFO     | apscheduler.executors.default | Job "Startup signal generation (trigger: date[2026-04-24 22:01:33 BST], next run at: 2026-04-24 22:01:33 BST)" executed successfully
+2026-04-24 22:02:03 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:02:03 | INFO     | main | Scheduled jobs:
+2026-04-24 22:02:03 | INFO     | main |   Screener 08:00
+2026-04-24 22:02:03 | INFO     | main |   Screener 12:00
+2026-04-24 22:02:03 | INFO     | main |   Screener 16:30
+2026-04-24 22:02:03 | INFO     | main |   Insider 09:00
+2026-04-24 22:02:03 | INFO     | main |   Insider 17:00
+2026-04-24 22:02:03 | INFO     | main |   Signals 08:30
+2026-04-24 22:02:03 | INFO     | main |   Signals 12:30
+2026-04-24 22:02:03 | INFO     | main |   Signals 17:00
+2026-04-24 22:02:03 | INFO     | main |   News & Calendar 17:30
+2026-04-24 22:02:03 | INFO     | main |   Startup signal generation
+2026-04-24 22:02:03 | INFO     | main | Scheduler running. Press Ctrl+C to stop.
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Added job "Screener 08:00" to job store "default"
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Added job "Screener 12:00" to job store "default"
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Added job "Screener 16:30" to job store "default"
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Added job "Insider 09:00" to job store "default"
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Added job "Insider 17:00" to job store "default"
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Added job "Signals 08:30" to job store "default"
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Added job "Signals 12:30" to job store "default"
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Added job "Signals 17:00" to job store "default"
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Added job "News & Calendar 17:30" to job store "default"
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Added job "Startup signal generation" to job store "default"
+2026-04-24 22:02:03 | INFO     | apscheduler.scheduler | Scheduler started
+2026-04-24 22:02:08 | INFO     | apscheduler.executors.default | Running job "Startup signal generation (trigger: date[2026-04-24 22:02:08 BST], next run at: 2026-04-24 22:02:08 BST)" (scheduled at 2026-04-24 22:02:08.904868+01:00)
+2026-04-24 22:02:08 | INFO     | apscheduler.scheduler | Removed job startup_signals
+2026-04-24 22:02:08 | INFO     | main | ============================================================
+2026-04-24 22:02:08 | INFO     | main | JOB START: Signal generation
+2026-04-24 22:02:08 | INFO     | main |   Scoring 777 tickers...
+2026-04-24 22:02:09 | INFO     | signals.scorer | Scored 777 tickers
+2026-04-24 22:02:09 | INFO     | signals.scanner | Running all scans...
+2026-04-24 22:02:09 | INFO     | signals.scanner |   insider_oversold: 1 candidates
+2026-04-24 22:02:09 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-24 22:02:09 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-24 22:02:09 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-04-24 22:02:09 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-24 22:02:09 | INFO     | main |   STRONG_BUY: 0 | BUY: 69 | REVERSION: 27
+2026-04-24 22:02:09 | INFO     | main |   Scan [insider_oversold]: 1 hits | Top: BMI
+2026-04-24 22:02:09 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: RYDE
+2026-04-24 22:02:09 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: EFOR
+2026-04-24 22:02:09 | INFO     | main | JOB DONE: Signals | 777 scored | 0.2s
+2026-04-24 22:02:09 | INFO     | apscheduler.executors.default | Job "Startup signal generation (trigger: date[2026-04-24 22:02:08 BST], next run at: 2026-04-24 22:02:08 BST)" executed successfully
+2026-04-24 22:03:45 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-24 22:03:45 | INFO     | main | Scheduled jobs:
+2026-04-24 22:03:45 | INFO     | main |   Screener 08:00
+2026-04-24 22:03:45 | INFO     | main |   Screener 12:00
+2026-04-24 22:03:45 | INFO     | main |   Screener 16:30
+2026-04-24 22:03:45 | INFO     | main |   Insider 09:00
+2026-04-24 22:03:45 | INFO     | main |   Insider 17:00
+2026-04-24 22:03:45 | INFO     | main |   Signals 08:30
+2026-04-24 22:03:45 | INFO     | main |   Signals 12:30
+2026-04-24 22:03:45 | INFO     | main |   Signals 17:00
+2026-04-24 22:03:45 | INFO     | main |   News & Calendar 17:30
+2026-04-24 22:03:45 | INFO     | main |   Startup signal generation
+2026-04-24 22:03:45 | INFO     | main | Scheduler running. Press Ctrl+C to stop.
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Added job "Screener 08:00" to job store "default"
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Added job "Screener 12:00" to job store "default"
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Added job "Screener 16:30" to job store "default"
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Added job "Insider 09:00" to job store "default"
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Added job "Insider 17:00" to job store "default"
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Added job "Signals 08:30" to job store "default"
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Added job "Signals 12:30" to job store "default"
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Added job "Signals 17:00" to job store "default"
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Added job "News & Calendar 17:30" to job store "default"
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Added job "Startup signal generation" to job store "default"
+2026-04-24 22:03:45 | INFO     | apscheduler.scheduler | Scheduler started
+2026-04-24 22:03:50 | INFO     | apscheduler.executors.default | Running job "Startup signal generation (trigger: date[2026-04-24 22:03:50 BST], next run at: 2026-04-24 22:03:50 BST)" (scheduled at 2026-04-24 22:03:50.822681+01:00)
+2026-04-24 22:03:50 | INFO     | apscheduler.scheduler | Removed job startup_signals
+2026-04-24 22:03:50 | INFO     | main | ============================================================
+2026-04-24 22:03:50 | INFO     | main | JOB START: Signal generation
+2026-04-24 22:03:50 | INFO     | main |   Scoring 777 tickers...
+2026-04-24 22:03:50 | INFO     | signals.scorer | Scored 777 tickers
+2026-04-24 22:03:51 | INFO     | signals.scanner | Running all scans...
+2026-04-24 22:03:51 | INFO     | signals.scanner |   insider_oversold: 1 candidates
+2026-04-24 22:03:51 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-24 22:03:51 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-24 22:03:51 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-04-24 22:03:51 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-24 22:03:51 | INFO     | main |   STRONG_BUY: 0 | BUY: 69 | REVERSION: 27
+2026-04-24 22:03:51 | INFO     | main |   Scan [insider_oversold]: 1 hits | Top: BMI
+2026-04-24 22:03:51 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: RYDE
+2026-04-24 22:03:51 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: EFOR
+2026-04-24 22:03:51 | INFO     | main | JOB DONE: Signals | 777 scored | 0.2s
+2026-04-24 22:03:51 | INFO     | apscheduler.executors.default | Job "Startup signal generation (trigger: date[2026-04-24 22:03:50 BST], next run at: 2026-04-24 22:03:50 BST)" executed successfully
+2026-04-24 22:07:24 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-24 22:07:24 | INFO     | main | ============================================================
+2026-04-24 22:07:24 | INFO     | main | JOB START: Screener scrape
+2026-04-24 22:07:24 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-24 22:08:11 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-24 22:09:53 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-24 22:09:58 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-24 22:11:04 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-24 22:13:22 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-24 22:13:27 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-24 22:20:08 | INFO     | scrapers.screener_scraper |   Financial: 6549 tickers from overview
+2026-04-24 22:33:31 | INFO     | scrapers.screener_scraper |   Financial: 6549 complete rows merged
+2026-04-24 22:33:36 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-24 22:34:08 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 549 tickers from overview
+2026-04-24 22:35:22 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 549 complete rows merged
+2026-04-24 22:35:27 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-24 22:36:07 | INFO     | scrapers.screener_scraper |   Industrials: 689 tickers from overview
+2026-04-24 22:37:37 | INFO     | scrapers.screener_scraper |   Industrials: 689 complete rows merged
+2026-04-24 22:37:42 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-24 22:37:56 | INFO     | scrapers.screener_scraper |   Energy: 253 tickers from overview
+2026-04-24 22:38:35 | INFO     | scrapers.screener_scraper |   Energy: 253 complete rows merged
+2026-04-24 22:38:40 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-24 22:38:54 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-24 22:39:32 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-24 22:39:37 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-24 22:39:43 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-24 22:40:05 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-24 22:40:10 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-24 22:40:26 | INFO     | scrapers.screener_scraper |   Communication Services: 265 tickers from overview
+2026-04-24 22:41:05 | INFO     | scrapers.screener_scraper |   Communication Services: 265 complete rows merged
+2026-04-24 22:41:10 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-24 22:41:25 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-24 22:42:02 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-24 22:42:07 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-24 22:42:24 | INFO     | scrapers.screener_scraper |   Basic Materials: 281 tickers from overview
+2026-04-24 22:43:06 | INFO     | scrapers.screener_scraper |   Basic Materials: 281 complete rows merged
+2026-04-24 22:43:11 | INFO     | main |   Stored 777 rows for Technology
+2026-04-24 22:43:11 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-24 22:43:11 | INFO     | main |   Stored 6549 rows for Financial
+2026-04-24 22:43:11 | INFO     | main |   Stored 549 rows for Consumer Cyclical
+2026-04-24 22:43:11 | INFO     | main |   Stored 689 rows for Industrials
+2026-04-24 22:43:11 | INFO     | main |   Stored 253 rows for Energy
+2026-04-24 22:43:11 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-24 22:43:11 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-24 22:43:11 | INFO     | main |   Stored 265 rows for Communication Services
+2026-04-24 22:43:11 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-24 22:43:11 | INFO     | main |   Stored 281 rows for Basic Materials
+2026-04-24 22:43:11 | INFO     | main | JOB DONE: Screener | 11047 rows | 2146.5s
+2026-04-24 22:43:11 | INFO     | main | ============================================================
+2026-04-24 22:43:11 | INFO     | main | JOB START: Insider trade scrape
+2026-04-24 22:43:11 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Buy, pages=5)
+2026-04-24 22:43:11 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-24 22:43:14 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-24 22:43:18 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-24 22:43:21 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-24 22:43:25 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-24 22:43:28 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-24 22:43:31 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Sale, pages=5)
+2026-04-24 22:43:31 | INFO     | scrapers.insider_scraper |   Page 1: 168 rows
+2026-04-24 22:43:34 | INFO     | scrapers.insider_scraper |   Page 2: 168 rows
+2026-04-24 22:43:37 | INFO     | scrapers.insider_scraper |   Page 3: 168 rows
+2026-04-24 22:43:41 | INFO     | scrapers.insider_scraper |   Page 4: 168 rows
+2026-04-24 22:43:44 | INFO     | scrapers.insider_scraper |   Page 5: 168 rows
+2026-04-24 22:43:47 | INFO     | scrapers.insider_scraper | Total insider rows: 840
+2026-04-24 22:43:50 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Option Exercise, pages=5)
+2026-04-24 22:43:50 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-24 22:43:54 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-24 22:43:57 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-24 22:44:00 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-24 22:44:04 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-24 22:44:07 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-24 22:44:10 | INFO     | scrapers.insider_scraper | Total unique insider trades: 391
+2026-04-24 22:44:11 | INFO     | main |   Stored 180 new insider trade rows
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: BMI | 5 Buys | $777,128
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: KLRA | 5 Buys | $326,750,016
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: GAMB | 3 Buys | $27,404
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: AVEX | 5 Buys | $1,483,000
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: ARXS | 7 Buys | $5,643,792
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CHCO | 4 Buys | $57,873
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CGTX | 3 Buys | $32,492
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PCSA | 6 Buys | $30,065
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: YORW | 4 Buys | $38,261
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: VINP | 3 Sales | $417,856
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: UTHR | 3 Sales | $18,293,860
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PHVS | 3 Sales | $865,464
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: SEIC | 3 Sales | $4,530,300
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: SE | 3 Sales | $1,965,520
+2026-04-24 22:44:11 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PRCH | 3 Sales | $1,557,197
+2026-04-24 22:44:11 | INFO     | main | JOB DONE: Insider | 180 rows | 9 buy | 6 sell | 59.8s
+2026-04-24 22:44:11 | INFO     | main | ============================================================
+2026-04-24 22:44:11 | INFO     | main | JOB START: Signal generation
+2026-04-24 22:44:11 | INFO     | main |   Scoring 281 tickers...
+2026-04-24 22:44:11 | INFO     | signals.scorer | Scored 281 tickers
+2026-04-24 22:44:11 | INFO     | signals.scanner | Running all scans...
+2026-04-24 22:44:11 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-24 22:44:11 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-24 22:44:11 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-24 22:44:11 | INFO     | signals.scanner |   mean_reversion: 3 candidates
+2026-04-24 22:44:11 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-24 22:44:11 | INFO     | main |   STRONG_BUY: 0 | BUY: 28 | REVERSION: 1
+2026-04-24 22:44:11 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-24 22:44:11 | INFO     | main |   Scan [mean_reversion]: 3 hits | Top: INHD
+2026-04-24 22:44:11 | INFO     | main | JOB DONE: Signals | 281 scored | 0.1s
+2026-04-24 22:44:11 | INFO     | main | ============================================================
+2026-04-24 22:44:11 | INFO     | main | JOB START: News & Calendar
+2026-04-24 22:44:11 | INFO     | main |   Scraping news for 30 top-rated tickers...
+2026-04-24 22:44:11 | INFO     | scrapers.news_scraper |   News [1/20]: MU
+2026-04-24 22:44:17 | INFO     | scrapers.news_scraper |   News [2/20]: GLOO
+2026-04-24 22:44:22 | INFO     | scrapers.news_scraper |   News [3/20]: AMAT
+2026-04-24 22:44:29 | INFO     | scrapers.news_scraper |   News [4/20]: CSTM
+2026-04-24 22:44:34 | INFO     | scrapers.news_scraper |   News [5/20]: GCT
+2026-04-24 22:44:40 | INFO     | scrapers.news_scraper |   News [6/20]: KLAC
+2026-04-24 22:44:46 | INFO     | scrapers.news_scraper |   News [7/20]: LRCX
+2026-04-24 22:44:52 | INFO     | scrapers.news_scraper |   News [8/20]: SKYT
+2026-04-24 22:44:58 | INFO     | scrapers.news_scraper |   News [9/20]: TOYO
+2026-04-24 22:45:04 | INFO     | scrapers.news_scraper |   News [10/20]: TSSI
+2026-04-24 22:45:11 | INFO     | scrapers.news_scraper |   News [11/20]: UI
+2026-04-24 22:45:17 | INFO     | scrapers.news_scraper |   News [12/20]: YOU
+2026-04-24 22:45:23 | INFO     | scrapers.news_scraper |   News [13/20]: LITE
+2026-04-24 22:45:29 | INFO     | scrapers.news_scraper |   News [14/20]: CSCO
+2026-04-24 22:45:36 | INFO     | scrapers.news_scraper |   News [15/20]: IDR
+2026-04-24 22:45:42 | INFO     | scrapers.news_scraper |   News [16/20]: ITRN
+2026-04-24 22:45:48 | INFO     | scrapers.news_scraper |   News [17/20]: NVEC
+2026-04-24 22:45:54 | INFO     | scrapers.news_scraper |   News [18/20]: NVMI
+2026-04-24 22:46:00 | INFO     | scrapers.news_scraper |   News [19/20]: THM
+2026-04-24 22:46:06 | INFO     | scrapers.news_scraper |   News [20/20]: APH
+2026-04-24 22:46:13 | INFO     | main |   Stored 626 articles, 20 sentiment scores
+2026-04-24 22:46:13 | INFO     | main |   Most bullish news: CSTM (+0.400)
+2026-04-24 22:46:13 | INFO     | main |   Most bearish news: SKYT (-0.061)
+2026-04-24 22:46:13 | INFO     | main |   Scraping economic calendar...
+2026-04-24 22:46:13 | WARNING  | scrapers.calendar_scraper | Could not find calendar table
+2026-04-24 22:46:13 | INFO     | main | JOB DONE: News & Calendar | 122.1s
+2026-04-24 22:46:13 | INFO     | main | ============================================================
+2026-04-24 22:46:13 | INFO     | main | JOB START: Signal generation
+2026-04-24 22:46:13 | ERROR    | main | Signals FAILED: name 'sector' is not defined
+Traceback (most recent call last):
+  File "/Users/markn/Documents/trading-system/main.py", line 175, in job_news_and_calendar
+    screener_rows   = get_latest_screener(DATABASE_PATH, sector=sector)
+NameError: name 'sector' is not defined
+2026-04-24 22:46:13 | INFO     | main | One-shot complete.
+2026-04-24 22:50:42 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-24 22:50:42 | INFO     | main | ============================================================
+2026-04-24 22:50:42 | INFO     | main | JOB START: Signal generation
+2026-04-24 22:50:42 | INFO     | main |   Scoring 281 tickers...
+2026-04-24 22:50:42 | INFO     | signals.scorer | Scored 281 tickers
+2026-04-24 22:50:42 | INFO     | signals.scanner | Running all scans...
+2026-04-24 22:50:42 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-24 22:50:42 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-24 22:50:42 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-24 22:50:42 | INFO     | signals.scanner |   mean_reversion: 3 candidates
+2026-04-24 22:50:42 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-24 22:50:42 | INFO     | main |   STRONG_BUY: 0 | BUY: 28 | REVERSION: 0
+2026-04-24 22:50:42 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-24 22:50:42 | INFO     | main |   Scan [mean_reversion]: 3 hits | Top: INHD
+2026-04-24 22:50:42 | INFO     | main | JOB DONE: Signals | 281 scored | 0.1s
+2026-04-24 23:05:26 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-24 23:05:26 | INFO     | main | ============================================================
+2026-04-24 23:05:26 | INFO     | main | JOB START: Signal generation
+2026-04-24 23:05:26 | INFO     | main |   Scoring 11048 tickers...
+2026-04-24 23:05:28 | INFO     | signals.scorer | Scored 11048 tickers
+2026-04-24 23:05:28 | INFO     | signals.scanner | Running all scans...
+2026-04-24 23:05:28 | INFO     | signals.scanner |   insider_oversold: 4 candidates
+2026-04-24 23:05:28 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-24 23:05:28 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-24 23:05:28 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-04-24 23:05:28 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-24 23:05:28 | INFO     | main |   STRONG_BUY: 10 | BUY: 578 | REVERSION: 0
+2026-04-24 23:05:28 | INFO     | main |   Scan [insider_oversold]: 4 hits | Top: BEAT
+2026-04-24 23:05:28 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: XNDU
+2026-04-24 23:05:28 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: CHSN
+2026-04-24 23:05:28 | INFO     | main | JOB DONE: Signals | 11048 scored | 2.1s
+2026-04-24 23:19:21 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-24 23:19:21 | INFO     | main | ============================================================
+2026-04-24 23:19:21 | INFO     | main | JOB START: Signal generation
+2026-04-24 23:19:21 | INFO     | main |   Scoring 11048 tickers...
+2026-04-24 23:19:23 | INFO     | signals.scorer | Scored 11048 tickers
+2026-04-24 23:19:23 | INFO     | signals.scanner | Running all scans...
+2026-04-24 23:19:24 | INFO     | signals.scanner |   insider_oversold: 4 candidates
+2026-04-24 23:19:24 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-24 23:19:24 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-24 23:19:24 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-04-24 23:19:24 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-24 23:19:24 | INFO     | main |   STRONG_BUY: 10 | BUY: 578 | REVERSION: 0
+2026-04-24 23:19:24 | INFO     | main |   Scan [insider_oversold]: 4 hits | Top: BEAT
+2026-04-24 23:19:24 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: XNDU
+2026-04-24 23:19:24 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: CHSN
+2026-04-24 23:19:24 | INFO     | main | JOB DONE: Signals | 11048 scored | 2.1s
