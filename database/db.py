@@ -377,7 +377,11 @@ def get_latest_screener(db_path: str, sector: str = None) -> list[dict]:
     else:
         cur.execute("""
             SELECT * FROM screener_snapshots
-            WHERE scraped_at = (SELECT MAX(scraped_at) FROM screener_snapshots)
+            WHERE (ticker, scraped_at) IN (
+                SELECT ticker, MAX(scraped_at)
+                FROM screener_snapshots
+                GROUP BY ticker
+            )
             ORDER BY sector, ticker
         """)
 
