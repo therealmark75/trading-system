@@ -89,8 +89,8 @@
         .rating-STRONG_BUY{background:rgba(0,255,136,0.15);color:#00ff88;border:1px solid rgba(0,255,136,0.3);}
         .rating-BUY{background:rgba(0,212,255,0.12);color:#00d4ff;border:1px solid rgba(0,212,255,0.25);}
         .rating-WATCH{background:rgba(255,149,0,0.1);color:#ff9500;border:1px solid rgba(255,149,0,0.2);}
-        .rating-REVERSION{background:rgba(175,82,222,0.12);color:#af52de;border:1px solid rgba(175,82,222,0.25);}
-        .rating-AVOID,.rating-SHORT_WATCH{background:rgba(255,59,92,0.1);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2);}
+        .rating-REVERSION{background:rgba(175,82,222,0.12);color:#af52de;border:1px solid rgba(175,82,222,0.25);}.rating-STRONG_HOLD{background:rgba(255,149,0,0.1);color:#ff9500;border:1px solid rgba(255,149,0,0.2);}.rating-HOLD{background:rgba(175,82,222,0.12);color:#af52de;border:1px solid rgba(175,82,222,0.25);}.rating-WEAK_HOLD{background:rgba(255,59,92,0.08);color:#ff6b35;border:1px solid rgba(255,107,53,0.2);}.rating-SELL{background:rgba(255,59,92,0.1);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2);}.rating-STRONG_SELL{background:rgba(255,0,0,0.15);color:#ff0000;border:1px solid rgba(255,0,0,0.3);}
+        .rating-AVOID,.rating-SHORT_WATCH,.rating-STRONG_SELL{background:rgba(255,59,92,0.1);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2);}
 
         /* Score bar */
         .score-bar{display:flex;align-items:center;gap:8px;}
@@ -424,7 +424,8 @@ async function openSectorDrilldown(sector) {
         const res = await fetch('/api/signals');
         allSignals = await res.json();
     }
-    sectorSignals = allSignals.filter(s => s.sector === sector);
+    const res = await fetch(`/api/signals/sector/${encodeURIComponent(sector)}`);
+sectorSignals = await res.json();
     // Sort by composite score descending
     sectorSignals.sort((a,b) => (b.composite_score||0) - (a.composite_score||0));
     renderSectorTable(sectorSignals);
