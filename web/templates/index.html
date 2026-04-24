@@ -9,7 +9,7 @@
         :root {
             --bg:#080c14;--surface:#0d1520;--surface2:#111d2e;--border:#1a2d45;
             --accent:#00d4ff;--accent2:#00ff88;--warning:#ff9500;--danger:#ff3b5c;--purple:#af52de;
-            --text:#e2eaf4;--muted:#4a6380;
+            --text:#f0f6ff;--muted:#8aa4bf;--muted2:#c2d4e8;
             --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;
         }
         *{margin:0;padding:0;box-sizing:border-box;}
@@ -22,17 +22,17 @@
         .logo{font-family:var(--mono);font-size:15px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;text-decoration:none;}
         .logo span{color:var(--accent2);}
         .header-right{display:flex;align-items:center;gap:16px;}
-        .live-dot{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--muted);}
+        .live-dot{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--muted2);}
         .live-dot::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--accent2);
             box-shadow:0 0 8px var(--accent2);animation:pulse 2s infinite;}
         @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-        .user-menu{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted);}
+        .user-menu{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted2);}
         .user-menu a{color:var(--accent);text-decoration:none;font-family:var(--mono);font-size:11px;
             padding:4px 10px;border:1px solid rgba(0,212,255,0.3);border-radius:4px;}
         .user-menu a:hover{background:rgba(0,212,255,0.08);}
         nav{display:flex;gap:4px;padding:12px 24px;border-bottom:1px solid var(--border);}
         .tab{padding:6px 16px;border-radius:4px;font-size:12px;font-weight:500;letter-spacing:0.5px;
-            cursor:pointer;border:1px solid transparent;color:var(--muted);transition:all 0.15s;
+            cursor:pointer;border:1px solid transparent;color:var(--muted2);transition:all 0.15s;
             font-family:var(--mono);text-transform:uppercase;background:none;}
         .tab:hover{color:var(--text);border-color:var(--border);}
         .tab.active{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.3);color:var(--accent);}
@@ -49,26 +49,26 @@
             padding:14px;margin-bottom:8px;display:flex;align-items:center;gap:12px;
             cursor:pointer;transition:border-color 0.15s;}
         .top10-card:hover{border-color:var(--accent);}
-        .top10-rank{font-family:var(--mono);font-size:11px;color:var(--muted);min-width:20px;}
+        .top10-rank{font-family:var(--mono);font-size:11px;color:var(--muted2);min-width:20px;}
         .top10-ticker{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent);min-width:60px;}
         .top10-info{flex:1;}
-        .top10-reason{font-size:12px;color:var(--muted);}
+        .top10-reason{font-size:12px;color:var(--muted2);}
         .top10-score{font-family:var(--mono);font-size:13px;font-weight:700;}
 
         /* Stat cards */
         .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
         .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;position:relative;overflow:hidden;}
         .stat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--accent);opacity:0.4;}
-        .stat-label{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
+        .stat-label{font-family:var(--mono);font-size:10px;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;}
         .stat-value{font-family:var(--mono);font-size:22px;font-weight:700;color:var(--accent);}
-        .stat-sub{font-size:11px;color:var(--muted);margin-top:4px;}
+        .stat-sub{font-size:11px;color:var(--muted2);margin-top:4px;}
 
         /* Filter */
         .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
-        .section-title{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);}
+        .section-title{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--muted2);}
         .filter-bar{display:flex;gap:6px;flex-wrap:wrap;}
         .filter-btn{padding:5px 12px;border-radius:4px;font-family:var(--mono);font-size:11px;cursor:pointer;
-            border:1px solid var(--border);background:transparent;color:var(--muted);transition:all 0.15s;}
+            border:1px solid var(--border);background:transparent;color:var(--muted2);transition:all 0.15s;}
         .filter-btn:hover{border-color:var(--accent);color:var(--accent);}
         .filter-btn.active{background:rgba(0,212,255,0.1);border-color:var(--accent);color:var(--accent);}
 
@@ -76,9 +76,9 @@
         .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
         table{width:100%;border-collapse:collapse;}
         th{background:var(--surface2);padding:10px 14px;text-align:left;font-family:var(--mono);
-            font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);
+            font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted2);
             border-bottom:1px solid var(--border);white-space:nowrap;}
-        td{padding:10px 14px;border-bottom:1px solid rgba(26,45,69,0.5);vertical-align:middle;}
+        td{padding:10px 14px;border-bottom:1px solid rgba(26,45,69,0.5);vertical-align:middle;color:var(--text);}
         tr:last-child td{border-bottom:none;}
         tr:hover td{background:rgba(0,212,255,0.03);}
         .ticker-cell{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--accent);cursor:pointer;}
@@ -102,11 +102,17 @@
         /* Sectors */
         .sector-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-bottom:20px;}
         .sector-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px;position:relative;overflow:hidden;cursor:pointer;transition:border-color 0.15s;}
-        .sector-card:hover{border-color:var(--accent);}
-        .sector-name{font-size:12px;font-weight:600;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+        .sector-card:hover{border-color:var(--accent);transform:translateY(-1px);}
+        .sector-name{font-size:13px;font-weight:600;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text);}
         .sector-change{font-family:var(--mono);font-size:20px;font-weight:700;margin-bottom:6px;}
-        .sector-meta{display:flex;gap:10px;font-size:11px;color:var(--muted);}
+        .sector-meta{display:flex;gap:10px;font-size:11px;color:var(--muted2);}
         .sector-bar{position:absolute;bottom:0;left:0;height:3px;transition:width 0.6s;}
+
+        /* Sector drilldown back button */
+        .back-btn{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:4px;
+            font-family:var(--mono);font-size:11px;cursor:pointer;border:1px solid var(--border);
+            background:transparent;color:var(--muted2);transition:all 0.15s;margin-bottom:16px;}
+        .back-btn:hover{border-color:var(--accent);color:var(--accent);}
 
         /* Sentiment */
         .sentiment-track{width:80px;height:6px;background:var(--border);border-radius:3px;position:relative;overflow:hidden;display:inline-block;}
@@ -114,41 +120,23 @@
         .sentiment-fill-neg{position:absolute;right:50%;top:0;height:100%;background:var(--danger);border-radius:3px 0 0 3px;}
 
         /* Run log */
-        .log-entry{display:flex;align-items:center;gap:12px;padding:8px 14px;border-bottom:1px solid rgba(26,45,69,0.5);font-size:12px;}
+        .log-entry{display:flex;align-items:center;gap:12px;padding:8px 14px;border-bottom:1px solid rgba(26,45,69,0.5);font-size:12px;color:var(--text);}
         .log-status{font-family:var(--mono);font-size:10px;padding:2px 6px;border-radius:3px;}
         .status-SUCCESS{background:rgba(0,255,136,0.15);color:var(--accent2);}
         .status-FAILED{background:rgba(255,59,92,0.15);color:var(--danger);}
-        .log-time{font-family:var(--mono);color:var(--muted);font-size:11px;}
-        .log-rows{font-family:var(--mono);color:var(--muted);margin-left:auto;font-size:11px;}
+        .log-time{font-family:var(--mono);color:var(--muted2);font-size:11px;}
+        .log-rows{font-family:var(--mono);color:var(--muted2);margin-left:auto;font-size:11px;}
 
         /* Loading */
-        .loading{text-align:center;padding:40px;color:var(--muted);font-family:var(--mono);font-size:12px;}
+        .loading{text-align:center;padding:40px;color:var(--muted2);font-family:var(--mono);font-size:12px;}
         .spinner{display:inline-block;width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--accent);
             border-radius:50%;animation:spin 0.8s linear infinite;margin-right:8px;vertical-align:middle;}
         @keyframes spin{to{transform:rotate(360deg)}}
 
-        /* Modal */
-        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);z-index:200;align-items:center;justify-content:center;}
-        .modal-overlay.open{display:flex;}
-        .modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;width:90%;max-width:680px;max-height:85vh;overflow-y:auto;padding:24px;}
-        .modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
-        .modal-ticker-name{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--accent);}
-        .modal-close{cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--text);padding:4px 10px;border-radius:4px;font-size:16px;}
-        .modal-close:hover{border-color:var(--danger);color:var(--danger);}
-        .modal-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
-        .modal-stat{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px;}
-        .modal-stat-label{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;}
-        .modal-stat-value{font-family:var(--mono);font-size:18px;font-weight:700;}
-        .modal-actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
-        .btn-wl{padding:8px 16px;border-radius:6px;border:none;font-family:var(--mono);font-size:11px;font-weight:700;cursor:pointer;transition:opacity 0.15s;}
-        .btn-add{background:var(--accent2);color:var(--bg);}
-        .btn-remove{background:var(--danger);color:white;}
-        .btn-add:hover,.btn-remove:hover{opacity:0.85;}
-
         ::-webkit-scrollbar{width:5px;}
         ::-webkit-scrollbar-track{background:var(--bg);}
         ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-        @media(max-width:768px){header{padding:0 14px;}nav{padding:10px 14px;overflow-x:auto;}.top10-grid{grid-template-columns:1fr;}.modal-grid{grid-template-columns:1fr;}}
+        @media(max-width:768px){header{padding:0 14px;}nav{padding:10px 14px;overflow-x:auto;}.top10-grid{grid-template-columns:1fr;}}
     </style>
 </head>
 <body>
@@ -156,7 +144,7 @@
     <a href="/" class="logo">Signal<span>Intel</span></a>
     <div class="header-right">
         <div class="live-dot">LIVE</div>
-        <span id="last-updated" style="font-family:var(--mono);font-size:11px;color:var(--muted)"></span>
+        <span id="last-updated" style="font-family:var(--mono);font-size:11px;color:var(--muted2)"></span>
         <div class="user-menu">
             <span>{{ user.username if user else '' }}</span>
             <a href="/watchlist">Watchlist</a>
@@ -177,25 +165,21 @@
 <!-- TODAY'S TOP 10 -->
 <div id="panel-today" class="panel active">
     <div class="section-header" style="margin-bottom:20px">
-        <div class="section-title">Today's Top 10 Signals — {{ now }}</div>
+        <div class="section-title">Today's Top 10 Signals —</div>
     </div>
     <div class="top10-grid">
         <div class="top10-section buy">
             <h3>▲ Top 5 Buy Signals</h3>
             <div id="top10-buy">
-                {% for s in top_signals if s.signal_type == 'BUY' %}
+                {% for s in top_signals[:5] if s.rating in ['BUY','STRONG_BUY'] %}
                 <div class="top10-card" onclick="openTicker('{{ s.ticker }}')">
                     <div class="top10-rank">#{{ loop.index }}</div>
                     <div class="top10-ticker">{{ s.ticker }}</div>
                     <div class="top10-info">
                         <div><span class="rating rating-{{ s.rating }}">{{ s.rating }}</span></div>
-                        <div class="top10-reason">{{ s.reason }}</div>
+                        <div class="top10-reason">{{ s.reason or 'Strong momentum' }}</div>
                     </div>
-                    <div class="top10-score" style="color:var(--accent2)">{{ '%.1f'|format(s.composite_score) if s.composite_score else '-' }}</div>
-                </div>
-                {% else %}
-                <div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:20px">
-                    Run signals to generate top picks
+                    <div class="top10-score" style="color:var(--accent2)">{{ "%.1f"|format(s.composite_score) }}</div>
                 </div>
                 {% endfor %}
             </div>
@@ -203,25 +187,23 @@
         <div class="top10-section short">
             <h3>▼ Top 5 Short Signals</h3>
             <div id="top10-short">
-                {% for s in top_signals if s.signal_type == 'SHORT' %}
+                {% for s in top_signals if s.rating in ['AVOID','SHORT_WATCH'] %}
+                {% if loop.index <= 5 %}
                 <div class="top10-card" onclick="openTicker('{{ s.ticker }}')">
                     <div class="top10-rank">#{{ loop.index }}</div>
                     <div class="top10-ticker" style="color:var(--danger)">{{ s.ticker }}</div>
                     <div class="top10-info">
                         <div><span class="rating rating-{{ s.rating }}">{{ s.rating }}</span></div>
-                        <div class="top10-reason">{{ s.reason }}</div>
+                        <div class="top10-reason">{{ s.reason or 'Multi-factor SHORT signal' }}</div>
                     </div>
-                    <div class="top10-score" style="color:var(--danger)">{{ '%.1f'|format(s.composite_score) if s.composite_score else '-' }}</div>
+                    <div class="top10-score" style="color:var(--danger)">{{ "%.1f"|format(s.composite_score) }}</div>
                 </div>
-                {% else %}
-                <div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:20px">
-                    Run signals to generate top picks
-                </div>
+                {% endif %}
                 {% endfor %}
             </div>
         </div>
     </div>
-    <div style="color:var(--muted);font-size:12px;font-family:var(--mono);margin-top:8px">
+    <div style="color:var(--muted2);font-size:12px;font-family:var(--mono);margin-top:8px">
         ⚠ Not financial advice. Always do your own research before trading.
     </div>
 </div>
@@ -245,8 +227,25 @@
 
 <!-- SECTORS -->
 <div id="panel-sectors" class="panel">
-    <div class="section-header"><div class="section-title">Sector Performance</div></div>
-    <div id="sector-grid" class="sector-grid"></div>
+    <div id="sector-overview">
+        <div class="section-header"><div class="section-title">Sector Performance</div></div>
+        <div id="sector-grid" class="sector-grid"></div>
+    </div>
+    <div id="sector-drilldown" style="display:none">
+        <button class="back-btn" onclick="closeSectorDrilldown()">← Back to Sectors</button>
+        <div class="section-header">
+            <div class="section-title" id="sector-drilldown-title"></div>
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filterSectorSignals('ALL',this)">All</button>
+                <button class="filter-btn" onclick="filterSectorSignals('STRONG_BUY',this)">Strong Buy</button>
+                <button class="filter-btn" onclick="filterSectorSignals('BUY',this)">Buy</button>
+                <button class="filter-btn" onclick="filterSectorSignals('REVERSION',this)">Reversion</button>
+                <button class="filter-btn" onclick="filterSectorSignals('SHORT_WATCH',this)">Short Watch</button>
+                <button class="filter-btn" onclick="filterSectorSignals('AVOID',this)">Avoid</button>
+            </div>
+        </div>
+        <div class="table-wrap"><div id="sector-ticker-content" class="loading"><span class="spinner"></span>Loading...</div></div>
+    </div>
 </div>
 
 <!-- INSIDERS -->
@@ -271,22 +270,11 @@
 
 </main>
 
-<!-- Ticker modal -->
-<div class="modal-overlay" id="ticker-modal" onclick="closeModal(event)">
-    <div class="modal">
-        <div class="modal-header">
-            <div class="modal-ticker-name" id="modal-ticker-name">-</div>
-            <button class="modal-close" onclick="document.getElementById('ticker-modal').classList.remove('open')">✕</button>
-        </div>
-        <div id="modal-content"><div class="loading"><span class="spinner"></span>Loading...</div></div>
-    </div>
-</div>
-
 <script>
-// ── State ──────────────────────────────────────────
 let allSignals = [];
+let sectorSignals = [];
+let currentSector = '';
 
-// ── Utils ──────────────────────────────────────────
 const fmt  = (v,d=1) => v==null?'-':Number(v).toFixed(d);
 const fmtP = (v) => v==null?'-':(v>=0?'+':'')+Number(v).toFixed(2)+'%';
 const fmtK = (v) => {
@@ -306,14 +294,13 @@ const scoreC = (s) => s>=70?'score-hi':s>=55?'score-mid':s>=45?'score-lo':'score
 const barC   = (s) => s>=70?'#00ff88':s>=55?'#00d4ff':s>=45?'#ff9500':'#ff3b5c';
 
 function scoreBar(val) {
-    if(val==null) return '<span style="color:var(--muted)">-</span>';
+    if(val==null) return '<span style="color:var(--muted2)">-</span>';
     return `<div class="score-bar">
         <span class="score-num ${scoreC(val)}">${fmt(val)}</span>
         <div class="bar-track"><div class="bar-fill" style="width:${Math.min(100,val)}%;background:${barC(val)}"></div></div>
     </div>`;
 }
 
-// ── Navigation ─────────────────────────────────────
 function showPanel(name, btn) {
     document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -330,12 +317,10 @@ function showPanel(name, btn) {
 async function loadSignals() {
     const res = await fetch('/api/signals');
     allSignals = await res.json();
-    const sum  = await fetch('/api/signal_summary').then(r=>r.json());
 
     const totalBuy   = allSignals.filter(s=>['BUY','STRONG_BUY'].includes(s.rating)).length;
     const totalRev   = allSignals.filter(s=>s.rating==='REVERSION').length;
     const totalShort = allSignals.filter(s=>s.rating==='SHORT_WATCH').length;
-    const totalAvoid = allSignals.filter(s=>s.rating==='AVOID').length;
 
     document.getElementById('signal-stats').innerHTML = `
         <div class="stat-card"><div class="stat-label">Total Tickers</div><div class="stat-value">${allSignals.length.toLocaleString()}</div><div class="stat-sub">scored today</div></div>
@@ -375,7 +360,7 @@ function renderSignalTable(signals) {
         const flags = (s.flag_list||[]).map(f => {
             for(const [k,v] of Object.entries(flagMap)){
                 if(f.toLowerCase().includes(k.toLowerCase()))
-                    return `<span style="color:${colMap[k]||'var(--muted)'};font-size:11px">${v}</span>`;
+                    return `<span style="color:${colMap[k]||'var(--muted2)'};font-size:11px">${v}</span>`;
             }
             return '';
         }).filter(Boolean).join(' ');
@@ -388,7 +373,7 @@ function renderSignalTable(signals) {
             <td><span class="${scoreC(s.quality_score)}" style="font-family:var(--mono);font-size:12px">${fmt(s.quality_score)}</span></td>
             <td><span class="${scoreC(s.insider_score)}" style="font-family:var(--mono);font-size:12px">${fmt(s.insider_score)}</span></td>
             <td><span class="${scoreC(s.reversion_score)}" style="font-family:var(--mono);font-size:12px">${fmt(s.reversion_score)}</span></td>
-            <td style="font-size:12px">${flags||'<span style="color:var(--muted)">-</span>'}</td>
+            <td style="font-size:12px">${flags||'<span style="color:var(--muted2)">-</span>'}</td>
         </tr>`;
     }).join('');
 
@@ -409,7 +394,7 @@ async function loadSectors() {
         const chg = s.avg_change||0;
         const c   = chg>=0?'var(--accent2)':'var(--danger)';
         const pct = maxAbs>0?Math.abs(chg)/maxAbs*100:0;
-        return `<div class="sector-card">
+        return `<div class="sector-card" onclick="openSectorDrilldown('${s.sector.replace(/'/g,"\\'")}')">
             <div class="sector-name">${s.sector}</div>
             <div class="sector-change" style="color:${c}">${fmtP(chg)}</div>
             <div class="sector-meta">
@@ -421,6 +406,60 @@ async function loadSectors() {
             <div class="sector-bar" style="width:${pct}%;background:${c};opacity:0.5"></div>
         </div>`;
     }).join('');
+}
+
+async function openSectorDrilldown(sector) {
+    currentSector = sector;
+    document.getElementById('sector-overview').style.display = 'none';
+    document.getElementById('sector-drilldown').style.display = 'block';
+    document.getElementById('sector-drilldown-title').textContent = sector + ' — Signals';
+    document.getElementById('sector-ticker-content').innerHTML = '<div class="loading"><span class="spinner"></span>Loading...</div>';
+
+    // Reset filter buttons
+    document.querySelectorAll('#sector-drilldown .filter-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelector('#sector-drilldown .filter-btn').classList.add('active');
+
+    // Fetch all signals and filter by sector
+    if(!allSignals.length) {
+        const res = await fetch('/api/signals');
+        allSignals = await res.json();
+    }
+    sectorSignals = allSignals.filter(s => s.sector === sector);
+    // Sort by composite score descending
+    sectorSignals.sort((a,b) => (b.composite_score||0) - (a.composite_score||0));
+    renderSectorTable(sectorSignals);
+}
+
+function closeSectorDrilldown() {
+    document.getElementById('sector-overview').style.display = 'block';
+    document.getElementById('sector-drilldown').style.display = 'none';
+}
+
+function filterSectorSignals(rating, btn) {
+    document.querySelectorAll('#sector-drilldown .filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const filtered = rating==='ALL' ? sectorSignals : sectorSignals.filter(s=>s.rating===rating);
+    renderSectorTable(filtered);
+}
+
+function renderSectorTable(signals) {
+    if(!signals.length){
+        document.getElementById('sector-ticker-content').innerHTML='<div class="loading">No signals for this sector</div>';return;
+    }
+    const rows = signals.map(s => `<tr>
+        <td><span class="ticker-cell" onclick="openTicker('${s.ticker}')">${s.ticker}</span></td>
+        <td style="color:var(--muted2);font-size:12px">${s.industry||'-'}</td>
+        <td><span class="rating rating-${s.rating}">${s.rating}</span></td>
+        <td>${scoreBar(s.composite_score)}</td>
+        <td><span class="${scoreC(s.momentum_score)}" style="font-family:var(--mono);font-size:12px">${fmt(s.momentum_score)}</span></td>
+        <td><span class="${scoreC(s.quality_score)}" style="font-family:var(--mono);font-size:12px">${fmt(s.quality_score)}</span></td>
+        <td><span class="${scoreC(s.insider_score)}" style="font-family:var(--mono);font-size:12px">${fmt(s.insider_score)}</span></td>
+    </tr>`).join('');
+
+    document.getElementById('sector-ticker-content').innerHTML = `<table>
+        <thead><tr><th>Ticker</th><th>Industry</th><th>Rating</th><th>Score</th><th>Mom</th><th>Qual</th><th>Insider</th></tr></thead>
+        <tbody>${rows}</tbody>
+    </table>`;
 }
 
 // ── Insiders ───────────────────────────────────────
@@ -437,7 +476,7 @@ async function loadInsiders() {
             <td><span style="color:${c};font-family:var(--mono);font-size:11px;font-weight:700">${s.signal_type}</span></td>
             <td style="font-family:var(--mono)">${s.insider_count}</td>
             <td style="font-family:var(--mono);color:${c}">${fmtK(s.total_value)}</td>
-            <td style="color:var(--muted);font-size:11px">${ago(s.detected_at)}</td>
+            <td style="color:var(--muted2);font-size:11px">${ago(s.detected_at)}</td>
         </tr>`;
     }).join('');
     document.getElementById('insider-table-content').innerHTML=`<table>
@@ -453,7 +492,7 @@ async function loadNews() {
     }
     const rows = news.map(n => {
         const s=n.avg_sentiment||0;
-        const c=s>0.05?'var(--accent2)':s<-0.05?'var(--danger)':'var(--muted)';
+        const c=s>0.05?'var(--accent2)':s<-0.05?'var(--danger)':'var(--muted2)';
         const w=Math.min(50,Math.abs(s)*100);
         const bar=s>=0?`<div class="sentiment-fill-pos" style="width:${w}%"></div>`:`<div class="sentiment-fill-neg" style="width:${w}%"></div>`;
         return `<tr>
@@ -462,7 +501,7 @@ async function loadNews() {
             <td><div class="sentiment-track">${bar}</div></td>
             <td style="color:var(--accent2)">${n.bullish_count}</td>
             <td style="color:var(--danger)">${n.bearish_count}</td>
-            <td style="color:var(--muted)">${n.article_count}</td>
+            <td style="color:var(--muted2)">${n.article_count}</td>
         </tr>`;
     }).join('');
     document.getElementById('news-table-content').innerHTML=`<table>
@@ -487,16 +526,14 @@ async function loadSystem() {
             <span class="log-status status-${r.status}">${r.status}</span>
             <span>${(r.job_name||'').replace(/_/g,' ')}</span>
             <span class="log-rows">${r.rows_added?r.rows_added.toLocaleString()+' rows':''}</span>
-            <span style="color:var(--muted);font-size:11px;font-family:var(--mono)">${r.duration_s?r.duration_s.toFixed(1)+'s':''}</span>
+            <span style="color:var(--muted2);font-size:11px;font-family:var(--mono)">${r.duration_s?r.duration_s.toFixed(1)+'s':''}</span>
         </div>`).join('')+'</div>';
 }
 
-// ── Ticker modal ────────────────────────────────────
 function openTicker(ticker) {
     window.location.href = `/ticker/${ticker}`;
 }
 
-// Auto-refresh every 5 mins
 setInterval(()=>{
     const active=document.querySelector('.panel.active')?.id?.replace('panel-','');
     if(active&&active!=='today') showPanel(active, null);

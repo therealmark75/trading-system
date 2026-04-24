@@ -9,7 +9,7 @@
         :root {
             --bg:#080c14;--surface:#0d1520;--surface2:#111d2e;--border:#1a2d45;
             --accent:#00d4ff;--accent2:#00ff88;--warning:#ff9500;--danger:#ff3b5c;--purple:#af52de;
-            --text:#e2eaf4;--muted:#4a6380;
+            --text:#f0f6ff;--muted:#8aa4bf;--muted2:#c2d4e8;
             --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;
         }
         *{margin:0;padding:0;box-sizing:border-box;}
@@ -25,7 +25,7 @@
         .logo span{color:var(--accent2);}
         .header-right{display:flex;align-items:center;gap:12px;}
         .btn-back{padding:6px 14px;border-radius:4px;border:1px solid var(--border);
-            background:transparent;color:var(--muted);font-family:var(--mono);font-size:11px;
+            background:transparent;color:var(--muted2);font-family:var(--mono);font-size:11px;
             cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.15s;}
         .btn-back:hover{border-color:var(--accent);color:var(--accent);}
         .btn-wl{padding:6px 14px;border-radius:4px;border:none;font-family:var(--mono);
@@ -34,18 +34,16 @@
         .btn-remove{background:var(--danger);color:white;}
         .btn-add:hover,.btn-remove:hover{opacity:0.85;}
 
-        main{max-width:1200px;margin:0 auto;padding:24px;}
+        main{max-width:1400px;margin:0 auto;padding:24px;}
 
         /* Hero */
         .hero{display:flex;align-items:flex-start;justify-content:space-between;
             margin-bottom:28px;flex-wrap:wrap;gap:16px;}
-        .hero-left{}
-        .ticker-name{font-family:var(--mono);font-size:48px;font-weight:700;
-            color:var(--accent);line-height:1;}
-        .company-name{font-size:18px;color:var(--muted);margin-top:6px;font-weight:400;}
+        .ticker-name{font-family:var(--mono);font-size:48px;font-weight:700;color:var(--accent);line-height:1;}
+        .company-name{font-size:18px;color:var(--muted2);margin-top:6px;font-weight:400;}
         .hero-badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
         .badge{padding:4px 12px;border-radius:4px;font-family:var(--mono);font-size:11px;
-            border:1px solid var(--border);color:var(--muted);}
+            border:1px solid var(--border);color:var(--muted2);}
         .hero-right{text-align:right;}
         .price-big{font-family:var(--mono);font-size:40px;font-weight:700;}
         .price-change{font-family:var(--mono);font-size:16px;margin-top:4px;}
@@ -64,8 +62,21 @@
         .signal-scores{display:flex;gap:20px;flex-wrap:wrap;}
         .score-item{text-align:center;}
         .score-item-label{font-family:var(--mono);font-size:9px;text-transform:uppercase;
-            letter-spacing:1px;color:var(--muted);margin-bottom:4px;}
+            letter-spacing:1px;color:var(--muted2);margin-bottom:4px;}
         .score-item-value{font-family:var(--mono);font-size:20px;font-weight:700;}
+
+        /* TradingView chart */
+        .chart-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+            overflow:hidden;margin-bottom:16px;}
+        .chart-header{padding:14px 20px;border-bottom:1px solid var(--border);
+            display:flex;align-items:center;justify-content:space-between;}
+        .chart-title{font-family:var(--mono);font-size:10px;text-transform:uppercase;
+            letter-spacing:2px;color:var(--muted2);}
+        .chart-intervals{display:flex;gap:4px;}
+        .interval-btn{padding:3px 8px;border-radius:3px;font-family:var(--mono);font-size:10px;
+            cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted2);transition:all 0.15s;}
+        .interval-btn:hover,.interval-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,0.08);}
+        #tv-chart-container{height:480px;width:100%;}
 
         /* Grid layout */
         .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
@@ -75,18 +86,18 @@
         /* Cards */
         .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;}
         .card-title{font-family:var(--mono);font-size:10px;text-transform:uppercase;
-            letter-spacing:2px;color:var(--muted);margin-bottom:16px;
+            letter-spacing:2px;color:var(--muted2);margin-bottom:16px;
             padding-bottom:10px;border-bottom:1px solid var(--border);}
         .stat-row{display:flex;justify-content:space-between;align-items:center;
             padding:8px 0;border-bottom:1px solid rgba(26,45,69,0.4);}
         .stat-row:last-child{border-bottom:none;}
-        .stat-row-label{color:var(--muted);font-size:13px;}
-        .stat-row-value{font-family:var(--mono);font-size:13px;font-weight:600;}
+        .stat-row-label{color:var(--muted2);font-size:13px;}
+        .stat-row-value{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text);}
 
         /* Score bars */
         .score-bar-row{margin-bottom:12px;}
         .score-bar-header{display:flex;justify-content:space-between;margin-bottom:6px;}
-        .score-bar-label{font-size:12px;color:var(--muted);}
+        .score-bar-label{font-size:12px;color:var(--muted2);}
         .score-bar-num{font-family:var(--mono);font-size:12px;font-weight:700;}
         .bar-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
         .bar-fill{height:100%;border-radius:3px;transition:width 0.8s ease;}
@@ -96,15 +107,15 @@
         table{width:100%;border-collapse:collapse;}
         th{background:var(--surface2);padding:8px 12px;text-align:left;
             font-family:var(--mono);font-size:9px;text-transform:uppercase;
-            letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);}
-        td{padding:8px 12px;border-bottom:1px solid rgba(26,45,69,0.4);font-size:13px;}
+            letter-spacing:1px;color:var(--muted2);border-bottom:1px solid var(--border);}
+        td{padding:8px 12px;border-bottom:1px solid rgba(26,45,69,0.4);font-size:13px;color:var(--text);}
         tr:last-child td{border-bottom:none;}
         tr:hover td{background:rgba(0,212,255,0.03);}
 
         /* External links */
         .ext-links{display:flex;gap:10px;flex-wrap:wrap;}
         .ext-link{padding:8px 16px;border-radius:6px;border:1px solid var(--border);
-            color:var(--muted);text-decoration:none;font-family:var(--mono);font-size:11px;
+            color:var(--muted2);text-decoration:none;font-family:var(--mono);font-size:11px;
             transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;}
         .ext-link:hover{border-color:var(--accent);color:var(--accent);}
 
@@ -114,14 +125,15 @@
         .news-headline{font-size:13px;margin-bottom:4px;line-height:1.4;}
         .news-headline a{color:var(--text);text-decoration:none;}
         .news-headline a:hover{color:var(--accent);}
-        .news-meta{display:flex;gap:12px;font-size:11px;color:var(--muted);font-family:var(--mono);}
+        .news-meta{display:flex;gap:12px;font-size:11px;color:var(--muted2);font-family:var(--mono);}
         .sent-pos{color:var(--accent2);}
         .sent-neg{color:var(--danger);}
-        .sent-neu{color:var(--muted);}
+        .sent-neu{color:var(--muted2);}
 
-        /* Score colours */
         .hi{color:var(--accent2)}.mid{color:var(--accent)}.lo{color:var(--warning)}.bad{color:var(--danger)}
 
+        .loading{text-align:center;padding:40px;color:var(--muted2);font-family:var(--mono);font-size:12px;}
+        @keyframes spin{to{transform:rotate(360deg)}}
         ::-webkit-scrollbar{width:5px;}
         ::-webkit-scrollbar-track{background:var(--bg);}
         ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
@@ -133,24 +145,27 @@
     <div class="header-right">
         <a href="/" class="btn-back">← Back</a>
         <button id="wl-btn" class="btn-wl btn-add" onclick="toggleWatchlist()">+ Watchlist</button>
-        <a href="/logout" style="color:var(--muted);font-family:var(--mono);font-size:11px;text-decoration:none">Sign out</a>
+        <a href="/logout" style="color:var(--muted2);font-family:var(--mono);font-size:11px;text-decoration:none">Sign out</a>
     </div>
 </header>
 
 <main>
     <div id="page-content">
-        <div style="text-align:center;padding:60px;color:var(--muted);font-family:var(--mono)">
+        <div style="text-align:center;padding:60px;color:var(--muted2);font-family:var(--mono)">
             <div style="display:inline-block;width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:16px"></div>
             <div>Loading {{ ticker }}...</div>
         </div>
     </div>
 </main>
 
-<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+<!-- TradingView widget script -->
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 
 <script>
 const TICKER = '{{ ticker }}';
 let inWatchlist = false;
+let tvWidget = null;
+let currentInterval = 'D';
 
 function scoreC(s) {
     if(s==null) return 'mid';
@@ -167,6 +182,48 @@ function fmtK(v) {
     if(Math.abs(v)>=1e6) return '$'+(v/1e6).toFixed(1)+'M';
     if(Math.abs(v)>=1e3) return '$'+(v/1e3).toFixed(0)+'K';
     return '$'+Number(v).toFixed(0);
+}
+
+function initTradingViewChart(symbol, interval) {
+    currentInterval = interval || 'D';
+    const container = document.getElementById('tv-chart-container');
+    if(!container) return;
+    container.innerHTML = '';
+
+    // Update interval button states
+    document.querySelectorAll('.interval-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.interval === currentInterval);
+    });
+
+    tvWidget = new TradingView.widget({
+        autosize: true,
+        symbol: symbol,
+        interval: currentInterval,
+        timezone: 'Etc/UTC',
+        theme: 'dark',
+        style: '1',
+        locale: 'en',
+        toolbar_bg: '#0d1520',
+        enable_publishing: false,
+        hide_top_toolbar: false,
+        hide_legend: false,
+        save_image: false,
+        container_id: 'tv-chart-container',
+        backgroundColor: '#080c14',
+        gridColor: 'rgba(26,45,69,0.5)',
+        studies: [
+            'RSI@tv-basicstudies',
+            'MASimple@tv-basicstudies'
+        ],
+        overrides: {
+            'mainSeriesProperties.candleStyle.upColor': '#00ff88',
+            'mainSeriesProperties.candleStyle.downColor': '#ff3b5c',
+            'mainSeriesProperties.candleStyle.borderUpColor': '#00ff88',
+            'mainSeriesProperties.candleStyle.borderDownColor': '#ff3b5c',
+            'mainSeriesProperties.candleStyle.wickUpColor': '#00ff88',
+            'mainSeriesProperties.candleStyle.wickDownColor': '#ff3b5c',
+        }
+    });
 }
 
 async function toggleWatchlist() {
@@ -190,18 +247,15 @@ async function loadPage() {
     const sc = data.screener || {};
     inWatchlist = data.in_watchlist || false;
 
-    // Update watchlist button
     const wlBtn = document.getElementById('wl-btn');
     if(inWatchlist) {
         wlBtn.textContent = '✓ In Watchlist';
         wlBtn.className = 'btn-wl btn-remove';
     }
 
-    // Price colours
     const chg = sc.change_pct || 0;
     const priceC = chg >= 0 ? 'var(--accent2)' : 'var(--danger)';
 
-    // Score bars
     const scoreBars = [
         {label:'Momentum',  val:s.momentum_score},
         {label:'Quality',   val:s.quality_score},
@@ -218,47 +272,44 @@ async function loadPage() {
             </div>
         </div>`).join('');
 
-    // Insider rows
     const insiderRows = (data.insiders||[]).map(i => {
         const buy = i.transaction_type === 'Buy';
         const c   = buy ? 'var(--accent2)' : 'var(--danger)';
         return `<tr>
-            <td style="color:var(--muted);font-family:var(--mono);font-size:11px">${i.transaction_date||'-'}</td>
+            <td style="color:var(--muted2);font-family:var(--mono);font-size:11px">${i.transaction_date||'-'}</td>
             <td>${i.insider_name||'-'}</td>
-            <td style="color:var(--muted);font-size:12px">${i.insider_title||'-'}</td>
+            <td style="color:var(--muted2);font-size:12px">${i.insider_title||'-'}</td>
             <td style="color:${c};font-family:var(--mono);font-size:11px;font-weight:700">${i.transaction_type}</td>
             <td style="font-family:var(--mono);font-size:11px">${fmt(i.price,2) !== '-' ? '$'+fmt(i.price,2) : '-'}</td>
             <td style="font-family:var(--mono);font-size:11px;color:${c}">${fmtK(i.value)}</td>
         </tr>`;
-    }).join('') || '<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:20px">No insider activity found</td></tr>';
+    }).join('') || '<tr><td colspan="6" style="color:var(--muted2);text-align:center;padding:20px">No insider activity found</td></tr>';
 
-    // News items
     const newsItems = (data.news||[]).slice(0,10).map(n => {
         const sent = n.sentiment || 0;
-        const sc   = sent > 0.05 ? 'sent-pos' : sent < -0.05 ? 'sent-neg' : 'sent-neu';
+        const sc2  = sent > 0.05 ? 'sent-pos' : sent < -0.05 ? 'sent-neg' : 'sent-neu';
         const sLabel = sent > 0.05 ? '▲ Bullish' : sent < -0.05 ? '▼ Bearish' : '● Neutral';
         return `<div class="news-item">
             <div class="news-headline">
                 ${n.url ? `<a href="${n.url}" target="_blank" rel="noopener">${n.headline||'-'}</a>` : (n.headline||'-')}
             </div>
             <div class="news-meta">
-                <span class="${sc}">${sLabel}</span>
+                <span class="${sc2}">${sLabel}</span>
                 <span>${n.source||''}</span>
                 <span>${n.published||''}</span>
             </div>
         </div>`;
-    }).join('') || '<div style="color:var(--muted);padding:20px;font-family:var(--mono);font-size:12px">No news data. Run: python main.py news</div>';
+    }).join('') || '<div style="color:var(--muted2);padding:20px;font-family:var(--mono);font-size:12px">No news data. Run: python main.py news</div>';
 
-    // Signal history
     const histRows = (data.history||[]).slice(-10).reverse().map(h => {
         const c = h.rating === 'BUY' || h.rating === 'STRONG_BUY' ? 'var(--accent2)' :
-                  h.rating === 'AVOID' || h.rating === 'SHORT_WATCH' ? 'var(--danger)' : 'var(--muted)';
+                  h.rating === 'AVOID' || h.rating === 'SHORT_WATCH' ? 'var(--danger)' : 'var(--muted2)';
         return `<tr>
-            <td style="font-family:var(--mono);color:var(--muted);font-size:11px">${h.date||'-'}</td>
+            <td style="font-family:var(--mono);color:var(--muted2);font-size:11px">${h.date||'-'}</td>
             <td style="color:${c};font-family:var(--mono);font-size:11px;font-weight:700">${h.rating||'-'}</td>
             <td style="font-family:var(--mono);font-size:12px">${fmt(h.composite_score,1)}</td>
         </tr>`;
-    }).join('') || '<tr><td colspan="3" style="color:var(--muted);text-align:center;padding:16px">No history yet</td></tr>';
+    }).join('') || '<tr><td colspan="3" style="color:var(--muted2);text-align:center;padding:16px">No history yet</td></tr>';
 
     document.getElementById('page-content').innerHTML = `
         <!-- Hero -->
@@ -286,11 +337,11 @@ async function loadPage() {
         <!-- Signal banner -->
         <div class="signal-banner">
             <div>
-                <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:8px">SIGNAL RATING</div>
+                <div style="font-family:var(--mono);font-size:10px;color:var(--muted2);margin-bottom:8px">SIGNAL RATING</div>
                 <span class="signal-rating-big rating-${s.rating||'WATCH'}">${s.rating||'WATCH'}</span>
             </div>
             <div style="font-family:var(--mono)">
-                <div style="font-size:10px;color:var(--muted);margin-bottom:4px">COMPOSITE SCORE</div>
+                <div style="font-size:10px;color:var(--muted2);margin-bottom:4px">COMPOSITE SCORE</div>
                 <div style="font-size:36px;font-weight:700;color:${barC(s.composite_score||0)}">${fmt(s.composite_score,1)}</div>
             </div>
             <div class="signal-scores">
@@ -299,6 +350,21 @@ async function loadPage() {
                 <div class="score-item"><div class="score-item-label">Insider</div><div class="score-item-value ${scoreC(s.insider_score)}">${fmt(s.insider_score,1)}</div></div>
                 <div class="score-item"><div class="score-item-label">Reversion</div><div class="score-item-value ${scoreC(s.reversion_score)}">${fmt(s.reversion_score,1)}</div></div>
             </div>
+        </div>
+
+        <!-- TradingView Chart -->
+        <div class="chart-card">
+            <div class="chart-header">
+                <div class="chart-title">Price Chart — ${TICKER}</div>
+                <div class="chart-intervals">
+                    <button class="interval-btn" data-interval="5" onclick="initTradingViewChart('${TICKER}','5')">5m</button>
+                    <button class="interval-btn" data-interval="15" onclick="initTradingViewChart('${TICKER}','15')">15m</button>
+                    <button class="interval-btn" data-interval="60" onclick="initTradingViewChart('${TICKER}','60')">1H</button>
+                    <button class="interval-btn" data-interval="D" onclick="initTradingViewChart('${TICKER}','D')">1D</button>
+                    <button class="interval-btn" data-interval="W" onclick="initTradingViewChart('${TICKER}','W')">1W</button>
+                </div>
+            </div>
+            <div id="tv-chart-container"></div>
         </div>
 
         <!-- Score breakdown + Fundamentals -->
@@ -318,7 +384,7 @@ async function loadPage() {
             </div>
         </div>
 
-        <!-- Technicals + Short data -->
+        <!-- Technicals + 52W + Short -->
         <div class="grid-3">
             <div class="card">
                 <div class="card-title">Technical</div>
@@ -330,8 +396,8 @@ async function loadPage() {
             </div>
             <div class="card">
                 <div class="card-title">52-Week Range</div>
-                <div class="stat-row"><span class="stat-row-label">vs 52W High</span><span class="stat-row-value" style="color:${(sc.high_52w_pct||0)>-5?'var(--accent2)':'var(--muted)'}">${fmtP(sc.high_52w_pct)}</span></div>
-                <div class="stat-row"><span class="stat-row-label">vs 52W Low</span><span class="stat-row-value" style="color:${(sc.low_52w_pct||0)<10?'var(--purple)':'var(--muted)'}">${fmtP(sc.low_52w_pct)}</span></div>
+                <div class="stat-row"><span class="stat-row-label">vs 52W High</span><span class="stat-row-value" style="color:${(sc.high_52w_pct||0)>-5?'var(--accent2)':'var(--muted2)'}">${fmtP(sc.high_52w_pct)}</span></div>
+                <div class="stat-row"><span class="stat-row-label">vs 52W Low</span><span class="stat-row-value" style="color:${(sc.low_52w_pct||0)<10?'var(--purple)':'var(--muted2)'}">${fmtP(sc.low_52w_pct)}</span></div>
                 <div class="stat-row"><span class="stat-row-label">Avg Volume</span><span class="stat-row-value">${sc.avg_volume?Number(sc.avg_volume).toLocaleString():'-'}</span></div>
             </div>
             <div class="card">
@@ -370,6 +436,9 @@ async function loadPage() {
             </div>
         </div>
     `;
+
+    // Init chart after DOM is ready
+    setTimeout(() => initTradingViewChart(TICKER, 'D'), 100);
 }
 
 loadPage();
