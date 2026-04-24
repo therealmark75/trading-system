@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignalIntel — {{ ticker }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:#080c14;--surface:#0d1520;--surface2:#111d2e;--border:#1a2d45;
+            --accent:#00d4ff;--accent2:#00ff88;--warning:#ff9500;--danger:#ff3b5c;--purple:#af52de;
+            --text:#e2eaf4;--muted:#4a6380;
+            --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;
+            background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),
+            linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
+            background-size:40px 40px;}
+        header{position:sticky;top:0;z-index:100;background:rgba(8,12,20,0.95);
+            backdrop-filter:blur(12px);border-bottom:1px solid var(--border);
+            padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;}
+        .logo{font-family:var(--mono);font-size:15px;color:var(--accent);letter-spacing:2px;
+            text-transform:uppercase;text-decoration:none;}
+        .logo span{color:var(--accent2);}
+        .header-right{display:flex;align-items:center;gap:12px;}
+        .btn-back{padding:6px 14px;border-radius:4px;border:1px solid var(--border);
+            background:transparent;color:var(--muted);font-family:var(--mono);font-size:11px;
+            cursor:pointer;text-decoration:none;display:inline-block;transition:all 0.15s;}
+        .btn-back:hover{border-color:var(--accent);color:var(--accent);}
+        .btn-wl{padding:6px 14px;border-radius:4px;border:none;font-family:var(--mono);
+            font-size:11px;font-weight:700;cursor:pointer;transition:opacity 0.15s;}
+        .btn-add{background:var(--accent2);color:var(--bg);}
+        .btn-remove{background:var(--danger);color:white;}
+        .btn-add:hover,.btn-remove:hover{opacity:0.85;}
+
+        main{max-width:1200px;margin:0 auto;padding:24px;}
+
+        /* Hero */
+        .hero{display:flex;align-items:flex-start;justify-content:space-between;
+            margin-bottom:28px;flex-wrap:wrap;gap:16px;}
+        .hero-left{}
+        .ticker-name{font-family:var(--mono);font-size:48px;font-weight:700;
+            color:var(--accent);line-height:1;}
+        .company-name{font-size:18px;color:var(--muted);margin-top:6px;font-weight:400;}
+        .hero-badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
+        .badge{padding:4px 12px;border-radius:4px;font-family:var(--mono);font-size:11px;
+            border:1px solid var(--border);color:var(--muted);}
+        .hero-right{text-align:right;}
+        .price-big{font-family:var(--mono);font-size:40px;font-weight:700;}
+        .price-change{font-family:var(--mono);font-size:16px;margin-top:4px;}
+
+        /* Signal banner */
+        .signal-banner{background:var(--surface);border:1px solid var(--border);
+            border-radius:10px;padding:20px;margin-bottom:20px;
+            display:flex;align-items:center;gap:20px;flex-wrap:wrap;}
+        .signal-rating-big{padding:6px 18px;border-radius:6px;font-family:var(--mono);
+            font-size:14px;font-weight:700;letter-spacing:1px;}
+        .rating-BUY{background:rgba(0,212,255,0.15);color:#00d4ff;border:1px solid rgba(0,212,255,0.3);}
+        .rating-STRONG_BUY{background:rgba(0,255,136,0.15);color:#00ff88;border:1px solid rgba(0,255,136,0.3);}
+        .rating-WATCH{background:rgba(255,149,0,0.1);color:#ff9500;border:1px solid rgba(255,149,0,0.2);}
+        .rating-REVERSION{background:rgba(175,82,222,0.12);color:#af52de;border:1px solid rgba(175,82,222,0.25);}
+        .rating-AVOID,.rating-SHORT_WATCH{background:rgba(255,59,92,0.1);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2);}
+        .signal-scores{display:flex;gap:20px;flex-wrap:wrap;}
+        .score-item{text-align:center;}
+        .score-item-label{font-family:var(--mono);font-size:9px;text-transform:uppercase;
+            letter-spacing:1px;color:var(--muted);margin-bottom:4px;}
+        .score-item-value{font-family:var(--mono);font-size:20px;font-weight:700;}
+
+        /* Grid layout */
+        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;}
+        .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:16px;}
+        @media(max-width:900px){.grid-2,.grid-3{grid-template-columns:1fr;}.hero{flex-direction:column;}.hero-right{text-align:left;}}
+
+        /* Cards */
+        .card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:20px;}
+        .card-title{font-family:var(--mono);font-size:10px;text-transform:uppercase;
+            letter-spacing:2px;color:var(--muted);margin-bottom:16px;
+            padding-bottom:10px;border-bottom:1px solid var(--border);}
+        .stat-row{display:flex;justify-content:space-between;align-items:center;
+            padding:8px 0;border-bottom:1px solid rgba(26,45,69,0.4);}
+        .stat-row:last-child{border-bottom:none;}
+        .stat-row-label{color:var(--muted);font-size:13px;}
+        .stat-row-value{font-family:var(--mono);font-size:13px;font-weight:600;}
+
+        /* Score bars */
+        .score-bar-row{margin-bottom:12px;}
+        .score-bar-header{display:flex;justify-content:space-between;margin-bottom:6px;}
+        .score-bar-label{font-size:12px;color:var(--muted);}
+        .score-bar-num{font-family:var(--mono);font-size:12px;font-weight:700;}
+        .bar-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden;}
+        .bar-fill{height:100%;border-radius:3px;transition:width 0.8s ease;}
+
+        /* Tables */
+        .table-wrap{overflow:hidden;border-radius:8px;border:1px solid var(--border);}
+        table{width:100%;border-collapse:collapse;}
+        th{background:var(--surface2);padding:8px 12px;text-align:left;
+            font-family:var(--mono);font-size:9px;text-transform:uppercase;
+            letter-spacing:1px;color:var(--muted);border-bottom:1px solid var(--border);}
+        td{padding:8px 12px;border-bottom:1px solid rgba(26,45,69,0.4);font-size:13px;}
+        tr:last-child td{border-bottom:none;}
+        tr:hover td{background:rgba(0,212,255,0.03);}
+
+        /* External links */
+        .ext-links{display:flex;gap:10px;flex-wrap:wrap;}
+        .ext-link{padding:8px 16px;border-radius:6px;border:1px solid var(--border);
+            color:var(--muted);text-decoration:none;font-family:var(--mono);font-size:11px;
+            transition:all 0.15s;display:inline-flex;align-items:center;gap:6px;}
+        .ext-link:hover{border-color:var(--accent);color:var(--accent);}
+
+        /* News */
+        .news-item{padding:12px 0;border-bottom:1px solid rgba(26,45,69,0.4);}
+        .news-item:last-child{border-bottom:none;}
+        .news-headline{font-size:13px;margin-bottom:4px;line-height:1.4;}
+        .news-headline a{color:var(--text);text-decoration:none;}
+        .news-headline a:hover{color:var(--accent);}
+        .news-meta{display:flex;gap:12px;font-size:11px;color:var(--muted);font-family:var(--mono);}
+        .sent-pos{color:var(--accent2);}
+        .sent-neg{color:var(--danger);}
+        .sent-neu{color:var(--muted);}
+
+        /* Score colours */
+        .hi{color:var(--accent2)}.mid{color:var(--accent)}.lo{color:var(--warning)}.bad{color:var(--danger)}
+
+        ::-webkit-scrollbar{width:5px;}
+        ::-webkit-scrollbar-track{background:var(--bg);}
+        ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+    </style>
+</head>
+<body>
+<header>
+    <a href="/" class="logo">Signal<span>Intel</span></a>
+    <div class="header-right">
+        <a href="/" class="btn-back">← Back</a>
+        <button id="wl-btn" class="btn-wl btn-add" onclick="toggleWatchlist()">+ Watchlist</button>
+        <a href="/logout" style="color:var(--muted);font-family:var(--mono);font-size:11px;text-decoration:none">Sign out</a>
+    </div>
+</header>
+
+<main>
+    <div id="page-content">
+        <div style="text-align:center;padding:60px;color:var(--muted);font-family:var(--mono)">
+            <div style="display:inline-block;width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin-bottom:16px"></div>
+            <div>Loading {{ ticker }}...</div>
+        </div>
+    </div>
+</main>
+
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+
+<script>
+const TICKER = '{{ ticker }}';
+let inWatchlist = false;
+
+function scoreC(s) {
+    if(s==null) return 'mid';
+    return s>=70?'hi':s>=55?'mid':s>=45?'lo':'bad';
+}
+function barC(s) {
+    return s>=70?'#00ff88':s>=55?'#00d4ff':s>=45?'#ff9500':'#ff3b5c';
+}
+function fmt(v,d=2) { return v==null?'-':Number(v).toFixed(d); }
+function fmtP(v) { return v==null?'-':(v>=0?'+':'')+Number(v).toFixed(2)+'%'; }
+function fmtK(v) {
+    if(v==null) return '-';
+    if(Math.abs(v)>=1e9) return '$'+(v/1e9).toFixed(1)+'B';
+    if(Math.abs(v)>=1e6) return '$'+(v/1e6).toFixed(1)+'M';
+    if(Math.abs(v)>=1e3) return '$'+(v/1e3).toFixed(0)+'K';
+    return '$'+Number(v).toFixed(0);
+}
+
+async function toggleWatchlist() {
+    const btn = document.getElementById('wl-btn');
+    if(inWatchlist) {
+        await fetch('/api/watchlist/remove',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ticker:TICKER})});
+        inWatchlist = false;
+        btn.textContent = '+ Watchlist';
+        btn.className = 'btn-wl btn-add';
+    } else {
+        await fetch('/api/watchlist/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ticker:TICKER})});
+        inWatchlist = true;
+        btn.textContent = '✓ In Watchlist';
+        btn.className = 'btn-wl btn-remove';
+    }
+}
+
+async function loadPage() {
+    const data = await fetch(`/api/ticker/${TICKER}`).then(r=>r.json());
+    const s  = data.signal   || {};
+    const sc = data.screener || {};
+    inWatchlist = data.in_watchlist || false;
+
+    // Update watchlist button
+    const wlBtn = document.getElementById('wl-btn');
+    if(inWatchlist) {
+        wlBtn.textContent = '✓ In Watchlist';
+        wlBtn.className = 'btn-wl btn-remove';
+    }
+
+    // Price colours
+    const chg = sc.change_pct || 0;
+    const priceC = chg >= 0 ? 'var(--accent2)' : 'var(--danger)';
+
+    // Score bars
+    const scoreBars = [
+        {label:'Momentum',  val:s.momentum_score},
+        {label:'Quality',   val:s.quality_score},
+        {label:'Insider',   val:s.insider_score},
+        {label:'Reversion', val:s.reversion_score},
+    ].map(b => `
+        <div class="score-bar-row">
+            <div class="score-bar-header">
+                <span class="score-bar-label">${b.label}</span>
+                <span class="score-bar-num ${scoreC(b.val)}">${fmt(b.val,1)}</span>
+            </div>
+            <div class="bar-track">
+                <div class="bar-fill" style="width:${Math.min(100,b.val||0)}%;background:${barC(b.val||0)}"></div>
+            </div>
+        </div>`).join('');
+
+    // Insider rows
+    const insiderRows = (data.insiders||[]).map(i => {
+        const buy = i.transaction_type === 'Buy';
+        const c   = buy ? 'var(--accent2)' : 'var(--danger)';
+        return `<tr>
+            <td style="color:var(--muted);font-family:var(--mono);font-size:11px">${i.transaction_date||'-'}</td>
+            <td>${i.insider_name||'-'}</td>
+            <td style="color:var(--muted);font-size:12px">${i.insider_title||'-'}</td>
+            <td style="color:${c};font-family:var(--mono);font-size:11px;font-weight:700">${i.transaction_type}</td>
+            <td style="font-family:var(--mono);font-size:11px">${fmt(i.price,2) !== '-' ? '$'+fmt(i.price,2) : '-'}</td>
+            <td style="font-family:var(--mono);font-size:11px;color:${c}">${fmtK(i.value)}</td>
+        </tr>`;
+    }).join('') || '<tr><td colspan="6" style="color:var(--muted);text-align:center;padding:20px">No insider activity found</td></tr>';
+
+    // News items
+    const newsItems = (data.news||[]).slice(0,10).map(n => {
+        const sent = n.sentiment || 0;
+        const sc   = sent > 0.05 ? 'sent-pos' : sent < -0.05 ? 'sent-neg' : 'sent-neu';
+        const sLabel = sent > 0.05 ? '▲ Bullish' : sent < -0.05 ? '▼ Bearish' : '● Neutral';
+        return `<div class="news-item">
+            <div class="news-headline">
+                ${n.url ? `<a href="${n.url}" target="_blank" rel="noopener">${n.headline||'-'}</a>` : (n.headline||'-')}
+            </div>
+            <div class="news-meta">
+                <span class="${sc}">${sLabel}</span>
+                <span>${n.source||''}</span>
+                <span>${n.published||''}</span>
+            </div>
+        </div>`;
+    }).join('') || '<div style="color:var(--muted);padding:20px;font-family:var(--mono);font-size:12px">No news data. Run: python main.py news</div>';
+
+    // Signal history
+    const histRows = (data.history||[]).slice(-10).reverse().map(h => {
+        const c = h.rating === 'BUY' || h.rating === 'STRONG_BUY' ? 'var(--accent2)' :
+                  h.rating === 'AVOID' || h.rating === 'SHORT_WATCH' ? 'var(--danger)' : 'var(--muted)';
+        return `<tr>
+            <td style="font-family:var(--mono);color:var(--muted);font-size:11px">${h.date||'-'}</td>
+            <td style="color:${c};font-family:var(--mono);font-size:11px;font-weight:700">${h.rating||'-'}</td>
+            <td style="font-family:var(--mono);font-size:12px">${fmt(h.composite_score,1)}</td>
+        </tr>`;
+    }).join('') || '<tr><td colspan="3" style="color:var(--muted);text-align:center;padding:16px">No history yet</td></tr>';
+
+    document.getElementById('page-content').innerHTML = `
+        <!-- Hero -->
+        <div class="hero">
+            <div class="hero-left">
+                <div class="ticker-name">${TICKER}</div>
+                <div class="company-name">${sc.company || sc.industry || ''}</div>
+                <div class="hero-badges">
+                    ${sc.sector ? `<span class="badge">${sc.sector}</span>` : ''}
+                    ${sc.industry ? `<span class="badge">${sc.industry}</span>` : ''}
+                    ${sc.country ? `<span class="badge">${sc.country}</span>` : ''}
+                </div>
+            </div>
+            <div class="hero-right">
+                <div class="price-big" style="color:${priceC}">$${fmt(sc.price,2)}</div>
+                <div class="price-change" style="color:${priceC}">${fmtP(sc.change_pct)} today</div>
+                <div class="ext-links" style="margin-top:12px;justify-content:flex-end">
+                    <a href="https://finviz.com/quote.ashx?t=${TICKER}" target="_blank" class="ext-link">FinViz ↗</a>
+                    <a href="https://finance.yahoo.com/quote/${TICKER}" target="_blank" class="ext-link">Yahoo Finance ↗</a>
+                    <a href="https://www.tradingview.com/chart/?symbol=${TICKER}" target="_blank" class="ext-link">TradingView ↗</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signal banner -->
+        <div class="signal-banner">
+            <div>
+                <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:8px">SIGNAL RATING</div>
+                <span class="signal-rating-big rating-${s.rating||'WATCH'}">${s.rating||'WATCH'}</span>
+            </div>
+            <div style="font-family:var(--mono)">
+                <div style="font-size:10px;color:var(--muted);margin-bottom:4px">COMPOSITE SCORE</div>
+                <div style="font-size:36px;font-weight:700;color:${barC(s.composite_score||0)}">${fmt(s.composite_score,1)}</div>
+            </div>
+            <div class="signal-scores">
+                <div class="score-item"><div class="score-item-label">Momentum</div><div class="score-item-value ${scoreC(s.momentum_score)}">${fmt(s.momentum_score,1)}</div></div>
+                <div class="score-item"><div class="score-item-label">Quality</div><div class="score-item-value ${scoreC(s.quality_score)}">${fmt(s.quality_score,1)}</div></div>
+                <div class="score-item"><div class="score-item-label">Insider</div><div class="score-item-value ${scoreC(s.insider_score)}">${fmt(s.insider_score,1)}</div></div>
+                <div class="score-item"><div class="score-item-label">Reversion</div><div class="score-item-value ${scoreC(s.reversion_score)}">${fmt(s.reversion_score,1)}</div></div>
+            </div>
+        </div>
+
+        <!-- Score breakdown + Fundamentals -->
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">Score Breakdown</div>
+                ${scoreBars}
+            </div>
+            <div class="card">
+                <div class="card-title">Fundamentals</div>
+                <div class="stat-row"><span class="stat-row-label">P/E Ratio</span><span class="stat-row-value">${fmt(sc.pe_ratio,1)}</span></div>
+                <div class="stat-row"><span class="stat-row-label">Market Cap</span><span class="stat-row-value">${sc.market_cap||'-'}</span></div>
+                <div class="stat-row"><span class="stat-row-label">EPS Growth (This Year)</span><span class="stat-row-value" style="color:${(sc.eps_growth_this_yr||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.eps_growth_this_yr)}</span></div>
+                <div class="stat-row"><span class="stat-row-label">EPS Growth (Next Year)</span><span class="stat-row-value" style="color:${(sc.eps_growth_next_yr||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.eps_growth_next_yr)}</span></div>
+                <div class="stat-row"><span class="stat-row-label">Return on Equity</span><span class="stat-row-value">${fmtP(sc.roe)}</span></div>
+                <div class="stat-row"><span class="stat-row-label">Analyst Rec</span><span class="stat-row-value">${fmt(sc.analyst_recom,1)}/5</span></div>
+            </div>
+        </div>
+
+        <!-- Technicals + Short data -->
+        <div class="grid-3">
+            <div class="card">
+                <div class="card-title">Technical</div>
+                <div class="stat-row"><span class="stat-row-label">RSI (14)</span><span class="stat-row-value ${(sc.rsi_14||50)>70?'bad':(sc.rsi_14||50)<30?'hi':'mid'}">${fmt(sc.rsi_14,1)}</span></div>
+                <div class="stat-row"><span class="stat-row-label">50-Day SMA</span><span class="stat-row-value" style="color:${(sc.sma_50_pct||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.sma_50_pct)}</span></div>
+                <div class="stat-row"><span class="stat-row-label">200-Day SMA</span><span class="stat-row-value" style="color:${(sc.sma_200_pct||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.sma_200_pct)}</span></div>
+                <div class="stat-row"><span class="stat-row-label">Rel. Volume</span><span class="stat-row-value">${fmt(sc.rel_volume,2)}x</span></div>
+                <div class="stat-row"><span class="stat-row-label">Beta</span><span class="stat-row-value">${fmt(sc.beta,2)}</span></div>
+            </div>
+            <div class="card">
+                <div class="card-title">52-Week Range</div>
+                <div class="stat-row"><span class="stat-row-label">vs 52W High</span><span class="stat-row-value" style="color:${(sc.high_52w_pct||0)>-5?'var(--accent2)':'var(--muted)'}">${fmtP(sc.high_52w_pct)}</span></div>
+                <div class="stat-row"><span class="stat-row-label">vs 52W Low</span><span class="stat-row-value" style="color:${(sc.low_52w_pct||0)<10?'var(--purple)':'var(--muted)'}">${fmtP(sc.low_52w_pct)}</span></div>
+                <div class="stat-row"><span class="stat-row-label">Avg Volume</span><span class="stat-row-value">${sc.avg_volume?Number(sc.avg_volume).toLocaleString():'-'}</span></div>
+            </div>
+            <div class="card">
+                <div class="card-title">Short Data</div>
+                <div class="stat-row"><span class="stat-row-label">Short Interest</span><span class="stat-row-value" style="color:${(sc.short_interest_pct||0)>20?'var(--danger)':(sc.short_interest_pct||0)>10?'var(--warning)':'var(--text)'}">${fmtP(sc.short_interest_pct)}</span></div>
+                <div class="stat-row"><span class="stat-row-label">Insider Ownership</span><span class="stat-row-value">${fmtP(sc.insider_own_pct)}</span></div>
+                <div class="stat-row"><span class="stat-row-label">Insider Transactions</span><span class="stat-row-value">${sc.insider_transactions||'-'}</span></div>
+            </div>
+        </div>
+
+        <!-- Insider activity -->
+        <div class="card" style="margin-bottom:16px">
+            <div class="card-title">Insider Activity</div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>Date</th><th>Insider</th><th>Title</th><th>Type</th><th>Price</th><th>Value</th></tr></thead>
+                    <tbody>${insiderRows}</tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Signal history + News -->
+        <div class="grid-2">
+            <div class="card">
+                <div class="card-title">Signal History</div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>Date</th><th>Rating</th><th>Score</th></tr></thead>
+                        <tbody>${histRows}</tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-title">Recent News</div>
+                ${newsItems}
+            </div>
+        </div>
+    `;
+}
+
+loadPage();
+</script>
+</body>
+</html>

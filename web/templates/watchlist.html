@@ -174,9 +174,8 @@ async function removeTicker(ticker, btn) {
 }
 
 async function openTicker(ticker) {
-    document.getElementById('modal-overlay').style.display = 'flex';
-    document.getElementById('modal-ticker').textContent = ticker;
-    document.getElementById('modal-body').innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);font-family:var(--mono)">Loading...</div>';
+    window.location.href = `/ticker/${ticker}`;
+}
 
     const data = await fetch(`/api/ticker/${ticker}`).then(r => r.json());
     const s = data.signal || {};
