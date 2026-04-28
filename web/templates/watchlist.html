@@ -166,67 +166,20 @@ async function addTicker() {
 }
 
 async function removeTicker(ticker, btn) {
-    await fetch('/api/watchlist/remove', {
+    const res = await fetch('/api/watchlist/remove', {
         method:'POST', headers:{'Content-Type':'application/json'},
         body: JSON.stringify({ticker})
     });
-    btn.closest('tr').remove();
+    const data = await res.json();
+    if(data.ok) {
+        btn.closest('tr').remove();
+    } else {
+        alert('Failed to remove ' + ticker);
+    }
 }
 
 async function openTicker(ticker) {
     window.location.href = `/ticker/${ticker}`;
-}
-
-    const data = await fetch(`/api/ticker/${ticker}`).then(r => r.json());
-    const s = data.signal || {};
-    const sc = data.screener || {};
-
-    const insiders = (data.insiders || []).slice(0,6).map(i => {
-        const c = i.transaction_type === 'Buy' ? 'var(--accent2)' : 'var(--danger)';
-        const v = i.value ? '$' + (i.value >= 1e6 ? (i.value/1e6).toFixed(1)+'M' : i.value.toLocaleString()) : '-';
-        return `<tr><td style="color:var(--muted);font-size:11px">${i.transaction_date||'-'}</td>
-            <td style="font-size:12px">${i.insider_name||'-'}</td>
-            <td style="color:${c};font-family:var(--mono);font-size:11px">${i.transaction_type}</td>
-            <td style="font-family:var(--mono);font-size:11px;color:${c}">${v}</td></tr>`;
-    }).join('');
-
-    const wlBtn = data.in_watchlist
-        ? `<button onclick="removeTicker('${ticker}',this);document.getElementById('modal-overlay').style.display='none'" style="background:var(--danger);border:none;color:white;padding:8px 16px;border-radius:6px;cursor:pointer;font-family:var(--mono);font-size:11px">Remove from Watchlist</button>`
-        : `<button onclick="fetch('/api/watchlist/add',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({ticker:'${ticker}'})}).then(()=>location.reload())" style="background:var(--accent2);border:none;color:var(--bg);padding:8px 16px;border-radius:6px;cursor:pointer;font-family:var(--mono);font-size:11px;font-weight:700">+ Add to Watchlist</button>`;
-
-    document.getElementById('modal-body').innerHTML = `
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px">
-            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px">
-                <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:4px">RATING</div>
-                <div><span class="rating rating-${s.rating||''}">${s.rating||'-'}</span></div>
-            </div>
-            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px">
-                <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:4px">SCORE</div>
-                <div style="font-family:var(--mono);font-size:18px;font-weight:700;color:var(--accent)">${s.composite_score?.toFixed(1)||'-'}</div>
-            </div>
-            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px">
-                <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:4px">PRICE</div>
-                <div style="font-family:var(--mono);font-size:18px;font-weight:700">$${sc.price?.toFixed(2)||'-'}</div>
-            </div>
-            <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px">
-                <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:4px">RSI (14)</div>
-                <div style="font-family:var(--mono);font-size:18px;font-weight:700">${sc.rsi_14?.toFixed(1)||'-'}</div>
-            </div>
-        </div>
-        ${insiders ? `
-        <div style="font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:10px">Recent Insider Activity</div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:6px;overflow:hidden;margin-bottom:16px">
-            <table style="width:100%;border-collapse:collapse">
-                <thead><tr style="background:rgba(0,0,0,0.3)">
-                    <th style="padding:8px 10px;text-align:left;font-family:var(--mono);font-size:9px;color:var(--muted)">Date</th>
-                    <th style="padding:8px 10px;text-align:left;font-family:var(--mono);font-size:9px;color:var(--muted)">Insider</th>
-                    <th style="padding:8px 10px;text-align:left;font-family:var(--mono);font-size:9px;color:var(--muted)">Type</th>
-                    <th style="padding:8px 10px;text-align:left;font-family:var(--mono);font-size:9px;color:var(--muted)">Value</th>
-                </tr></thead>
-                <tbody>${insiders}</tbody>
-            </table>
-        </div>` : ''}
-        <div>${wlBtn}</div>`;
 }
 
 function closeModal(e) {

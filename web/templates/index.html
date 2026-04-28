@@ -280,6 +280,7 @@
 <script>
 let allSignals = [];
 let sectorSignals = [];
+let insiderSignals = [];
 let currentSector = '';
 
 const fmt  = (v,d=1) => v==null?'-':Number(v).toFixed(d);
@@ -352,6 +353,29 @@ async function loadSignals() {
 
 // Sort state tracking
 const sortState = { signals: {col: null, asc: true}, sector: {col: null, asc: true}, insiders: {col: null, asc: true} };
+
+function renderInsiderTable(signals) {
+    const rows = signals.map(s => {
+        const buy = s.signal_type?.includes('BUY');
+        const c   = buy ? 'var(--accent2)' : 'var(--danger)';
+        return `<tr>
+            <td><span class="ticker-cell" onclick="openTicker('${s.ticker}')">${s.ticker}</span></td>
+            <td><span style="color:${c};font-family:var(--mono);font-size:11px;font-weight:700">${s.signal_type}</span></td>
+            <td style="font-family:var(--mono)">${s.insider_count}</td>
+            <td style="font-family:var(--mono);color:${c}">${fmtK(s.total_value)}</td>
+            <td style="color:var(--muted2);font-size:11px">${ago(s.detected_at)}</td>
+        </tr>`;
+    }).join('');
+    document.getElementById('insider-table-content').innerHTML = `<table>
+        <thead><tr>
+            <th onclick="sortTable('insiders','ticker')" class="sortable">Ticker ⇅</th>
+            <th onclick="sortTable('insiders','signal_type')" class="sortable">Signal ⇅</th>
+            <th onclick="sortTable('insiders','insider_count')" class="sortable">Insiders ⇅</th>
+            <th onclick="sortTable('insiders','total_value')" class="sortable">Value ⇅</th>
+            <th onclick="sortTable('insiders','detected_at')" class="sortable">Detected ⇅</th>
+        </tr></thead>
+        <tbody>${rows}</tbody></table>`;
+}
 
 function sortTable(table, col) {
     const state = sortState[table];
@@ -528,6 +552,7 @@ async function loadInsiders() {
     if(!signals.length){
         document.getElementById('insider-table-content').innerHTML='<div class="loading">No cluster signals in last 14 days</div>';return;
     }
+    insiderSignals = signals;
     const rows = signals.map(s => {
         const buy = s.signal_type?.includes('BUY');
         const c   = buy?'var(--accent2)':'var(--danger)';
