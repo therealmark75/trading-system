@@ -191,6 +191,7 @@
 <header>
     <a href="/" class="logo">Signal<span>Intel</span></a>
     <div class="header-right">
+            <button onclick="document.getElementById('ratingsModal').classList.add('open')" style="padding:6px 14px;border-radius:4px;border:1px solid var(--muted);background:transparent;color:var(--muted2);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--muted)';this.style.color='var(--muted2)'">Ratings Guide</button>
         <a href="/" class="btn-back">← Back</a>
         <button id="wl-btn" class="btn-wl btn-add" onclick="toggleWatchlist()">+ Watchlist</button>
         <a href="/logout" style="color:var(--muted2);font-family:var(--mono);font-size:11px;text-decoration:none">Sign out</a>
@@ -496,12 +497,12 @@ async function loadPage() {
             </div>
             <div class="card">
                 <div class="card-title">Fundamentals</div>
-                <div class="stat-row"><span class="stat-row-label">P/E Ratio</span><span class="stat-row-value">${fmt(sc.pe_ratio,1)}</span></div>
-                <div class="stat-row"><span class="stat-row-label">Market Cap</span><span class="stat-row-value">${sc.market_cap ? fmtMktCap(sc.market_cap) : '-'}</span></div>
-                <div class="stat-row"><span class="stat-row-label">EPS Growth (This Year)</span><span class="stat-row-value" style="color:${(sc.eps_growth_this_yr||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.eps_growth_this_yr)}</span></div>
-                <div class="stat-row"><span class="stat-row-label">EPS Growth (Next Year)</span><span class="stat-row-value" style="color:${(sc.eps_growth_next_yr||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.eps_growth_next_yr)}</span></div>
-                <div class="stat-row"><span class="stat-row-label">Return on Equity</span><span class="stat-row-value">${fmtP(sc.roe)}</span></div>
-                <div class="stat-row"><span class="stat-row-label">Analyst Rec</span><span class="stat-row-value">${fmt(sc.analyst_recom,1)}/5</span></div>
+                <div class="stat-row" title="Price-to-Earnings ratio. Lower = cheaper relative to earnings. Compare within same sector. Negative = company not yet profitable."><span class="stat-row-label">P/E Ratio <span class='score-q'>?</span></span><span class="stat-row-value">${fmt(sc.pe_ratio,1)}</span></div>
+                <div class="stat-row" title="Total market value of all shares. Large cap = $10B+. Mid cap = $2-10B. Small cap = under $2B."><span class="stat-row-label">Market Cap <span class='score-q'>?</span></span><span class="stat-row-value">${sc.market_cap ? fmtMktCap(sc.market_cap) : '-'}</span></div>
+                <div class="stat-row" title="Earnings Per Share growth this year vs last year. Positive = growing profits."><span class="stat-row-label">EPS Growth (This Year) <span class='score-q'>?</span></span><span class="stat-row-value" style="color:${(sc.eps_growth_this_yr||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.eps_growth_this_yr)}</span></div>
+                <div class="stat-row" title="Analyst forecast for EPS growth next year. Forward-looking indicator."><span class="stat-row-label">EPS Growth (Next Year) <span class='score-q'>?</span></span><span class="stat-row-value" style="color:${(sc.eps_growth_next_yr||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.eps_growth_next_yr)}</span></div>
+                <div class="stat-row" title="Net income as % of shareholder equity. Higher = more efficient use of capital. Above 15% is generally strong."><span class="stat-row-label">Return on Equity <span class='score-q'>?</span></span><span class="stat-row-value">${fmtP(sc.roe)}</span></div>
+                <div class="stat-row" title="Consensus analyst recommendation. Scale: 1 = Strong Buy, 2 = Buy, 3 = Hold, 4 = Sell, 5 = Strong Sell."><span class="stat-row-label">Analyst Rec <span class='score-q'>?</span></span><span class="stat-row-value">${fmt(sc.analyst_recom,1)}/5</span></div>
             </div>
         </div>
 
@@ -509,16 +510,16 @@ async function loadPage() {
         <div class="grid-3">
             <div class="card">
                 <div class="card-title">Technical</div>
-                <div class="stat-row"><span class="stat-row-label">RSI (14)</span><span class="stat-row-value ${(sc.rsi_14||50)>70?'bad':(sc.rsi_14||50)<30?'hi':'mid'}">${fmt(sc.rsi_14,1)}</span></div>
-                <div class="stat-row"><span class="stat-row-label">50-Day SMA</span><span class="stat-row-value" style="color:${(sc.sma_50_pct||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.sma_50_pct)}</span></div>
-                <div class="stat-row"><span class="stat-row-label">200-Day SMA</span><span class="stat-row-value" style="color:${(sc.sma_200_pct||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.sma_200_pct)}</span></div>
-                <div class="stat-row"><span class="stat-row-label">Rel. Volume</span><span class="stat-row-value">${fmt(sc.rel_volume,2)}x</span></div>
-                <div class="stat-row"><span class="stat-row-label">Beta</span><span class="stat-row-value">${fmt(sc.beta,2)}</span></div>
+                <div class="stat-row" title="Relative Strength Index. Below 30 = oversold (potential buy). Above 70 = overbought (potential sell). 50 = neutral."><span class="stat-row-label">RSI (14) <span class='score-q'>?</span></span><span class="stat-row-value ${(sc.rsi_14||50)>70?'bad':(sc.rsi_14||50)<30?'hi':'mid'}">${fmt(sc.rsi_14,1)}</span></div>
+                <div class="stat-row" title="% above or below the 50-day moving average. Positive = price above trend (bullish). Negative = price below trend (bearish)."><span class="stat-row-label">50-Day SMA <span class='score-q'>?</span></span><span class="stat-row-value" style="color:${(sc.sma_50_pct||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.sma_50_pct)}</span></div>
+                <div class="stat-row" title="% above or below the 200-day moving average. The long-term trend indicator. Positive = long-term bullish."><span class="stat-row-label">200-Day SMA <span class='score-q'>?</span></span><span class="stat-row-value" style="color:${(sc.sma_200_pct||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.sma_200_pct)}</span></div>
+                <div class="stat-row" title="Relative Volume vs average. Above 1.5x = unusual activity, possible catalyst. Below 0.5x = low interest."><span class="stat-row-label">Rel. Volume <span class='score-q'>?</span></span><span class="stat-row-value">${fmt(sc.rel_volume,2)}x</span></div>
+                <div class="stat-row" title="Beta measures volatility vs the market. Above 1 = more volatile than market. Below 1 = more stable. Negative = moves inversely."><span class="stat-row-label">Beta <span class='score-q'>?</span></span><span class="stat-row-value">${fmt(sc.beta,2)}</span></div>
             </div>
             <div class="card">
                 <div class="card-title">52-Week Range</div>
-                <div class="stat-row"><span class="stat-row-label">vs 52W High</span><span class="stat-row-value" style="color:${(sc.high_52w_pct||0)>-5?'var(--accent2)':'var(--muted2)'}">${fmtP(sc.high_52w_pct)}</span></div>
-                <div class="stat-row"><span class="stat-row-label">vs 52W Low</span><span class="stat-row-value" style="color:${(sc.low_52w_pct||0)<10?'var(--purple)':'var(--muted2)'}">${fmtP(sc.low_52w_pct)}</span></div>
+                <div class="stat-row" title="% below the 52-week high price. Near 0% = trading at or near its yearly peak. More negative = further from high."><span class="stat-row-label">vs 52W High <span class='score-q'>?</span></span><span class="stat-row-value" style="color:${(sc.high_52w_pct||0)>-5?'var(--accent2)':'var(--muted2)'}">${fmtP(sc.high_52w_pct)}</span></div>
+                <div class="stat-row" title="% above the 52-week low price. Higher = stronger recovery from its yearly floor. +50% means trading 50% above its lowest point."><span class="stat-row-label">vs 52W Low <span class='score-q'>?</span></span><span class="stat-row-value" style="color:${(sc.low_52w_pct||0)<10?'var(--purple)':'var(--muted2)'}">${fmtP(sc.low_52w_pct)}</span></div>
                 <div class="stat-row"><span class="stat-row-label">Avg Volume</span><span class="stat-row-value">${sc.avg_volume?Number(sc.avg_volume).toLocaleString():'-'}</span></div>
             </div>
             <div class="card">
@@ -608,9 +609,16 @@ async function loadPage() {
         else if(tech.overall==='SELL'){ov.style.background='rgba(255,59,92,0.1)';ov.style.color='#ff3b5c';}
         else{ov.style.background='rgba(148,163,184,0.1)';ov.style.color='#94a3b8';}
         const sigColors = {'BUY':'#00ff88','SELL':'#ff3b5c','NEUTRAL':'#64748b'};
+        const techTips = {
+            'RSI(14)': 'Relative Strength Index 0-100. Below 30 = oversold (potential buy). Above 70 = overbought (potential sell). 50 = neutral.',
+            'SMA 50':  '% above/below the 50-day moving average. Positive = price above trend (bullish). Negative = below trend (bearish).',
+            'SMA 200': '% above/below the 200-day moving average. The long-term trend indicator. Positive = long-term bullish.',
+            '52W High':'% below the 52-week high. Near 0% = at or near yearly peak. More negative = further from high.',
+            '52W Low': '% above the 52-week low. Higher number = stronger recovery from yearly floor.',
+        };
         document.getElementById('ts-signals').innerHTML = (tech.signals||[]).map(s =>
-            `<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border)">
-                <span style="color:var(--muted2)">${s.name}</span>
+            `<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border)" title="${techTips[s.name]||''}">
+                <span style="color:var(--muted2)">${s.name}${techTips[s.name] ? ' <span class=\'score-q\' style=\'cursor:help\'>?</span>' : ''}</span>
                 <span style="font-family:var(--mono);font-size:10px">
                     <span style="color:var(--muted)">${s.value}</span>
                     <span style="color:${sigColors[s.signal]||'#94a3b8'};margin-left:6px;font-weight:700">${s.signal}</span>
