@@ -87,3 +87,5 @@ ALERT_CONFIG = {
 ALERT_MIN_COMPOSITE_SCORE = 68.0    # minimum score for signal alert
 ALERT_MIN_CLUSTER_INSIDERS = 5      # minimum insiders for cluster alert
 ALERT_STRONG_BUY_ONLY = False       # True = only alert STRONG_BUY, False = BUY too
+
+NEWS_SCRAPE_TIMES     = ["08:30", "17:30"]          # market open + close

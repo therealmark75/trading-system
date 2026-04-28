@@ -82,11 +82,11 @@ def _normalise_technical(df):
         }
     return result
 
-def _fetch_with_retry(view_obj, filters_dict, retries=3, delay=5.0):
+def _fetch_with_retry(view_obj, filters_dict, retries=3, delay=5.0, columns=None):
     for attempt in range(retries):
         try:
             view_obj.set_filter(filters_dict=filters_dict)
-            df = view_obj.screener_view()
+            df = view_obj.screener_view(columns=columns) if columns else view_obj.screener_view()
             return df
         except Exception as e:
             logger.warning(f"Attempt {attempt+1}/{retries} failed: {e}")
@@ -114,6 +114,17 @@ def scrape_sector(sector, delay=2.5):
     technical = _normalise_technical(tech_df) if tech_df is not None and not tech_df.empty else {}
     time.sleep(delay + random.uniform(0,1))
 
+    # Fetch analyst recom via custom view (column 62)
+    from finvizfinance.screener.custom import Custom
+    recom_df = _fetch_with_retry(Custom(), filters, columns=[0, 62])
+    recom_data = {}
+    if recom_df is not None and not recom_df.empty:
+        for _, row in recom_df.iterrows():
+            t = str(row.get("Ticker","")).strip()
+            if t:
+                recom_data[t] = _to_float(row.get("Recom"))
+    time.sleep(delay + random.uniform(0,1))
+
     rows = []
     defaults = {
         "eps_growth_this_yr":None,"eps_growth_next_yr":None,"sales_growth_5yr":None,
@@ -126,6 +137,8 @@ def scrape_sector(sector, delay=2.5):
         row = {**base}
         row.update(financial.get(ticker, {}))
         row.update(technical.get(ticker, {}))
+        if ticker in recom_data:
+            row['analyst_recom'] = recom_data[ticker]
         for k, v in defaults.items():
             row.setdefault(k, v)
         rows.append(row)

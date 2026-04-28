@@ -774,3 +774,54 @@ def prune_old_snapshots(db_path: str, days: int = 90) -> int:
     if deleted:
         logger.info(f"Pruned {deleted} screener snapshots older than {days} days")
     return deleted
+
+
+def detect_rating_changes(db_path: str):
+    """After each signal run, check for new rating changes and log them."""
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    try:
+        # Get today's signals
+        cur.execute("""
+            SELECT ss.ticker, ss.rating, ss.composite_score, DATE(ss.scored_at) as day
+            FROM signal_scores ss
+            WHERE DATE(ss.scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
+            GROUP BY ss.ticker
+        """)
+        today_signals = cur.fetchall()
+
+        for sig in today_signals:
+            ticker = sig['ticker']
+            new_rating = sig['rating']
+            day = sig['day']
+
+            # Get last recorded rating for this ticker
+            cur.execute("""
+                SELECT new_rating FROM rating_changes
+                WHERE ticker = ?
+                ORDER BY change_date DESC LIMIT 1
+            """, (ticker,))
+            last = cur.fetchone()
+            old_rating = last['new_rating'] if last else None
+
+            if old_rating != new_rating:
+                # Get current price
+                cur.execute("""
+                    SELECT price FROM screener_snapshots
+                    WHERE ticker = ? ORDER BY scraped_at DESC LIMIT 1
+                """, (ticker,))
+                price_row = cur.fetchone()
+                price = price_row['price'] if price_row else None
+
+                cur.execute("""
+                    INSERT INTO rating_changes
+                    (ticker, old_rating, new_rating, price_at_change, change_date, composite_score)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                """, (ticker, old_rating, new_rating, price, day, sig['composite_score']))
+
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        raise e
+    finally:
+        conn.close()

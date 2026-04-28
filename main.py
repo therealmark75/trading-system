@@ -7,7 +7,7 @@ from apscheduler.triggers.cron import CronTrigger
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from config.settings import (DATABASE_PATH, SECTORS, SCREENER_SCRAPE_TIMES,
+from config.settings import (DATABASE_PATH, SECTORS, SCREENER_SCRAPE_TIMES,, NEWS_SCRAPE_TIMES
     INSIDER_SCRAPE_TIMES, INSIDER_CLUSTER_BUY_COUNT, INSIDER_CLUSTER_DAYS,
     LOG_DIR, LOG_LEVEL, REQUEST_DELAY_SECONDS)
 from database.db import (initialise_schema, insert_screener_rows, generate_top_signals_of_day, prune_old_snapshots,
@@ -108,6 +108,10 @@ def job_generate_signals(sector=None):
         duration = time.time() - start
         generate_top_signals_of_day(DATABASE_PATH)
         logger.info("Top signals of day generated")
+        
+        # Detect and log any rating changes
+        detect_rating_changes(DATABASE_PATH)
+        logger.info("Rating changes detected and logged")
         log_run(DATABASE_PATH, "signal_generation", "SUCCESS", len(signals), duration_s=duration)
         logger.info(f"JOB DONE: Signals | {len(signals)} scored | {duration:.1f}s")
         return signals, scan_results
@@ -221,6 +225,10 @@ def job_news_and_calendar(top_n: int = 30):
         duration = time.time() - start
         generate_top_signals_of_day(DATABASE_PATH)
         logger.info("Top signals of day generated")
+        
+        # Detect and log any rating changes
+        detect_rating_changes(DATABASE_PATH)
+        logger.info("Rating changes detected and logged")
         log_run(DATABASE_PATH, "signal_generation", "SUCCESS", len(signals), duration_s=duration)
         logger.info(f"JOB DONE: Signals | {len(signals)} scored | {duration:.1f}s")
         return signals, scan_results
@@ -308,11 +316,13 @@ def main():
                 id=f"signals_{t}", name=f"Signals {h2:02d}:{m2:02d}",
             )
 
-        scheduler.add_job(
-            job_news_and_calendar,
-            CronTrigger(hour=17, minute=30, day_of_week="mon-fri"),
-            id="news_daily", name="News & Calendar 17:30",
-        )
+        for t in NEWS_SCRAPE_TIMES:
+            h, m = t.split(":")
+            scheduler.add_job(
+                job_news_and_calendar,
+                CronTrigger(hour=int(h), minute=int(m), day_of_week="mon-fri"),
+                id=f"news_{t}", name=f"News & Calendar {t}",
+            )
 
         # ── Startup job: run signals immediately on launch ──
         from apscheduler.triggers.date import DateTrigger
