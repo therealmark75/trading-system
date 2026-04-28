@@ -2858,3 +2858,4 @@ NameError: name 'detect_rating_changes' is not defined
 2026-04-28 14:49:08 | INFO     | main | Rating changes detected and logged
 2026-04-28 14:49:08 | INFO     | main | JOB DONE: Signals | 11062 scored | 2.5s
 2026-04-28 14:49:08 | INFO     | apscheduler.executors.default | Job "Startup signal generation (trigger: date[2026-04-28 14:49:05 BST], next run at: 2026-04-28 14:49:05 BST)" executed successfully
+2026-04-28 15:06:56 | INFO     | main | Scheduler stopped.
