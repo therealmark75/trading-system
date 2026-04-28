@@ -776,6 +776,32 @@ def prune_old_snapshots(db_path: str, days: int = 90) -> int:
     return deleted
 
 
+
+def update_analyst_recom(db_path: str, recom_map: dict) -> int:
+    """
+    Update analyst_recom in screener_snapshots for a dict of {ticker: recom}.
+    Updates only the most recent snapshot row per ticker.
+    Returns number of rows updated.
+    """
+    if not recom_map:
+        return 0
+    conn = get_connection(db_path)
+    cur = conn.cursor()
+    updated = 0
+    for ticker, recom in recom_map.items():
+        cur.execute("""
+            UPDATE screener_snapshots
+            SET analyst_recom = ?
+            WHERE ticker = ?
+            AND scraped_at = (
+                SELECT MAX(scraped_at) FROM screener_snapshots WHERE ticker = ?
+            )
+        """, (recom, ticker, ticker))
+        updated += cur.rowcount
+    conn.commit()
+    conn.close()
+    return updated
+
 def detect_rating_changes(db_path: str):
     """After each signal run, check for new rating changes and log them."""
     conn = get_connection(db_path)

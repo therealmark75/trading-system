@@ -10,11 +10,12 @@ sys.path.insert(0, str(Path(__file__).parent))
 from config.settings import (DATABASE_PATH, SECTORS, SCREENER_SCRAPE_TIMES, NEWS_SCRAPE_TIMES,
     INSIDER_SCRAPE_TIMES, INSIDER_CLUSTER_BUY_COUNT, INSIDER_CLUSTER_DAYS,
     LOG_DIR, LOG_LEVEL, REQUEST_DELAY_SECONDS)
-from database.db import (initialise_schema, insert_screener_rows, generate_top_signals_of_day, prune_old_snapshots,
-    insert_insider_trades, insert_insider_signal, insert_signal_scores, detect_rating_changes,
+from database.db import (get_connection, initialise_schema, insert_screener_rows, generate_top_signals_of_day, prune_old_snapshots,
+    insert_insider_trades, insert_insider_signal, insert_signal_scores, detect_rating_changes, update_analyst_recom,
     insert_news_articles, insert_ticker_sentiment, insert_calendar_events,
     log_run, get_latest_screener, get_recent_insiders, get_cluster_signals,
     get_top_signals, get_ticker_sentiment)
+from scrapers.quote_scraper import scrape_recom_for_tickers
 from scrapers.screener_scraper import scrape_all_sectors
 from scrapers.insider_scraper import scrape_all_insider_types, detect_cluster_signals
 from signals.scorer import score_all_tickers
@@ -119,6 +120,55 @@ def job_generate_signals(sector=None):
         logger.error(f"Signals FAILED: {e}", exc_info=True)
         log_run(DATABASE_PATH, "signal_generation", "FAILED", error_msg=str(e), duration_s=time.time()-start)
         return [], {}
+
+
+def job_recom_priority():
+    """
+    Scrape analyst recom from individual FinViz ticker pages
+    for high-priority tickers: watchlist + today's top signals.
+    Runs after main screener job.
+    """
+    start = time.time()
+    logger.info("JOB START: Analyst Recom (priority tickers)")
+    try:
+        conn = get_connection(DATABASE_PATH)
+        cur = conn.cursor()
+
+        # Get all watchlist tickers (across all users)
+        cur.execute("SELECT DISTINCT ticker FROM watchlists")
+        watchlist_tickers = [r[0] for r in cur.fetchall()]
+
+        # Get today's top signal tickers
+        cur.execute("""
+            SELECT DISTINCT ticker FROM top_signals_of_day
+            WHERE signal_date = DATE('now')
+        """)
+        top_tickers = [r[0] for r in cur.fetchall()]
+
+        conn.close()
+
+        # Deduplicate, preserve order (watchlist first)
+        seen = set()
+        priority_tickers = []
+        for t in watchlist_tickers + top_tickers:
+            if t not in seen:
+                seen.add(t)
+                priority_tickers.append(t)
+
+        if not priority_tickers:
+            logger.info("JOB DONE: Recom | no priority tickers found")
+            return
+
+        logger.info(f"  Priority tickers: {len(priority_tickers)} ({len(watchlist_tickers)} watchlist + {len(top_tickers)} top signals)")
+
+        recom_map = scrape_recom_for_tickers(priority_tickers, delay=1.5)
+        updated = update_analyst_recom(DATABASE_PATH, recom_map)
+
+        duration = time.time() - start
+        logger.info(f"JOB DONE: Recom | {updated} rows updated | {duration:.1f}s")
+
+    except Exception as e:
+        logger.error(f"Recom job FAILED: {e}", exc_info=True)
 
 def job_news_and_calendar(top_n: int = 30):
     """Scrape news sentiment for top BUY signals + economic calendar."""
@@ -314,6 +364,16 @@ def main():
                 job_generate_signals,
                 CronTrigger(hour=h2, minute=m2, day_of_week="mon-fri"),
                 id=f"signals_{t}", name=f"Signals {h2:02d}:{m2:02d}",
+            )
+
+        for t in SCREENER_SCRAPE_TIMES:
+            h, m = t.split(":")
+            m2 = (int(m) + 35) % 60
+            h2 = int(h) + (1 if int(m) + 35 >= 60 else 0)
+            scheduler.add_job(
+                job_recom_priority,
+                CronTrigger(hour=h2, minute=m2, day_of_week="mon-fri"),
+                id=f"recom_{t}", name=f"Analyst Recom {h2:02d}:{m2:02d}",
             )
 
         for t in NEWS_SCRAPE_TIMES:
