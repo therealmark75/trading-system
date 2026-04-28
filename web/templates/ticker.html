@@ -134,7 +134,27 @@
 
         .loading{text-align:center;padding:40px;color:var(--muted2);font-family:var(--mono);font-size:12px;}
         @keyframes spin{to{transform:rotate(360deg)}}
-        ::-webkit-scrollbar{width:5px;}
+        .rating-tooltip-wrap { position: relative; display: inline-block; }
+    .rating-tooltip {
+        display: none;
+        position: absolute;
+        top: 110%;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 12px 16px;
+        z-index: 100;
+        width: 220px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .rating-tooltip-wrap:hover .rating-tooltip { display: block; }
+    .rt-row { display: flex; align-items: center; gap: 8px; padding: 3px 0; }
+    .rt-badge { font-family: var(--mono); font-size: 9px; font-weight: 700; padding: 2px 6px; border-radius: 3px; white-space: nowrap; }
+    .rt-desc { font-size: 11px; color: var(--muted2); }
+
+    ::-webkit-scrollbar{width:5px;}
         ::-webkit-scrollbar-track{background:var(--bg);}
         ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
     </style>
@@ -178,7 +198,8 @@ function fmt(v,d=2) { return v==null?'-':Number(v).toFixed(d); }
 function fmtP(v) { return v==null?'-':(v>=0?'+':'')+Number(v).toFixed(2)+'%'; }
 function fmtMktCap(v) {
     if(v==null) return '-';
-    if(typeof v === 'string') return v;
+    v = parseFloat(v);
+    if(isNaN(v)) return '-';
     if(Math.abs(v)>=1e12) return '$'+(v/1e12).toFixed(2)+'T';
     if(Math.abs(v)>=1e9) return '$'+(v/1e9).toFixed(2)+'B';
     if(Math.abs(v)>=1e6) return '$'+(v/1e6).toFixed(2)+'M';
@@ -347,7 +368,19 @@ async function loadPage() {
         <div class="signal-banner">
             <div>
                 <div style="font-family:var(--mono);font-size:10px;color:var(--muted2);margin-bottom:8px">SIGNAL RATING</div>
-                <span class="signal-rating-big rating-${s.rating||'WATCH'}">${s.rating||'WATCH'}</span>
+                <div class="rating-tooltip-wrap">
+                    <span class="signal-rating-big rating-${s.rating||'WATCH'}">${s.rating||'WATCH'} ⓘ</span>
+                    <div class="rating-tooltip">
+                        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:8px;letter-spacing:1px">RATING GUIDE</div>
+                        <div class="rt-row"><span class="rt-badge" style="background:rgba(0,255,136,0.15);color:#00ff88">STRONG BUY</span><span class="rt-desc">Highest conviction long</span></div>
+                        <div class="rt-row"><span class="rt-badge" style="background:rgba(0,212,255,0.15);color:#00d4ff">BUY</span><span class="rt-desc">Positive signal, enter</span></div>
+                        <div class="rt-row"><span class="rt-badge" style="background:rgba(148,163,184,0.15);color:#94a3b8">STRONG HOLD</span><span class="rt-desc">Good, no new entry</span></div>
+                        <div class="rt-row"><span class="rt-badge" style="background:rgba(100,116,139,0.15);color:#64748b">HOLD</span><span class="rt-desc">Neutral, watch closely</span></div>
+                        <div class="rt-row"><span class="rt-badge" style="background:rgba(255,149,0,0.15);color:#ff9500">WEAK HOLD</span><span class="rt-desc">Deteriorating, reduce</span></div>
+                        <div class="rt-row"><span class="rt-badge" style="background:rgba(255,59,92,0.15);color:#ff3b5c">SELL</span><span class="rt-desc">Exit position</span></div>
+                        <div class="rt-row"><span class="rt-badge" style="background:rgba(255,59,92,0.25);color:#ff3b5c">STRONG SELL</span><span class="rt-desc">High conviction short</span></div>
+                    </div>
+                </div>
             </div>
             <div style="font-family:var(--mono)">
                 <div style="font-size:10px;color:var(--muted2);margin-bottom:4px">COMPOSITE SCORE</div>
@@ -498,6 +531,66 @@ async function loadPage() {
     `;
 
     // Init chart after DOM is ready
+    // Fair Value
+    const fv = data.fair_value;
+    if (fv && fv.estimated) {
+        document.getElementById('fv-price').textContent = '$' + fv.estimated.toFixed(2);
+        const disc = fv.discount_pct;
+        const badge = document.getElementById('fv-badge');
+        const discEl = document.getElementById('fv-discount');
+        badge.textContent = fv.label;
+        discEl.textContent = (disc >= 0 ? '+' : '') + disc + '% vs current price';
+        if (fv.label === 'UNDERVALUED') {
+            badge.style.background='rgba(0,255,136,0.15)'; badge.style.color='#00ff88'; discEl.style.color='#00ff88';
+        } else if (fv.label === 'OVERVALUED') {
+            badge.style.background='rgba(255,59,92,0.15)'; badge.style.color='#ff3b5c'; discEl.style.color='#ff3b5c';
+        } else {
+            badge.style.background='rgba(0,212,255,0.15)'; badge.style.color='#00d4ff';
+        }
+    } else {
+        document.getElementById('fv-price').textContent = 'N/A';
+        document.getElementById('fv-discount').textContent = 'Insufficient P/E data';
+    }
+
+    // Analyst Consensus
+    const ar = sc.analyst_recom;
+    const gauge = document.getElementById('analyst-gauge');
+    const alabel = document.getElementById('analyst-label');
+    if (ar) {
+        gauge.textContent = ar.toFixed(1);
+        const labels = ['','Strong Buy','Buy','Hold','Sell','Strong Sell'];
+        const idx = Math.min(5, Math.max(1, Math.round(ar)));
+        alabel.textContent = labels[idx] || 'Hold';
+        const colors = ['','#00ff88','#00d4ff','#94a3b8','#ff9500','#ff3b5c'];
+        gauge.style.borderColor = colors[idx]; gauge.style.color = colors[idx];
+    } else {
+        gauge.textContent = 'N/A';
+        alabel.textContent = 'No analyst data available';
+    }
+
+    // Technical Summary
+    const tech = data.technical;
+    if (tech) {
+        document.getElementById('ts-buy').textContent = tech.buy || 0;
+        document.getElementById('ts-neutral').textContent = tech.neutral || 0;
+        document.getElementById('ts-sell').textContent = tech.sell || 0;
+        const ov = document.getElementById('ts-overall');
+        ov.textContent = tech.overall || 'NEUTRAL';
+        if (tech.overall==='BUY'){ov.style.background='rgba(0,255,136,0.1)';ov.style.color='#00ff88';}
+        else if(tech.overall==='SELL'){ov.style.background='rgba(255,59,92,0.1)';ov.style.color='#ff3b5c';}
+        else{ov.style.background='rgba(148,163,184,0.1)';ov.style.color='#94a3b8';}
+        const sigColors = {'BUY':'#00ff88','SELL':'#ff3b5c','NEUTRAL':'#64748b'};
+        document.getElementById('ts-signals').innerHTML = (tech.signals||[]).map(s =>
+            `<div style="display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--border)">
+                <span style="color:var(--muted2)">${s.name}</span>
+                <span style="font-family:var(--mono);font-size:10px">
+                    <span style="color:var(--muted)">${s.value}</span>
+                    <span style="color:${sigColors[s.signal]||'#94a3b8'};margin-left:6px;font-weight:700">${s.signal}</span>
+                </span>
+            </div>`
+        ).join('');
+    }
+
     setTimeout(() => initTradingViewChart(TICKER, 'D'), 100);
 }
 
