@@ -346,6 +346,87 @@ def api_ticker(ticker):
         ORDER BY date ASC
     """, (ticker,))
 
+    # Fair Value calculation (P/E vs sector average)
+    sc = screener[0] if screener else None
+    sc = dict(sc) if sc else {}
+    fair_value = None
+    fv_discount = None
+    fv_label = None
+    if sc.get('pe_ratio') and sc.get('sector') and sc.get('price'):
+        sector_pe = db_query("""
+            SELECT ROUND(AVG(pe_ratio),1) as avg_pe, ROUND(AVG(roe),1) as avg_roe
+            FROM screener_snapshots
+            WHERE sector = ? AND pe_ratio > 0 AND pe_ratio < 200
+        """, (sc['sector'],))
+        if sector_pe and sector_pe[0]['avg_pe']:
+            avg_pe = sector_pe[0]['avg_pe']
+            avg_roe = sector_pe[0]['avg_roe'] or 15
+            stock_pe = sc['pe_ratio']
+            price = sc['price']
+            # Simple fair value: if P/E below sector avg, stock is undervalued
+            fair_value = round(price * (avg_pe / stock_pe), 2)
+            fv_discount = round(((fair_value - price) / price) * 100, 1)
+            if fv_discount > 15:
+                fv_label = 'UNDERVALUED'
+            elif fv_discount < -15:
+                fv_label = 'OVERVALUED'
+            else:
+                fv_label = 'FAIR VALUE'
+
+    # Technical summary
+    tech = {'buy': 0, 'neutral': 0, 'sell': 0, 'signals': []}
+    if sc:
+        rsi = sc.get('rsi_14')
+        sma50 = sc.get('sma_50_pct')
+        sma200 = sc.get('sma_200_pct')
+        high52 = sc.get('high_52w_pct')
+        low52 = sc.get('low_52w_pct')
+
+        if rsi:
+            if rsi < 35:
+                tech['buy'] += 1; tech['signals'].append({'name':'RSI(14)','value':round(rsi,1),'signal':'BUY'})
+            elif rsi > 65:
+                tech['sell'] += 1; tech['signals'].append({'name':'RSI(14)','value':round(rsi,1),'signal':'SELL'})
+            else:
+                tech['neutral'] += 1; tech['signals'].append({'name':'RSI(14)','value':round(rsi,1),'signal':'NEUTRAL'})
+
+        if sma50 is not None:
+            if sma50 > 0:
+                tech['buy'] += 1; tech['signals'].append({'name':'SMA 50','value':round(sma50,1),'signal':'BUY'})
+            else:
+                tech['sell'] += 1; tech['signals'].append({'name':'SMA 50','value':round(sma50,1),'signal':'SELL'})
+
+        if sma200 is not None:
+            if sma200 > 0:
+                tech['buy'] += 1; tech['signals'].append({'name':'SMA 200','value':round(sma200,1),'signal':'BUY'})
+            else:
+                tech['sell'] += 1; tech['signals'].append({'name':'SMA 200','value':round(sma200,1),'signal':'SELL'})
+
+        if high52 is not None:
+            if high52 > -10:
+                tech['buy'] += 1; tech['signals'].append({'name':'52W High','value':round(high52,1),'signal':'BUY'})
+            elif high52 < -30:
+                tech['sell'] += 1; tech['signals'].append({'name':'52W High','value':round(high52,1),'signal':'SELL'})
+            else:
+                tech['neutral'] += 1; tech['signals'].append({'name':'52W High','value':round(high52,1),'signal':'NEUTRAL'})
+
+        if low52 is not None:
+            if low52 > 50:
+                tech['buy'] += 1; tech['signals'].append({'name':'52W Low','value':round(low52,1),'signal':'BUY'})
+            else:
+                tech['neutral'] += 1; tech['signals'].append({'name':'52W Low','value':round(low52,1),'signal':'NEUTRAL'})
+
+        total = tech['buy'] + tech['neutral'] + tech['sell']
+        if total > 0:
+            if tech['buy'] > tech['sell'] + tech['neutral']:
+                tech['overall'] = 'BUY'
+            elif tech['sell'] > tech['buy'] + tech['neutral']:
+                tech['overall'] = 'SELL'
+            else:
+                tech['overall'] = 'NEUTRAL'
+        else:
+            tech['overall'] = 'NEUTRAL'
+
     # Check if in watchlist
     in_watchlist = False
     if user:
@@ -354,13 +435,15 @@ def api_ticker(ticker):
         in_watchlist = len(wl) > 0
 
     return jsonify({
-        "ticker":      ticker,
-        "screener":    screener[0] if screener else {},
-        "signal":      signal[0]   if signal   else {},
-        "insiders":    insiders,
-        "news":        news,
-        "history":     history,
-        "in_watchlist":in_watchlist,
+        "ticker":       ticker,
+        "screener":     sc,
+        "signal":       dict(signal[0]) if signal else {},
+        "insiders":     insiders,
+        "news":         news,
+        "history":      history,
+        "in_watchlist": in_watchlist,
+        "fair_value":   {"estimated": fair_value, "discount_pct": fv_discount, "label": fv_label} if fair_value else None,
+        "technical":    tech,
     })
 
 

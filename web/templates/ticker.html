@@ -176,6 +176,15 @@ function barC(s) {
 }
 function fmt(v,d=2) { return v==null?'-':Number(v).toFixed(d); }
 function fmtP(v) { return v==null?'-':(v>=0?'+':'')+Number(v).toFixed(2)+'%'; }
+function fmtMktCap(v) {
+    if(v==null) return '-';
+    if(typeof v === 'string') return v;
+    if(Math.abs(v)>=1e12) return '$'+(v/1e12).toFixed(2)+'T';
+    if(Math.abs(v)>=1e9) return '$'+(v/1e9).toFixed(2)+'B';
+    if(Math.abs(v)>=1e6) return '$'+(v/1e6).toFixed(2)+'M';
+    if(Math.abs(v)>=1e3) return '$'+(v/1e3).toFixed(0)+'K';
+    return '$'+Number(v).toFixed(0);
+}
 function fmtK(v) {
     if(v==null) return '-';
     if(Math.abs(v)>=1e9) return '$'+(v/1e9).toFixed(1)+'B';
@@ -299,7 +308,7 @@ async function loadPage() {
                 <span>${n.published||''}</span>
             </div>
         </div>`;
-    }).join('') || '<div style="color:var(--muted2);padding:20px;font-family:var(--mono);font-size:12px">No news data. Run: python main.py news</div>';
+    }).join('') || '<div style="color:var(--muted2);padding:20px;font-family:var(--mono);font-size:12px">No recent news available for this ticker.</div>';
 
     const histRows = (data.history||[]).slice(-10).reverse().map(h => {
         const c = h.rating === 'BUY' || h.rating === 'STRONG_BUY' ? 'var(--accent2)' :
@@ -352,6 +361,57 @@ async function loadPage() {
             </div>
         </div>
 
+
+        <!-- Fair Value + Analyst + Technical Summary -->
+        <div class="grid-3" id="insights-row" style="margin-bottom:16px">
+
+            <!-- Fair Value -->
+            <div class="card" id="fv-card">
+                <div class="card-title">Fair Value Estimate</div>
+                <div id="fv-content" style="text-align:center;padding:12px 0">
+                    <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:4px">ESTIMATED FAIR VALUE</div>
+                    <div id="fv-price" style="font-size:32px;font-weight:700;font-family:var(--mono)">-</div>
+                    <div id="fv-badge" style="margin:8px 0;font-size:11px;font-family:var(--mono);font-weight:700;padding:4px 12px;border-radius:4px;display:inline-block">-</div>
+                    <div id="fv-discount" style="font-size:12px;color:var(--muted2)">vs current price</div>
+                    <div style="font-size:10px;color:var(--muted);margin-top:8px">Based on P/E vs sector average</div>
+                </div>
+            </div>
+
+            <!-- Analyst Consensus -->
+            <div class="card" id="analyst-card">
+                <div class="card-title">Analyst Consensus</div>
+                <div id="analyst-content" style="text-align:center;padding:12px 0">
+                    <div style="font-family:var(--mono);font-size:11px;color:var(--muted);margin-bottom:8px">RECOMMENDATION</div>
+                    <div id="analyst-gauge" style="margin:0 auto 12px;width:80px;height:80px;border-radius:50%;border:4px solid var(--border);display:flex;align-items:center;justify-content:center;font-family:var(--mono);font-size:11px;font-weight:700">-</div>
+                    <div id="analyst-label" style="font-size:11px;color:var(--muted2)">No analyst data</div>
+                    <div style="font-size:10px;color:var(--muted);margin-top:8px">Scale: 1=Strong Buy 5=Strong Sell</div>
+                </div>
+            </div>
+
+            <!-- Technical Summary -->
+            <div class="card" id="tech-summary-card">
+                <div class="card-title">Technical Summary</div>
+                <div id="tech-summary-content">
+                    <div style="display:flex;justify-content:center;gap:16px;margin-bottom:12px">
+                        <div style="text-align:center">
+                            <div id="ts-buy" style="font-family:var(--mono);font-size:24px;font-weight:700;color:var(--accent2)">-</div>
+                            <div style="font-size:10px;color:var(--muted)">BUY</div>
+                        </div>
+                        <div style="text-align:center">
+                            <div id="ts-neutral" style="font-family:var(--mono);font-size:24px;font-weight:700;color:var(--muted2)">-</div>
+                            <div style="font-size:10px;color:var(--muted)">NEUTRAL</div>
+                        </div>
+                        <div style="text-align:center">
+                            <div id="ts-sell" style="font-family:var(--mono);font-size:24px;font-weight:700;color:var(--danger)">-</div>
+                            <div style="font-size:10px;color:var(--muted)">SELL</div>
+                        </div>
+                    </div>
+                    <div id="ts-overall" style="text-align:center;font-family:var(--mono);font-size:12px;font-weight:700;padding:6px;border-radius:4px;margin-bottom:10px">-</div>
+                    <div id="ts-signals" style="font-size:11px"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- TradingView Chart -->
         <div class="chart-card">
             <div class="chart-header">
@@ -376,7 +436,7 @@ async function loadPage() {
             <div class="card">
                 <div class="card-title">Fundamentals</div>
                 <div class="stat-row"><span class="stat-row-label">P/E Ratio</span><span class="stat-row-value">${fmt(sc.pe_ratio,1)}</span></div>
-                <div class="stat-row"><span class="stat-row-label">Market Cap</span><span class="stat-row-value">${sc.market_cap||'-'}</span></div>
+                <div class="stat-row"><span class="stat-row-label">Market Cap</span><span class="stat-row-value">${sc.market_cap ? fmtMktCap(sc.market_cap) : '-'}</span></div>
                 <div class="stat-row"><span class="stat-row-label">EPS Growth (This Year)</span><span class="stat-row-value" style="color:${(sc.eps_growth_this_yr||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.eps_growth_this_yr)}</span></div>
                 <div class="stat-row"><span class="stat-row-label">EPS Growth (Next Year)</span><span class="stat-row-value" style="color:${(sc.eps_growth_next_yr||0)>=0?'var(--accent2)':'var(--danger)'}">${fmtP(sc.eps_growth_next_yr)}</span></div>
                 <div class="stat-row"><span class="stat-row-label">Return on Equity</span><span class="stat-row-value">${fmtP(sc.roe)}</span></div>

@@ -2574,3 +2574,168 @@ NameError: name 'sector' is not defined
 2026-04-28 12:06:23 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
 2026-04-28 12:06:23 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
 2026-04-28 12:06:23 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-28 12:13:33 | INFO     | scrapers.screener_scraper |   Financial: 6537 tickers from overview
+2026-04-28 12:13:33 | INFO     | scrapers.screener_scraper |   Financial: 6537 tickers from overview
+2026-04-28 12:13:33 | INFO     | scrapers.screener_scraper |   Financial: 6537 tickers from overview
+2026-04-28 12:27:59 | INFO     | scrapers.screener_scraper |   Financial: 6537 complete rows merged
+2026-04-28 12:28:00 | INFO     | scrapers.screener_scraper |   Financial: 6537 complete rows merged
+2026-04-28 12:28:00 | INFO     | scrapers.screener_scraper |   Financial: 6537 complete rows merged
+2026-04-28 12:28:04 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-28 12:28:05 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-28 12:28:05 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-28 12:28:40 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-28 12:28:40 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-28 12:28:40 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-28 12:30:00 | INFO     | apscheduler.executors.default | Running job "Signals 12:30 (trigger: cron[day_of_week='mon-fri', hour='12', minute='30'], next run at: 2026-04-29 12:30:00 BST)" (scheduled at 2026-04-28 12:30:00+01:00)
+2026-04-28 12:30:00 | INFO     | apscheduler.executors.default | Running job "Signals 12:30 (trigger: cron[day_of_week='mon-fri', hour='12', minute='30'], next run at: 2026-04-29 12:30:00 BST)" (scheduled at 2026-04-28 12:30:00+01:00)
+2026-04-28 12:30:00 | INFO     | main | ============================================================
+2026-04-28 12:30:00 | INFO     | main | ============================================================
+2026-04-28 12:30:00 | INFO     | main | JOB START: Signal generation
+2026-04-28 12:30:00 | INFO     | main | JOB START: Signal generation
+2026-04-28 12:30:00 | INFO     | apscheduler.executors.default | Running job "Signals 12:30 (trigger: cron[day_of_week='mon-fri', hour='12', minute='30'], next run at: 2026-04-29 12:30:00 BST)" (scheduled at 2026-04-28 12:30:00+01:00)
+2026-04-28 12:30:00 | INFO     | main | ============================================================
+2026-04-28 12:30:00 | INFO     | main | JOB START: Signal generation
+2026-04-28 12:30:00 | INFO     | main |   Scoring 280 tickers...
+2026-04-28 12:30:00 | INFO     | main |   Scoring 280 tickers...
+2026-04-28 12:30:00 | INFO     | main |   Scoring 280 tickers...
+2026-04-28 12:30:00 | INFO     | signals.scorer | Scored 280 tickers
+2026-04-28 12:30:00 | INFO     | signals.scorer | Scored 280 tickers
+2026-04-28 12:30:00 | INFO     | signals.scorer | Scored 280 tickers
+2026-04-28 12:30:00 | INFO     | signals.scanner | Running all scans...
+2026-04-28 12:30:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-28 12:30:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-28 12:30:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-28 12:30:00 | INFO     | signals.scanner |   mean_reversion: 2 candidates
+2026-04-28 12:30:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-28 12:30:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 24 | REVERSION: 1
+2026-04-28 12:30:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-28 12:30:00 | INFO     | main |   Scan [mean_reversion]: 2 hits | Top: INHD
+2026-04-28 12:30:00 | INFO     | main | JOB DONE: Signals | 280 scored | 0.1s
+2026-04-28 12:30:00 | INFO     | signals.scanner | Running all scans...
+2026-04-28 12:30:00 | INFO     | apscheduler.executors.default | Job "Signals 12:30 (trigger: cron[day_of_week='mon-fri', hour='12', minute='30'], next run at: 2026-04-29 12:30:00 BST)" executed successfully
+2026-04-28 12:30:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-28 12:30:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-28 12:30:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-28 12:30:00 | INFO     | signals.scanner |   mean_reversion: 2 candidates
+2026-04-28 12:30:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-28 12:30:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 24 | REVERSION: 1
+2026-04-28 12:30:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-28 12:30:00 | INFO     | main |   Scan [mean_reversion]: 2 hits | Top: INHD
+2026-04-28 12:30:00 | INFO     | main | JOB DONE: Signals | 280 scored | 0.1s
+2026-04-28 12:30:00 | INFO     | apscheduler.executors.default | Job "Signals 12:30 (trigger: cron[day_of_week='mon-fri', hour='12', minute='30'], next run at: 2026-04-29 12:30:00 BST)" executed successfully
+2026-04-28 12:30:00 | INFO     | signals.scanner | Running all scans...
+2026-04-28 12:30:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-28 12:30:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-28 12:30:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-28 12:30:00 | INFO     | signals.scanner |   mean_reversion: 2 candidates
+2026-04-28 12:30:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-28 12:30:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 24 | REVERSION: 1
+2026-04-28 12:30:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-28 12:30:00 | INFO     | main |   Scan [mean_reversion]: 2 hits | Top: INHD
+2026-04-28 12:30:00 | INFO     | main | JOB DONE: Signals | 280 scored | 0.2s
+2026-04-28 12:30:00 | INFO     | apscheduler.executors.default | Job "Signals 12:30 (trigger: cron[day_of_week='mon-fri', hour='12', minute='30'], next run at: 2026-04-29 12:30:00 BST)" executed successfully
+2026-04-28 12:30:00 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-28 12:30:00 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-28 12:30:00 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-28 12:30:05 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-28 12:30:05 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-28 12:30:05 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-28 12:30:49 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-28 12:30:49 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-28 12:30:49 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-28 12:32:27 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-28 12:32:27 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-28 12:32:28 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-28 12:32:32 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-28 12:32:32 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-28 12:32:33 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-28 12:32:48 | INFO     | scrapers.screener_scraper |   Energy: 254 tickers from overview
+2026-04-28 12:32:48 | INFO     | scrapers.screener_scraper |   Energy: 254 tickers from overview
+2026-04-28 12:32:48 | INFO     | scrapers.screener_scraper |   Energy: 254 tickers from overview
+2026-04-28 12:33:29 | INFO     | scrapers.screener_scraper |   Energy: 254 complete rows merged
+2026-04-28 12:33:29 | INFO     | scrapers.screener_scraper |   Energy: 254 complete rows merged
+2026-04-28 12:33:31 | INFO     | scrapers.screener_scraper |   Energy: 254 complete rows merged
+2026-04-28 12:33:34 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-28 12:33:34 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-28 12:33:36 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-28 12:33:50 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-28 12:33:50 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-28 12:33:52 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-28 12:34:31 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-28 12:34:32 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-28 12:34:33 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-28 12:34:36 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-28 12:34:37 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-28 12:34:38 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-28 12:34:43 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-28 12:34:44 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-28 12:34:44 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-28 12:35:05 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-28 12:35:06 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-28 12:35:08 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-28 12:35:10 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-28 12:35:11 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-28 12:35:13 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-28 12:35:28 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-28 12:35:28 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-28 12:35:30 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-28 12:36:11 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-28 12:36:13 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-28 12:36:13 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-28 12:36:16 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-28 12:36:18 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-28 12:36:18 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-28 12:36:32 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-28 12:36:33 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-28 12:36:34 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-28 12:37:12 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-28 12:37:14 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-28 12:37:15 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-28 12:37:17 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-28 12:37:19 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-28 12:37:20 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-28 12:37:34 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-28 12:37:37 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-28 12:37:37 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-28 12:38:18 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-28 12:38:20 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-28 12:38:21 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-28 12:38:23 | INFO     | main |   Stored 777 rows for Technology
+2026-04-28 12:38:23 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-28 12:38:23 | INFO     | main |   Stored 6537 rows for Financial
+2026-04-28 12:38:23 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-28 12:38:23 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-28 12:38:23 | INFO     | main |   Stored 254 rows for Energy
+2026-04-28 12:38:23 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-28 12:38:23 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-28 12:38:23 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-28 12:38:23 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-28 12:38:23 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-28 12:38:23 | INFO     | main | JOB DONE: Screener | 11034 rows | 2303.6s
+2026-04-28 12:38:23 | INFO     | apscheduler.executors.default | Job "Screener 12:00 (trigger: cron[day_of_week='mon-fri', hour='12', minute='0'], next run at: 2026-04-29 12:00:00 BST)" executed successfully
+2026-04-28 12:38:25 | INFO     | main |   Stored 777 rows for Technology
+2026-04-28 12:38:25 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-28 12:38:26 | INFO     | main |   Stored 6537 rows for Financial
+2026-04-28 12:38:26 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-28 12:38:26 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-28 12:38:26 | INFO     | main |   Stored 254 rows for Energy
+2026-04-28 12:38:26 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-28 12:38:26 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-28 12:38:26 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-28 12:38:26 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-28 12:38:26 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-28 12:38:26 | INFO     | main | JOB DONE: Screener | 11034 rows | 2306.0s
+2026-04-28 12:38:26 | INFO     | apscheduler.executors.default | Job "Screener 12:00 (trigger: cron[day_of_week='mon-fri', hour='12', minute='0'], next run at: 2026-04-29 12:00:00 BST)" executed successfully
+2026-04-28 12:38:26 | INFO     | main |   Stored 777 rows for Technology
+2026-04-28 12:38:26 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-28 12:38:26 | INFO     | main |   Stored 6537 rows for Financial
+2026-04-28 12:38:26 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-28 12:38:26 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-28 12:38:26 | INFO     | main |   Stored 254 rows for Energy
+2026-04-28 12:38:26 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-28 12:38:26 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-28 12:38:26 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-28 12:38:26 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-28 12:38:26 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-28 12:38:26 | INFO     | main | JOB DONE: Screener | 11034 rows | 2306.8s
+2026-04-28 12:38:26 | INFO     | apscheduler.executors.default | Job "Screener 12:00 (trigger: cron[day_of_week='mon-fri', hour='12', minute='0'], next run at: 2026-04-29 12:00:00 BST)" executed successfully
