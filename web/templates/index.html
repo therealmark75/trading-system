@@ -311,6 +311,39 @@ function scoreBar(val) {
     </div>`;
 }
 
+
+function applyRatingFilter(rating) {
+    const filtered = rating === "ALL" ? allSignals : allSignals.filter(s => s.rating === rating);
+    renderSignalTable(filtered);
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.filter-btn').forEach(b => {
+        if(b.getAttribute('onclick') && b.getAttribute('onclick').includes(rating)) 
+            b.classList.add('active');
+    });
+}
+
+function filterByRating(rating) {
+    // Switch to signals panel WITHOUT calling loadSignals (which would overwrite filter)
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    const panel = document.getElementById('panel-signals');
+    if(panel) panel.classList.add('active');
+    const btn = Array.from(document.querySelectorAll('.tab')).find(t => t.getAttribute('onclick') && t.getAttribute('onclick').includes("'signals'"));
+    if(btn) btn.classList.add('active');
+    
+    if(allSignals && allSignals.length > 0) {
+        applyRatingFilter(rating);
+    } else {
+        // Signals not loaded yet - load them then filter
+        fetch('/api/signals').then(r=>r.json()).then(data => {
+            allSignals = data;
+            renderSignalTable(data);
+            setTimeout(() => applyRatingFilter(rating), 50);
+        });
+    }
+    panel?.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
 function showPanel(name, btn) {
     document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
     document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
@@ -338,17 +371,26 @@ async function loadSignals() {
     const totalSSell = c('STRONG_SELL');
 
     document.getElementById('signal-stats').innerHTML = `
-        <div class="stat-card"><div class="stat-label">Total Tickers</div><div class="stat-value">{{ total_tickers | default(0) | int | string | replace(",","") }}</div><div class="stat-sub">last scored {{ last_scored[:16] if last_scored else "never" }}</div></div>
-        <div class="stat-card"><div class="stat-label">Strong Buy</div><div class="stat-value" style="color:#00ff88">${totalSBuy}</div><div class="stat-sub">highest conviction</div></div>
-        <div class="stat-card"><div class="stat-label">Buy</div><div class="stat-value" style="color:var(--accent2)">${totalBuy}</div><div class="stat-sub">positive signal</div></div>
-        <div class="stat-card"><div class="stat-label">Strong Hold</div><div class="stat-value" style="color:#ff9500">${totalSHold}</div><div class="stat-sub">no new entry</div></div>
-        <div class="stat-card"><div class="stat-label">Hold</div><div class="stat-value" style="color:var(--purple)">${totalHold}</div><div class="stat-sub">reversion signal</div></div>
-        <div class="stat-card"><div class="stat-label">Weak Hold</div><div class="stat-value" style="color:#ff6b35">${totalWHold}</div><div class="stat-sub">reduce exposure</div></div>
-        <div class="stat-card"><div class="stat-label">Sell</div><div class="stat-value" style="color:var(--danger)">${totalSell}</div><div class="stat-sub">exit position</div></div>
-        <div class="stat-card"><div class="stat-label">Strong Sell</div><div class="stat-value" style="color:#ff0000">${totalSSell}</div><div class="stat-sub">high conviction short</div></div>
-        <div class="stat-card"><div class="stat-label">Top Score</div><div class="stat-value">${fmt(allSignals[0]?.composite_score)}</div><div class="stat-sub">${allSignals[0]?.ticker||'-'}</div></div>
+        <div class="stat-card stat-card-click" data-filter="ALL"><div class="stat-label">Total Tickers</div><div class="stat-value">{{ total_tickers | default(0) | int | string | replace(",","") }}</div><div class="stat-sub">last scored {{ last_scored[8:10] + " " + ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][last_scored[5:7]|int - 1] + " " + last_scored[:4] + ", " + last_scored[11:16] if last_scored else "never" }}</div></div>
+        <div class="stat-card stat-card-click" data-filter="STRONG_BUY"><div class="stat-label">Strong Buy</div><div class="stat-value" style="color:#00ff88">${totalSBuy}</div><div class="stat-sub">highest conviction</div></div>
+        <div class="stat-card stat-card-click" data-filter="BUY"><div class="stat-label">Buy</div><div class="stat-value" style="color:var(--accent2)">${totalBuy}</div><div class="stat-sub">positive signal</div></div>
+        <div class="stat-card stat-card-click" data-filter="STRONG_HOLD"><div class="stat-label">Strong Hold</div><div class="stat-value" style="color:#ff9500">${totalSHold}</div><div class="stat-sub">no new entry</div></div>
+        <div class="stat-card stat-card-click" data-filter="HOLD"><div class="stat-label">Hold</div><div class="stat-value" style="color:var(--purple)">${totalHold}</div><div class="stat-sub">reversion signal</div></div>
+        <div class="stat-card stat-card-click" data-filter="WEAK_HOLD"><div class="stat-label">Weak Hold</div><div class="stat-value" style="color:#ff6b35">${totalWHold}</div><div class="stat-sub">reduce exposure</div></div>
+        <div class="stat-card stat-card-click" data-filter="SELL"><div class="stat-label">Sell</div><div class="stat-value" style="color:var(--danger)">${totalSell}</div><div class="stat-sub">exit position</div></div>
+        <div class="stat-card stat-card-click" data-filter="STRONG_SELL"><div class="stat-label">Strong Sell</div><div class="stat-value" style="color:#ff0000">${totalSSell}</div><div class="stat-sub">high conviction short</div></div>
+        <div class="stat-card stat-card-click" data-ticker="${allSignals[0]?.ticker}"><div class="stat-label">Top Score</div><div class="stat-value">${fmt(allSignals[0]?.composite_score)}</div><div class="stat-sub" style="color:var(--accent);font-weight:700">${allSignals[0]?.ticker||'-'} ↗</div></div>
     `;
     renderSignalTable(allSignals);
+    // Wire up stat card clicks via event delegation
+    document.getElementById('signal-stats').addEventListener('click', function(e) {
+        const card = e.target.closest('.stat-card-click');
+        if(!card) return;
+        const filter = card.dataset.filter;
+        const ticker = card.dataset.ticker;
+        if(filter) filterByRating(filter);
+        else if(ticker) openTicker(ticker);
+    });
     document.getElementById('last-updated').textContent = 'Updated ' + ago(allSignals[0]?.scored_at);
 }
 
@@ -357,7 +399,7 @@ async function loadSignals() {
 const sortState = { signals: {col: null, asc: true}, sector: {col: null, asc: true}, insiders: {col: null, asc: true} };
 
 function renderInsiderTable(signals) {
-    const rows = signals.map(s => {
+    const rows = paged.map(s => {
         const buy = s.signal_type?.includes('BUY');
         const c   = buy ? 'var(--accent2)' : 'var(--danger)';
         return `<tr>
@@ -425,10 +467,21 @@ function filterSignals(rating, btn) {
     renderSignalTable(filtered);
 }
 
-function renderSignalTable(signals) {
+let currentPage = 1;
+const PAGE_SIZE = 50;
+let currentSignals = [];
+
+function renderSignalTable(signals, page) {
+    currentSignals = signals;
+    currentPage = page || 1;
     if(!signals.length){
         document.getElementById('signal-table-content').innerHTML='<div class="loading">No signals found</div>';return;
     }
+    const total = signals.length;
+    const totalPages = Math.ceil(total / PAGE_SIZE);
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    const paged = signals.slice(start, end);
     const flagMap = {
         'Above 50d':'↑50d','Below 50d':'↓50d','Above 200d':'↑200d','Below 200d':'↓200d',
         '52-week high':'🔝','52-week low':'📍','insider buying':'★Ins','Overbought':'⚠RSI','Oversold':'↩RSI',
@@ -441,7 +494,7 @@ function renderSignalTable(signals) {
         'short interest':'var(--danger)','analyst':'var(--accent2)'
     };
 
-    const rows = signals.map(s => {
+    const rows = paged.map(s => {
         const flags = (s.flag_list||[]).map(f => {
             for(const [k,v] of Object.entries(flagMap)){
                 if(f.toLowerCase().includes(k.toLowerCase()))
@@ -462,10 +515,20 @@ function renderSignalTable(signals) {
         </tr>`;
     }).join('');
 
+    const pageInfo = total > PAGE_SIZE ? `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 4px;font-family:var(--mono);font-size:11px;color:var(--muted);">
+            <span>Showing ${start+1}–${Math.min(end,total)} of ${total.toLocaleString()} results</span>
+            <div style="display:flex;gap:8px;">
+                ${currentPage > 1 ? `<button onclick="renderSignalTable(currentSignals,${currentPage-1})" style="padding:4px 12px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted2);font-family:var(--mono);font-size:11px;cursor:pointer;">← Prev</button>` : ''}
+                <span style="padding:4px 8px;color:var(--accent)">Page ${currentPage} / ${totalPages}</span>
+                ${currentPage < totalPages ? `<button onclick="renderSignalTable(currentSignals,${currentPage+1})" style="padding:4px 12px;border-radius:4px;border:1px solid var(--border);background:transparent;color:var(--muted2);font-family:var(--mono);font-size:11px;cursor:pointer;">Next →</button>` : ''}
+            </div>
+        </div>` : '';
+
     document.getElementById('signal-table-content').innerHTML = `<table>
         <thead><tr><th onclick="sortTable('signals','ticker')" class="sortable">Ticker ⇅</th><th>Rating</th><th onclick="sortTable('signals','composite_score')" class="sortable">Score ⇅</th><th onclick="sortTable('signals','momentum_score')" class="sortable">Mom ⇅</th><th onclick="sortTable('signals','quality_score')" class="sortable">Qual ⇅</th><th onclick="sortTable('signals','insider_score')" class="sortable">Insider ⇅</th><th onclick="sortTable('signals','reversion_score')" class="sortable">Rev ⇅</th><th>Flags</th></tr></thead>
         <tbody>${rows}</tbody>
-    </table>`;
+    </table>${pageInfo}`;
 }
 
 // ── Sectors ────────────────────────────────────────
@@ -555,7 +618,7 @@ async function loadInsiders() {
         document.getElementById('insider-table-content').innerHTML='<div class="loading">No cluster signals in last 14 days</div>';return;
     }
     insiderSignals = signals;
-    const rows = signals.map(s => {
+    const rows = paged.map(s => {
         const buy = s.signal_type?.includes('BUY');
         const c   = buy?'var(--accent2)':'var(--danger)';
         return `<tr>
