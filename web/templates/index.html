@@ -137,7 +137,10 @@
         ::-webkit-scrollbar-track{background:var(--bg);}
         ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
         @media(max-width:768px){header{padding:0 14px;}nav{padding:10px 14px;overflow-x:auto;}.top10-grid{grid-template-columns:1fr;}}
-    </style>
+    
+.sortable { cursor: pointer; user-select: none; }
+.sortable:hover { color: var(--accent); }
+</style>
 </head>
 <body>
 <header>
@@ -217,9 +220,11 @@
             <button class="filter-btn active" onclick="filterSignals('ALL',this)">All</button>
             <button class="filter-btn" onclick="filterSignals('STRONG_BUY',this)">Strong Buy</button>
             <button class="filter-btn" onclick="filterSignals('BUY',this)">Buy</button>
-            <button class="filter-btn" onclick="filterSignals('REVERSION',this)">Reversion</button>
-            <button class="filter-btn" onclick="filterSignals('SHORT_WATCH',this)">Short Watch</button>
-            <button class="filter-btn" onclick="filterSignals('AVOID',this)">Avoid</button>
+                <button class="filter-btn" onclick="filterSignals('STRONG_HOLD',this)">Strong Hold</button>
+                <button class="filter-btn" onclick="filterSignals('HOLD',this)">Hold</button>
+                <button class="filter-btn" onclick="filterSignals('WEAK_HOLD',this)">Weak Hold</button>
+                <button class="filter-btn" onclick="filterSignals('SELL',this)">Sell</button>
+                <button class="filter-btn" onclick="filterSignals('STRONG_SELL',this)">Strong Sell</button>
         </div>
     </div>
     <div class="table-wrap"><div id="signal-table-content" class="loading"><span class="spinner"></span>Loading...</div></div>
@@ -239,9 +244,11 @@
                 <button class="filter-btn active" onclick="filterSectorSignals('ALL',this)">All</button>
                 <button class="filter-btn" onclick="filterSectorSignals('STRONG_BUY',this)">Strong Buy</button>
                 <button class="filter-btn" onclick="filterSectorSignals('BUY',this)">Buy</button>
-                <button class="filter-btn" onclick="filterSectorSignals('REVERSION',this)">Reversion</button>
-                <button class="filter-btn" onclick="filterSectorSignals('SHORT_WATCH',this)">Short Watch</button>
-                <button class="filter-btn" onclick="filterSectorSignals('AVOID',this)">Avoid</button>
+                        <button class="filter-btn" onclick="filterSectorSignals('STRONG_HOLD',this)">Strong Hold</button>
+                        <button class="filter-btn" onclick="filterSectorSignals('HOLD',this)">Hold</button>
+                        <button class="filter-btn" onclick="filterSectorSignals('WEAK_HOLD',this)">Weak Hold</button>
+                        <button class="filter-btn" onclick="filterSectorSignals('SELL',this)">Sell</button>
+                        <button class="filter-btn" onclick="filterSectorSignals('STRONG_SELL',this)">Strong Sell</button>
             </div>
         </div>
         <div class="table-wrap"><div id="sector-ticker-content" class="loading"><span class="spinner"></span>Loading...</div></div>
@@ -333,6 +340,49 @@ async function loadSignals() {
     document.getElementById('last-updated').textContent = 'Updated ' + ago(allSignals[0]?.scored_at);
 }
 
+
+// Sort state tracking
+const sortState = { signals: {col: null, asc: true}, sector: {col: null, asc: true}, insiders: {col: null, asc: true} };
+
+function sortTable(table, col) {
+    const state = sortState[table];
+    if(state.col === col) { state.asc = !state.asc; } else { state.col = col; state.asc = true; }
+    
+    if(table === 'signals') {
+        allSignals.sort((a,b) => {
+            const av = a[col]||'', bv = b[col]||'';
+            if(typeof av === 'number') return state.asc ? av-bv : bv-av;
+            return state.asc ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
+        });
+        const activeBtn = document.querySelector('.filter-btn.active');
+        const rating = activeBtn ? activeBtn.textContent.trim() : 'All';
+        filterSignals(rating === 'All' ? 'ALL' : rating, activeBtn || document.querySelector('.filter-btn'));
+    }
+    if(table === 'sector') {
+        sectorSignals.sort((a,b) => {
+            const av = a[col]||'', bv = b[col]||'';
+            if(typeof av === 'number') return state.asc ? av-bv : bv-av;
+            return state.asc ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
+        });
+        renderSectorTable(sectorSignals);
+    }
+    if(table === 'insiders') {
+        insiderSignals.sort((a,b) => {
+            const av = a[col]||'', bv = b[col]||'';
+            if(col === 'total_value') return state.asc ? (a.total_value||0)-(b.total_value||0) : (b.total_value||0)-(a.total_value||0);
+            if(typeof av === 'number') return state.asc ? av-bv : bv-av;
+            return state.asc ? String(av).localeCompare(String(bv)) : String(bv).localeCompare(String(av));
+        });
+        renderInsiderTable(insiderSignals);
+    }
+    // Update header indicators
+    document.querySelectorAll('.sortable').forEach(th => {
+        const base = th.textContent.replace(' ↑','').replace(' ↓','').replace(' ⇅','');
+        th.textContent = base + ' ⇅';
+    });
+    event.target.textContent = event.target.textContent.replace(' ⇅', state.asc ? ' ↑' : ' ↓');
+}
+
 function filterSignals(rating, btn) {
     document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
@@ -356,7 +406,7 @@ function renderSignalTable(signals) {
         'short interest':'var(--danger)','analyst':'var(--accent2)'
     };
 
-    const rows = signals.slice(0,150).map(s => {
+    const rows = signals.map(s => {
         const flags = (s.flag_list||[]).map(f => {
             for(const [k,v] of Object.entries(flagMap)){
                 if(f.toLowerCase().includes(k.toLowerCase()))
@@ -378,7 +428,7 @@ function renderSignalTable(signals) {
     }).join('');
 
     document.getElementById('signal-table-content').innerHTML = `<table>
-        <thead><tr><th>Ticker</th><th>Rating</th><th>Score</th><th>Mom</th><th>Qual</th><th>Insider</th><th>Rev</th><th>Flags</th></tr></thead>
+        <thead><tr><th onclick="sortTable('signals','ticker')" class="sortable">Ticker ⇅</th><th>Rating</th><th onclick="sortTable('signals','composite_score')" class="sortable">Score ⇅</th><th onclick="sortTable('signals','momentum_score')" class="sortable">Mom ⇅</th><th onclick="sortTable('signals','quality_score')" class="sortable">Qual ⇅</th><th onclick="sortTable('signals','insider_score')" class="sortable">Insider ⇅</th><th onclick="sortTable('signals','reversion_score')" class="sortable">Rev ⇅</th><th>Flags</th></tr></thead>
         <tbody>${rows}</tbody>
     </table>`;
 }
@@ -458,7 +508,7 @@ function renderSectorTable(signals) {
     </tr>`).join('');
 
     document.getElementById('sector-ticker-content').innerHTML = `<table>
-        <thead><tr><th>Ticker</th><th>Industry</th><th>Rating</th><th>Score</th><th>Mom</th><th>Qual</th><th>Insider</th></tr></thead>
+        <thead><tr><th onclick="sortTable('sector','ticker')" class="sortable">Ticker ⇅</th><th>Industry</th><th>Rating</th><th onclick="sortTable('sector','composite_score')" class="sortable">Score ⇅</th><th onclick="sortTable('sector','momentum_score')" class="sortable">Mom ⇅</th><th onclick="sortTable('sector','quality_score')" class="sortable">Qual ⇅</th><th onclick="sortTable('sector','insider_score')" class="sortable">Insider ⇅</th></tr></thead>
         <tbody>${rows}</tbody>
     </table>`;
 }
@@ -481,7 +531,7 @@ async function loadInsiders() {
         </tr>`;
     }).join('');
     document.getElementById('insider-table-content').innerHTML=`<table>
-        <thead><tr><th>Ticker</th><th>Signal</th><th>Insiders</th><th>Value</th><th>Detected</th></tr></thead>
+        <thead><tr><th onclick="sortTable('insiders','ticker')" class="sortable">Ticker ⇅</th><th onclick="sortTable('insiders','signal_type')" class="sortable">Signal ⇅</th><th onclick="sortTable('insiders','insider_count')" class="sortable">Insiders ⇅</th><th onclick="sortTable('insiders','total_value')" class="sortable">Value ⇅</th><th onclick="sortTable('insiders','detected_at')" class="sortable">Detected ⇅</th></tr></thead>
         <tbody>${rows}</tbody></table>`;
 }
 

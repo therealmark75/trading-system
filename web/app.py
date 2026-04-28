@@ -278,7 +278,7 @@ def api_sectors():
         WHERE scraped_at >= datetime('now', '-2 days')
           AND sector IS NOT NULL
         GROUP BY sector
-        ORDER BY avg_change DESC
+        ORDER BY sector ASC
     """)
     return jsonify(rows)
 
