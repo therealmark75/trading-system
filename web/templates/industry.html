@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignalIntel — {{ industry }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root{--bg:#080c14;--surface:#0d1520;--surface2:#111d2e;--border:#1a2d45;
+            --accent:#00d4ff;--accent2:#00ff88;--warning:#ff9500;--danger:#ff3b5c;
+            --text:#f0f6ff;--muted:#8aa4bf;--muted2:#c2d4e8;
+            --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;}
+        header{position:sticky;top:0;z-index:100;background:rgba(8,12,20,0.95);
+            backdrop-filter:blur(12px);border-bottom:1px solid var(--border);
+            padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;}
+        .logo{font-family:var(--mono);font-size:15px;color:var(--accent);letter-spacing:2px;text-decoration:none;}
+        .logo span{color:var(--accent2);}
+        main{max-width:1400px;margin:0 auto;padding:24px;}
+        .page-title{font-family:var(--mono);font-size:24px;font-weight:700;color:var(--accent);margin-bottom:4px;}
+        .page-sub{font-size:13px;color:var(--muted);margin-bottom:24px;}
+        table{width:100%;border-collapse:collapse;}
+        th{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;
+            padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);
+            cursor:pointer;user-select:none;white-space:nowrap;}
+        th:hover{color:var(--accent);}
+        td{padding:10px 12px;border-bottom:1px solid rgba(26,45,69,0.5);font-size:13px;}
+        tr:hover td{background:var(--surface);}
+        .ticker-link{font-family:var(--mono);font-weight:700;color:var(--accent);
+            text-decoration:none;font-size:13px;}
+        .ticker-link:hover{color:var(--accent2);}
+        .rating-badge{font-family:var(--mono);font-size:10px;font-weight:700;
+            padding:2px 8px;border-radius:3px;white-space:nowrap;}
+        .up{color:#00ff88;} .down{color:#ff3b5c;} .neu{color:var(--muted);}
+        .score{font-family:var(--mono);font-size:12px;}
+        .btn-back{padding:6px 14px;border-radius:4px;border:1px solid var(--muted);
+            background:transparent;color:var(--muted2);font-family:var(--mono);font-size:11px;
+            cursor:pointer;text-decoration:none;transition:all 0.15s;}
+        .btn-back:hover{border-color:var(--accent);color:var(--accent);}
+        .loading{text-align:center;padding:60px;color:var(--muted);font-family:var(--mono);}
+    </style>
+</head>
+<body>
+<header>
+    <a href="/" class="logo">SIGNAL<span>INTEL</span></a>
+    <a href="javascript:history.back()" class="btn-back">← Back</a>
+</header>
+<main>
+    <div class="page-title" id="page-title">{{ industry }}</div>
+    <div class="page-sub" id="page-sub">Loading tickers...</div>
+    <table id="industry-table" style="display:none">
+        <thead>
+            <tr>
+                <th onclick="sortTable('ticker')">TICKER</th>
+                <th onclick="sortTable('company')">COMPANY</th>
+                <th onclick="sortTable('price')">PRICE</th>
+                <th onclick="sortTable('change_pct')">CHANGE</th>
+                <th onclick="sortTable('composite_score')">SCORE</th>
+                <th onclick="sortTable('rating')">RATING</th>
+                <th onclick="sortTable('momentum_score')">MOMENTUM</th>
+                <th onclick="sortTable('quality_score')">QUALITY</th>
+                <th onclick="sortTable('insider_score')">INSIDER</th>
+                <th onclick="sortTable('analyst_recom')">ANALYST</th>
+                <th onclick="sortTable('market_cap')">MKT CAP</th>
+            </tr>
+        </thead>
+        <tbody id="table-body"></tbody>
+    </table>
+    <div class="loading" id="loading">Loading...</div>
+</main>
+<script>
+const INDUSTRY = {{ industry | tojson }};
+let allRows = [];
+let sortKey = 'composite_score';
+let sortAsc = false;
+
+const RATING_COLORS = {
+    'STRONG_BUY':  {bg:'rgba(0,255,136,0.15)',color:'#00ff88'},
+    'BUY':         {bg:'rgba(0,212,255,0.15)',color:'#00d4ff'},
+    'STRONG_HOLD': {bg:'rgba(148,163,184,0.15)',color:'#94a3b8'},
+    'HOLD':        {bg:'rgba(100,116,139,0.15)',color:'#64748b'},
+    'WEAK_HOLD':   {bg:'rgba(255,149,0,0.15)',color:'#ff9500'},
+    'SELL':        {bg:'rgba(255,59,92,0.15)',color:'#ff3b5c'},
+    'STRONG_SELL': {bg:'rgba(255,59,92,0.25)',color:'#ff3b5c'},
+};
+
+function fmt(v, d=1){ return v==null ? '-' : parseFloat(v).toFixed(d); }
+function fmtMC(v){
+    if(!v) return '-';
+    if(v>=1e12) return '$'+(v/1e12).toFixed(1)+'T';
+    if(v>=1e9)  return '$'+(v/1e9).toFixed(1)+'B';
+    if(v>=1e6)  return '$'+(v/1e6).toFixed(1)+'M';
+    return '$'+v;
+}
+
+function renderTable(){
+    const rows = [...allRows].sort((a,b)=>{
+        const av = a[sortKey], bv = b[sortKey];
+        if(av==null) return 1; if(bv==null) return -1;
+        return sortAsc ? (av>bv?1:-1) : (av<bv?1:-1);
+    });
+    const body = document.getElementById('table-body');
+    body.innerHTML = rows.map(r => {
+        const rc = RATING_COLORS[r.rating] || {bg:'rgba(100,116,139,0.15)',color:'#64748b'};
+        const chg = r.change_pct || 0;
+        const chgClass = chg > 0 ? 'up' : chg < 0 ? 'down' : 'neu';
+        return `<tr>
+            <td><a href="/ticker/${r.ticker}" class="ticker-link">${r.ticker}</a></td>
+            <td style="color:var(--muted2);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.company||'-'}</td>
+            <td class="score">$${fmt(r.price,2)}</td>
+            <td class="score ${chgClass}">${chg>=0?'+':''}${fmt(r.change_pct,2)}%</td>
+            <td class="score" style="color:${r.composite_score>=70?'#00ff88':r.composite_score>=50?'#00d4ff':'var(--muted)'}">${fmt(r.composite_score,1)}</td>
+            <td><span class="rating-badge" style="background:${rc.bg};color:${rc.color}">${r.rating||'-'}</span></td>
+            <td class="score">${fmt(r.momentum_score,1)}</td>
+            <td class="score">${fmt(r.quality_score,1)}</td>
+            <td class="score">${fmt(r.insider_score,1)}</td>
+            <td class="score">${r.analyst_recom ? fmt(r.analyst_recom,2) : '-'}</td>
+            <td class="score" style="color:var(--muted)">${fmtMC(r.market_cap)}</td>
+        </tr>`;
+    }).join('');
+}
+
+function sortTable(key){
+    if(sortKey === key) sortAsc = !sortAsc;
+    else { sortKey = key; sortAsc = false; }
+    renderTable();
+}
+
+fetch(`/api/industry/${encodeURIComponent(INDUSTRY)}`)
+    .then(r => r.json())
+    .then(data => {
+        allRows = data;
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('industry-table').style.display = 'table';
+        document.getElementById('page-sub').textContent = `${data.length} tickers · sorted by composite score`;
+        renderTable();
+    });
+</script>
+</body>
+</html>

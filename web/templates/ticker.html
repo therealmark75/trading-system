@@ -44,6 +44,8 @@
         .hero-badges{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
         .badge{padding:4px 12px;border-radius:4px;font-family:var(--mono);font-size:11px;
             border:1px solid var(--border);color:var(--muted2);}
+.badge-link{text-decoration:none;cursor:pointer;transition:all 0.15s;}
+.badge-link:hover{border-color:var(--accent);color:var(--accent);}
         .hero-right{text-align:right;}
         .price-big{font-family:var(--mono);font-size:40px;font-weight:700;}
         .price-change{font-family:var(--mono);font-size:16px;margin-top:4px;}
@@ -157,7 +159,33 @@
     ::-webkit-scrollbar{width:5px;}
         ::-webkit-scrollbar-track{background:var(--bg);}
         ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
-    </style>
+    
+.score-q{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;
+    border-radius:50%;border:1px solid var(--muted);color:var(--muted);font-size:9px;
+    cursor:help;margin-left:3px;vertical-align:middle;}
+.score-q:hover{border-color:var(--accent);color:var(--accent);}
+
+/* Ratings Guide Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;
+    align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;
+    padding:28px;max-width:540px;width:90%;max-height:80vh;overflow-y:auto;}
+.modal-title{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent);
+    letter-spacing:1px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;}
+.modal-close{cursor:pointer;color:var(--muted);font-size:18px;line-height:1;}
+.modal-close:hover{color:var(--text);}
+.modal-section{margin-bottom:20px;}
+.modal-section-title{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;
+    margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
+.modal-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;}
+.modal-badge{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 8px;
+    border-radius:3px;white-space:nowrap;min-width:90px;text-align:center;}
+.modal-desc{font-size:12px;color:var(--muted2);line-height:1.5;}
+.modal-score-row{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;}
+.modal-score-name{font-family:var(--mono);font-size:11px;color:var(--accent);min-width:80px;}
+.modal-score-desc{font-size:12px;color:var(--muted2);line-height:1.5;}
+</style>
 </head>
 <body>
 <header>
@@ -348,8 +376,8 @@ async function loadPage() {
                 <div class="ticker-name">${TICKER}</div>
                 <div class="company-name">${sc.company || sc.industry || ''}</div>
                 <div class="hero-badges">
-                    ${sc.sector ? `<span class="badge">${sc.sector}</span>` : ''}
-                    ${sc.industry ? `<span class="badge">${sc.industry}</span>` : ''}
+                ${sc.sector ? `<a href="/?tab=sectors" class="badge badge-link">${sc.sector}</a>` : ''}
+                ${sc.industry ? `<a href="/industry/${encodeURIComponent(sc.industry)}" class="badge badge-link">${sc.industry}</a>` : ''}
                     ${sc.country ? `<span class="badge">${sc.country}</span>` : ''}
                 </div>
             </div>
@@ -387,10 +415,10 @@ async function loadPage() {
                 <div style="font-size:36px;font-weight:700;color:${barC(s.composite_score||0)}">${fmt(s.composite_score,1)}</div>
             </div>
             <div class="signal-scores">
-                <div class="score-item"><div class="score-item-label">Momentum</div><div class="score-item-value ${scoreC(s.momentum_score)}">${fmt(s.momentum_score,1)}</div></div>
-                <div class="score-item"><div class="score-item-label">Quality</div><div class="score-item-value ${scoreC(s.quality_score)}">${fmt(s.quality_score,1)}</div></div>
-                <div class="score-item"><div class="score-item-label">Insider</div><div class="score-item-value ${scoreC(s.insider_score)}">${fmt(s.insider_score,1)}</div></div>
-                <div class="score-item"><div class="score-item-label">Reversion</div><div class="score-item-value ${scoreC(s.reversion_score)}">${fmt(s.reversion_score,1)}</div></div>
+                <div class="score-item" title="Momentum: Price trend strength based on RSI, moving average crossovers and recent performance. Higher = stronger upward trend."><div class="score-item-label">Momentum <span class="score-q">?</span></div><div class="score-item-value ${scoreC(s.momentum_score)}">${fmt(s.momentum_score,1)}</div></div>
+                <div class="score-item" title="Quality: Fundamental strength — P/E ratio, margins, ROE, EPS growth and debt levels. Higher = stronger business."><div class="score-item-label">Quality <span class="score-q">?</span></div><div class="score-item-value ${scoreC(s.quality_score)}">${fmt(s.quality_score,1)}</div></div>
+                <div class="score-item" title="Insider: Recent insider buying activity. 100 = significant cluster buying by company insiders — the strongest conviction signal."><div class="score-item-label">Insider <span class="score-q">?</span></div><div class="score-item-value ${scoreC(s.insider_score)}">${fmt(s.insider_score,1)}</div></div>
+                <div class="score-item" title="Reversion: Mean reversion opportunity. High score = stock has deviated far from its mean and may snap back. 0 = no reversion signal."><div class="score-item-label">Reversion <span class="score-q">?</span></div><div class="score-item-value ${scoreC(s.reversion_score)}">${fmt(s.reversion_score,1)}</div></div>
             </div>
         </div>
 
@@ -596,5 +624,96 @@ async function loadPage() {
 
 loadPage();
 </script>
+
+<!-- Ratings Guide Modal -->
+<div class="modal-overlay" id="ratingsModal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div class="modal-box">
+        <div class="modal-title">
+            RATINGS GUIDE
+            <span class="modal-close" onclick="document.getElementById('ratingsModal').classList.remove('open')">✕</span>
+        </div>
+
+        <div class="modal-section">
+            <div class="modal-section-title">SIGNAL RATINGS</div>
+            <div class="modal-row">
+                <span class="modal-badge" style="background:rgba(0,255,136,0.15);color:#00ff88">STRONG BUY</span>
+                <span class="modal-desc">Highest conviction long. Strong signals across momentum, fundamentals and insider activity.</span>
+            </div>
+            <div class="modal-row">
+                <span class="modal-badge" style="background:rgba(0,212,255,0.15);color:#00d4ff">BUY</span>
+                <span class="modal-desc">Positive signal. Good entry point or existing position worth holding.</span>
+            </div>
+            <div class="modal-row">
+                <span class="modal-badge" style="background:rgba(148,163,184,0.15);color:#94a3b8">STRONG HOLD</span>
+                <span class="modal-desc">Good fundamentals but no new entry signal. Hold existing positions.</span>
+            </div>
+            <div class="modal-row">
+                <span class="modal-badge" style="background:rgba(100,116,139,0.15);color:#64748b">HOLD</span>
+                <span class="modal-desc">Neutral. Watch closely for direction. No action recommended.</span>
+            </div>
+            <div class="modal-row">
+                <span class="modal-badge" style="background:rgba(255,149,0,0.15);color:#ff9500">WEAK HOLD</span>
+                <span class="modal-desc">Deteriorating signals. Consider reducing exposure. Not a full exit yet.</span>
+            </div>
+            <div class="modal-row">
+                <span class="modal-badge" style="background:rgba(255,59,92,0.15);color:#ff3b5c">SELL</span>
+                <span class="modal-desc">Exit signal. Negative momentum and/or deteriorating fundamentals.</span>
+            </div>
+            <div class="modal-row">
+                <span class="modal-badge" style="background:rgba(255,59,92,0.25);color:#ff3b5c">STRONG SELL</span>
+                <span class="modal-desc">Highest conviction short. Multiple negative signals converging. Exit immediately.</span>
+            </div>
+        </div>
+
+        <div class="modal-section">
+            <div class="modal-section-title">COMPOSITE SCORE (0–100)</div>
+            <div class="modal-desc" style="margin-bottom:8px">Weighted average of all four sub-scores. Above 70 = strong signal. Below 30 = weak or negative.</div>
+            <div class="modal-score-row">
+                <span class="modal-score-name">Momentum</span>
+                <span class="modal-desc">Price trend strength based on RSI, moving average crossovers and recent price performance. High = strong upward trend.</span>
+            </div>
+            <div class="modal-score-row">
+                <span class="modal-score-name">Quality</span>
+                <span class="modal-desc">Fundamental strength — P/E ratio, profit margins, ROE, EPS growth and debt levels. High = strong business.</span>
+            </div>
+            <div class="modal-score-row">
+                <span class="modal-score-name">Insider</span>
+                <span class="modal-desc">Recent insider buying activity. 100 = significant cluster buying by company insiders — the strongest conviction signal available.</span>
+            </div>
+            <div class="modal-score-row">
+                <span class="modal-score-name">Reversion</span>
+                <span class="modal-desc">Mean reversion opportunity. High = stock has deviated far from historical mean and may snap back. 0 = no reversion signal.</span>
+            </div>
+        </div>
+
+        <div class="modal-section">
+            <div class="modal-section-title">TECHNICAL INDICATORS</div>
+            <div class="modal-score-row">
+                <span class="modal-score-name">RSI(14)</span>
+                <span class="modal-desc">Relative Strength Index. Below 30 = oversold (potential buy). Above 70 = overbought (potential sell). 50 = neutral.</span>
+            </div>
+            <div class="modal-score-row">
+                <span class="modal-score-name">SMA 50</span>
+                <span class="modal-desc">% above/below 50-day moving average. Positive = price above trend (bullish). Negative = price below trend (bearish).</span>
+            </div>
+            <div class="modal-score-row">
+                <span class="modal-score-name">SMA 200</span>
+                <span class="modal-desc">% above/below 200-day moving average. The long-term trend indicator. Positive = long-term bullish.</span>
+            </div>
+            <div class="modal-score-row">
+                <span class="modal-score-name">52W High</span>
+                <span class="modal-desc">% below the 52-week high price. Near 0% = at or near peak. -20% = 20% off its high.</span>
+            </div>
+            <div class="modal-score-row">
+                <span class="modal-score-name">52W Low</span>
+                <span class="modal-desc">% above the 52-week low price. +50% = trading 50% above its yearly floor, showing strong recovery.</span>
+            </div>
+            <div class="modal-score-row">
+                <span class="modal-score-name">Analyst Rec</span>
+                <span class="modal-desc">Consensus analyst recommendation. Scale: 1 = Strong Buy, 2 = Buy, 3 = Hold, 4 = Sell, 5 = Strong Sell.</span>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

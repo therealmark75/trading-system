@@ -625,5 +625,19 @@ setInterval(()=>{
     if(active&&active!=='today') showPanel(active, null);
 },5*60*1000);
 </script>
+
+<script>
+// Auto-activate tab from URL parameter
+(function(){
+    const params = new URLSearchParams(window.location.search);
+    const tab = params.get('tab');
+    if(tab) {
+        window.addEventListener('DOMContentLoaded', function() {
+            const btn = document.querySelector(`.tab[onclick*="'${tab}'"]`);
+            if(btn) btn.click();
+        });
+    }
+})();
+</script>
 </body>
 </html>

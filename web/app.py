@@ -128,6 +128,33 @@ def ticker_page(ticker):
     return render_template("ticker.html", ticker=ticker.upper())
 
 
+
+@app.route("/industry/<path:industry_name>")
+@login_required
+def industry_page(industry_name):
+    return render_template("industry.html", industry=industry_name)
+
+@app.route("/api/industry/<path:industry_name>")
+@login_required  
+def api_industry(industry_name):
+    rows = db_query("""
+        SELECT ss.ticker, ss.company, ss.price, ss.change_pct,
+               ss.market_cap, ss.sector, ss.industry,
+               sc.rating, sc.composite_score,
+               sc.momentum_score, sc.quality_score,
+               sc.insider_score, sc.reversion_score,
+               ss.analyst_recom
+        FROM screener_snapshots ss
+        LEFT JOIN signal_scores sc ON ss.ticker = sc.ticker
+            AND DATE(sc.scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
+        WHERE ss.industry = ?
+        AND ss.scraped_at >= datetime('now', '-2 days')
+        GROUP BY ss.ticker
+        ORDER BY sc.composite_score DESC NULLS LAST
+        LIMIT 200
+    """, (industry_name,))
+    return jsonify(rows)
+
 @app.route("/watchlist")
 @login_required
 def watchlist():
