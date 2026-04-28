@@ -7,11 +7,11 @@ from apscheduler.triggers.cron import CronTrigger
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from config.settings import (DATABASE_PATH, SECTORS, SCREENER_SCRAPE_TIMES,, NEWS_SCRAPE_TIMES
+from config.settings import (DATABASE_PATH, SECTORS, SCREENER_SCRAPE_TIMES, NEWS_SCRAPE_TIMES,
     INSIDER_SCRAPE_TIMES, INSIDER_CLUSTER_BUY_COUNT, INSIDER_CLUSTER_DAYS,
     LOG_DIR, LOG_LEVEL, REQUEST_DELAY_SECONDS)
 from database.db import (initialise_schema, insert_screener_rows, generate_top_signals_of_day, prune_old_snapshots,
-    insert_insider_trades, insert_insider_signal, insert_signal_scores,
+    insert_insider_trades, insert_insider_signal, insert_signal_scores, detect_rating_changes,
     insert_news_articles, insert_ticker_sentiment, insert_calendar_events,
     log_run, get_latest_screener, get_recent_insiders, get_cluster_signals,
     get_top_signals, get_ticker_sentiment)
