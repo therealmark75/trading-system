@@ -325,15 +325,24 @@ async function loadSignals() {
     const res = await fetch('/api/signals');
     allSignals = await res.json();
 
-    const totalBuy   = allSignals.filter(s=>['BUY','STRONG_BUY'].includes(s.rating)).length;
-    const totalRev   = allSignals.filter(s=>s.rating==='HOLD').length;
-    const totalShort = allSignals.filter(s=>s.rating==='WEAK_HOLD').length;
+    const c = (r) => allSignals.filter(s=>s.rating===r).length;
+    const totalSBuy  = c('STRONG_BUY');
+    const totalBuy   = c('BUY');
+    const totalSHold = c('STRONG_HOLD');
+    const totalHold  = c('HOLD');
+    const totalWHold = c('WEAK_HOLD');
+    const totalSell  = c('SELL');
+    const totalSSell = c('STRONG_SELL');
 
     document.getElementById('signal-stats').innerHTML = `
         <div class="stat-card"><div class="stat-label">Total Tickers</div><div class="stat-value">{{ total_tickers | default(0) | int | string | replace(",","") }}</div><div class="stat-sub">last scored {{ last_scored[:16] if last_scored else "never" }}</div></div>
-        <div class="stat-card"><div class="stat-label">Buy Signals</div><div class="stat-value" style="color:var(--accent2)">${totalBuy}</div><div class="stat-sub">BUY + STRONG BUY</div></div>
-        <div class="stat-card"><div class="stat-label">Hold</div><div class="stat-value" style="color:var(--purple)">${totalRev}</div><div class="stat-sub">oversold or reversion</div></div>
-        <div class="stat-card"><div class="stat-label">Weak Hold</div><div class="stat-value" style="color:var(--danger)">${totalShort}</div><div class="stat-sub">weak or sell signals</div></div>
+        <div class="stat-card"><div class="stat-label">Strong Buy</div><div class="stat-value" style="color:#00ff88">${totalSBuy}</div><div class="stat-sub">highest conviction</div></div>
+        <div class="stat-card"><div class="stat-label">Buy</div><div class="stat-value" style="color:var(--accent2)">${totalBuy}</div><div class="stat-sub">positive signal</div></div>
+        <div class="stat-card"><div class="stat-label">Strong Hold</div><div class="stat-value" style="color:#ff9500">${totalSHold}</div><div class="stat-sub">no new entry</div></div>
+        <div class="stat-card"><div class="stat-label">Hold</div><div class="stat-value" style="color:var(--purple)">${totalHold}</div><div class="stat-sub">reversion signal</div></div>
+        <div class="stat-card"><div class="stat-label">Weak Hold</div><div class="stat-value" style="color:#ff6b35">${totalWHold}</div><div class="stat-sub">reduce exposure</div></div>
+        <div class="stat-card"><div class="stat-label">Sell</div><div class="stat-value" style="color:var(--danger)">${totalSell}</div><div class="stat-sub">exit position</div></div>
+        <div class="stat-card"><div class="stat-label">Strong Sell</div><div class="stat-value" style="color:#ff0000">${totalSSell}</div><div class="stat-sub">high conviction short</div></div>
         <div class="stat-card"><div class="stat-label">Top Score</div><div class="stat-value">${fmt(allSignals[0]?.composite_score)}</div><div class="stat-sub">${allSignals[0]?.ticker||'-'}</div></div>
     `;
     renderSignalTable(allSignals);
