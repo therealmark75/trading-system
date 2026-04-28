@@ -202,7 +202,6 @@ LEFT JOIN (
         WHERE DATE(ss.scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
         GROUP BY ss.ticker
         ORDER BY ss.composite_score DESC
-        LIMIT 2000
     """)
     for r in rows:
         raw = (r.get("flags") or "").split("|")
@@ -575,3 +574,80 @@ def api_check_margins(portfolio_id):
         return jsonify({"bust": True, "margin_calls": margin_calls})
     
     return jsonify({"bust": False, "margin_calls": margin_calls})
+
+
+@app.route("/backtest")
+@login_required
+def backtest():
+    user = current_user()
+    return render_template("backtest.html", user=user)
+
+@app.route("/api/backtest/stats")
+@login_required
+def api_backtest_stats():
+    from collections import defaultdict
+    conn = get_connection(DATABASE_PATH)
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT 
+            rc1.new_rating,
+            rc1.ticker,
+            rc1.price_at_change as entry_price,
+            rc1.change_date as entry_date,
+            rc2.price_at_change as exit_price,
+            rc2.change_date as exit_date,
+            ROUND(((rc2.price_at_change - rc1.price_at_change) / rc1.price_at_change) * 100, 2) as return_pct,
+            CAST(julianday(rc2.change_date) - julianday(rc1.change_date) AS INTEGER) as days_held
+        FROM rating_changes rc1
+        JOIN rating_changes rc2 
+            ON rc1.ticker = rc2.ticker 
+            AND rc2.change_date > rc1.change_date
+            AND NOT EXISTS (
+                SELECT 1 FROM rating_changes rc3
+                WHERE rc3.ticker = rc1.ticker
+                AND rc3.change_date > rc1.change_date
+                AND rc3.change_date < rc2.change_date
+            )
+        WHERE rc1.price_at_change IS NOT NULL 
+        AND rc2.price_at_change IS NOT NULL
+        AND rc1.price_at_change > 0
+    """)
+    periods = cur.fetchall()
+
+    stats = defaultdict(lambda: {'returns':[], 'wins':0, 'total':0, 'days':[]})
+    for p in periods:
+        r, rating = p['return_pct'], p['new_rating']
+        if r is None: continue
+        stats[rating]['returns'].append(r)
+        stats[rating]['days'].append(p['days_held'] or 0)
+        stats[rating]['total'] += 1
+        if rating in ('STRONG_BUY','BUY') and r > 0: stats[rating]['wins'] += 1
+        elif rating in ('STRONG_SELL','SELL') and r < 0: stats[rating]['wins'] += 1
+
+    # Recent changes feed
+    cur.execute("""
+        SELECT ticker, old_rating, new_rating, price_at_change, change_date, composite_score
+        FROM rating_changes
+        WHERE old_rating IS NOT NULL
+        ORDER BY change_date DESC, id DESC
+        LIMIT 50
+    """)
+    recent = [dict(r) for r in cur.fetchall()]
+    conn.close()
+
+    result = []
+    for rating in ['STRONG_BUY','BUY','STRONG_HOLD','HOLD','WEAK_HOLD','SELL','STRONG_SELL']:
+        s = stats.get(rating)
+        if not s or not s['returns']: continue
+        avg = sum(s['returns']) / len(s['returns'])
+        win_rate = (s['wins'] / s['total'] * 100) if s['total'] > 0 else 0
+        avg_days = sum(s['days']) / len(s['days']) if s['days'] else 0
+        result.append({
+            'rating': rating,
+            'avg_return': round(avg, 2),
+            'win_rate': round(win_rate, 1),
+            'samples': s['total'],
+            'avg_days_held': round(avg_days, 1)
+        })
+
+    return jsonify({'stats': result, 'recent': recent})

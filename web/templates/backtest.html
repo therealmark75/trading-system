@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SignalIntel – Backtesting</title>
+<style>
+    :root {
+        --bg:#080c14;--surface:#0d1520;--surface2:#111927;--border:#1a2d45;
+        --text:#e2e8f0;--muted:#64748b;--muted2:#94a3b8;--accent:#00d4ff;
+        --accent2:#00ff88;--danger:#ff3b5c;--warn:#ff9500;--mono:'JetBrains Mono',monospace;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;min-height:100vh;}
+    header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;height:52px;display:flex;align-items:center;justify-content:space-between;}
+    .logo{font-family:var(--mono);font-weight:700;font-size:16px;color:var(--accent);text-decoration:none;letter-spacing:2px;}
+    .logo span{color:var(--text);}
+    .header-right{display:flex;align-items:center;gap:16px;font-size:13px;}
+    .header-right a{color:var(--muted2);text-decoration:none;}
+    .header-right a:hover{color:var(--accent);}
+    main{max-width:1100px;margin:0 auto;padding:32px 24px;}
+    h1{font-family:var(--mono);font-size:18px;color:var(--accent);letter-spacing:2px;margin-bottom:8px;}
+    .subtitle{color:var(--muted);font-size:13px;margin-bottom:32px;}
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:40px;}
+    .stat-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;}
+    .stat-card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+    .rating-badge{font-family:var(--mono);font-size:11px;font-weight:700;padding:4px 10px;border-radius:4px;}
+    .badge-STRONG_BUY{background:rgba(0,255,136,0.15);color:#00ff88;}
+    .badge-BUY{background:rgba(0,212,255,0.15);color:#00d4ff;}
+    .badge-STRONG_HOLD{background:rgba(148,163,184,0.15);color:#94a3b8;}
+    .badge-HOLD{background:rgba(100,116,139,0.15);color:#64748b;}
+    .badge-WEAK_HOLD{background:rgba(255,149,0,0.15);color:#ff9500;}
+    .badge-SELL{background:rgba(255,59,92,0.15);color:#ff3b5c;}
+    .badge-STRONG_SELL{background:rgba(255,59,92,0.25);color:#ff3b5c;}
+    .samples{font-family:var(--mono);font-size:11px;color:var(--muted);}
+    .stat-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);}
+    .stat-row:last-child{border-bottom:none;}
+    .stat-label{font-size:12px;color:var(--muted2);}
+    .stat-value{font-family:var(--mono);font-size:14px;font-weight:700;}
+    .pos{color:var(--accent2);}
+    .neg{color:var(--danger);}
+    .neu{color:var(--muted2);}
+    .section-title{font-family:var(--mono);font-size:12px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:16px;}
+    table{width:100%;border-collapse:collapse;}
+    th{font-family:var(--mono);font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);}
+    td{padding:10px 12px;font-size:13px;border-bottom:1px solid rgba(26,45,69,0.5);}
+    tr:hover td{background:rgba(255,255,255,0.02);}
+    .ticker-cell{color:var(--accent);font-family:var(--mono);font-weight:700;cursor:pointer;}
+    .ticker-cell:hover{text-decoration:underline;}
+    .arrow{font-size:16px;margin:0 6px;}
+    .loading{color:var(--muted);font-family:var(--mono);font-size:13px;padding:40px;text-align:center;}
+    .note{background:rgba(0,212,255,0.05);border:1px solid rgba(0,212,255,0.2);border-radius:6px;padding:12px 16px;font-size:12px;color:var(--muted2);margin-bottom:24px;}
+</style>
+</head>
+<body>
+<header>
+    <a href="/" class="logo">Signal<span>Intel</span></a>
+    <div class="header-right">
+        <a href="/">Dashboard</a>
+        <a href="/watchlist">Watchlist</a>
+        <a href="/backtest" style="color:var(--accent)">Backtest</a>
+        <span>{{ user.username }}</span>
+        <a href="/logout">Sign out</a>
+    </div>
+</header>
+<main>
+    <h1>SIGNAL BACKTESTING</h1>
+    <p class="subtitle">Historical accuracy of each rating tier from first signal to next rating change</p>
+    <div class="note">⚡ Data grows daily. Win rates and sample sizes will strengthen significantly after 30+ days of signal history.</div>
+    <div class="section-title">Performance by Rating</div>
+    <div id="stats-grid" class="stats-grid"><div class="loading">Loading stats...</div></div>
+    <div class="section-title" style="margin-top:40px">Recent Rating Changes</div>
+    <div id="recent-table"><div class="loading">Loading...</div></div>
+</main>
+<script>
+const RATINGS = ['STRONG_BUY','BUY','STRONG_HOLD','HOLD','WEAK_HOLD','SELL','STRONG_SELL'];
+
+function retColor(v) { return v > 0 ? 'pos' : v < 0 ? 'neg' : 'neu'; }
+
+async function load() {
+    const data = await fetch('/api/backtest/stats').then(r => r.json());
+
+    // Stats cards
+    const grid = document.getElementById('stats-grid');
+    if (!data.stats.length) { grid.innerHTML = '<div class="loading">No completed signal periods yet. Check back tomorrow.</div>'; }
+    else {
+        grid.innerHTML = data.stats.map(s => `
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <span class="rating-badge badge-${s.rating}">${s.rating.replace('_',' ')}</span>
+                    <span class="samples">${s.samples} samples</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Avg Return</span>
+                    <span class="stat-value ${retColor(s.avg_return)}">${s.avg_return > 0 ? '+' : ''}${s.avg_return}%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Win Rate</span>
+                    <span class="stat-value ${s.win_rate >= 50 ? 'pos' : 'neg'}">${s.win_rate}%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Avg Days Held</span>
+                    <span class="stat-value neu">${s.avg_days_held}d</span>
+                </div>
+            </div>`).join('');
+    }
+
+    // Recent changes table
+    const tbl = document.getElementById('recent-table');
+    if (!data.recent.length) { tbl.innerHTML = '<div class="loading">No rating changes recorded yet.</div>'; return; }
+    tbl.innerHTML = `<table>
+        <thead><tr>
+            <th>Ticker</th><th>Change</th><th>Price</th><th>Score</th><th>Date</th>
+        </tr></thead>
+        <tbody>${data.recent.map(r => {
+            const oldR = r.old_rating || '-';
+            const newR = r.new_rating;
+            const up = ['STRONG_BUY','BUY'].includes(newR);
+            const down = ['SELL','STRONG_SELL'].includes(newR);
+            const c = up ? 'var(--accent2)' : down ? 'var(--danger)' : 'var(--muted2)';
+            return `<tr>
+                <td><span class="ticker-cell" onclick="window.location='/ticker/${r.ticker}'">${r.ticker}</span></td>
+                <td><span style="color:var(--muted);font-size:11px">${oldR}</span>
+                    <span class="arrow" style="color:${c}">→</span>
+                    <span style="color:${c};font-family:var(--mono);font-size:11px;font-weight:700">${newR}</span></td>
+                <td style="font-family:var(--mono)">${r.price_at_change ? '$'+r.price_at_change.toFixed(2) : '-'}</td>
+                <td style="font-family:var(--mono);color:var(--accent)">${r.composite_score ? r.composite_score.toFixed(1) : '-'}</td>
+                <td style="color:var(--muted);font-size:12px">${r.change_date}</td>
+            </tr>`;
+        }).join('')}</tbody></table>`;
+}
+
+load();
+</script>
+</body>
+</html>

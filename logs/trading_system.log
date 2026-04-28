@@ -1219,3 +1219,1340 @@ NameError: name 'sector' is not defined
 2026-04-24 23:19:24 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: XNDU
 2026-04-24 23:19:24 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: CHSN
 2026-04-24 23:19:24 | INFO     | main | JOB DONE: Signals | 11048 scored | 2.1s
+2026-04-24 23:45:39 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-24 23:45:39 | INFO     | main | ============================================================
+2026-04-24 23:45:39 | INFO     | main | JOB START: Signal generation
+2026-04-24 23:45:39 | INFO     | main |   Scoring 11048 tickers...
+2026-04-24 23:45:41 | INFO     | signals.scorer | Scored 11048 tickers
+2026-04-24 23:45:41 | INFO     | signals.scanner | Running all scans...
+2026-04-24 23:45:41 | INFO     | signals.scanner |   insider_oversold: 4 candidates
+2026-04-24 23:45:41 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-24 23:45:41 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-24 23:45:41 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-04-24 23:45:41 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-24 23:45:41 | INFO     | main |   STRONG_BUY: 10 | BUY: 578 | HOLD: 0
+2026-04-24 23:45:41 | INFO     | main |   Scan [insider_oversold]: 4 hits | Top: BEAT
+2026-04-24 23:45:41 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: XNDU
+2026-04-24 23:45:41 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: CHSN
+2026-04-24 23:45:41 | INFO     | main | JOB DONE: Signals | 11048 scored | 2.1s
+2026-04-24 23:55:03 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-24 23:55:03 | INFO     | main | ============================================================
+2026-04-24 23:55:03 | INFO     | main | JOB START: Signal generation
+2026-04-24 23:55:04 | INFO     | main |   Scoring 11048 tickers...
+2026-04-24 23:55:05 | INFO     | signals.scorer | Scored 11048 tickers
+2026-04-24 23:55:06 | INFO     | signals.scanner | Running all scans...
+2026-04-24 23:55:06 | INFO     | signals.scanner |   insider_oversold: 4 candidates
+2026-04-24 23:55:06 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-24 23:55:06 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-24 23:55:06 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-04-24 23:55:06 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-24 23:55:06 | INFO     | main |   STRONG_BUY: 10 | BUY: 578 | HOLD: 0
+2026-04-24 23:55:06 | INFO     | main |   Scan [insider_oversold]: 4 hits | Top: BEAT
+2026-04-24 23:55:06 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: XNDU
+2026-04-24 23:55:06 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: CHSN
+2026-04-24 23:55:06 | INFO     | main | JOB DONE: Signals | 11048 scored | 2.2s
+2026-04-24 23:56:49 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-24 23:56:49 | INFO     | main | ============================================================
+2026-04-24 23:56:49 | INFO     | main | JOB START: Signal generation
+2026-04-24 23:56:49 | INFO     | main |   Scoring 11048 tickers...
+2026-04-24 23:56:51 | INFO     | signals.scorer | Scored 11048 tickers
+2026-04-24 23:56:51 | INFO     | signals.scanner | Running all scans...
+2026-04-24 23:56:51 | INFO     | signals.scanner |   insider_oversold: 4 candidates
+2026-04-24 23:56:51 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-24 23:56:51 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-24 23:56:51 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-04-24 23:56:51 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-24 23:56:51 | INFO     | main |   STRONG_BUY: 10 | BUY: 578 | HOLD: 0
+2026-04-24 23:56:51 | INFO     | main |   Scan [insider_oversold]: 4 hits | Top: BEAT
+2026-04-24 23:56:51 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: XNDU
+2026-04-24 23:56:51 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: CHSN
+2026-04-24 23:56:51 | INFO     | main | JOB DONE: Signals | 11048 scored | 2.1s
+2026-04-25 00:15:20 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-25 00:15:20 | INFO     | main | ============================================================
+2026-04-25 00:15:20 | INFO     | main | JOB START: Signal generation
+2026-04-25 00:15:20 | INFO     | main |   Scoring 11048 tickers...
+2026-04-25 00:15:22 | INFO     | signals.scorer | Scored 11048 tickers
+2026-04-25 00:15:22 | INFO     | signals.scanner | Running all scans...
+2026-04-25 00:15:22 | INFO     | signals.scanner |   insider_oversold: 4 candidates
+2026-04-25 00:15:22 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-25 00:15:22 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-25 00:15:22 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-04-25 00:15:22 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-25 00:15:22 | INFO     | main |   STRONG_BUY: 10 | BUY: 578 | HOLD: 0
+2026-04-25 00:15:22 | INFO     | main |   Scan [insider_oversold]: 4 hits | Top: BEAT
+2026-04-25 00:15:22 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: XNDU
+2026-04-25 00:15:22 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: CHSN
+2026-04-25 00:15:22 | INFO     | main | Top signals of day generated
+2026-04-25 00:15:22 | INFO     | main | JOB DONE: Signals | 11048 scored | 2.2s
+2026-04-25 00:17:56 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-25 00:17:56 | INFO     | main | ============================================================
+2026-04-25 00:17:56 | INFO     | main | JOB START: Signal generation
+2026-04-25 00:17:56 | INFO     | main |   Scoring 11048 tickers...
+2026-04-25 00:17:58 | INFO     | signals.scorer | Scored 11048 tickers
+2026-04-25 00:17:58 | INFO     | signals.scanner | Running all scans...
+2026-04-25 00:17:58 | INFO     | signals.scanner |   insider_oversold: 4 candidates
+2026-04-25 00:17:58 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-25 00:17:58 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-25 00:17:58 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-04-25 00:17:58 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-25 00:17:58 | INFO     | main |   STRONG_BUY: 10 | BUY: 578 | HOLD: 0
+2026-04-25 00:17:58 | INFO     | main |   Scan [insider_oversold]: 4 hits | Top: BEAT
+2026-04-25 00:17:58 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: XNDU
+2026-04-25 00:17:58 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: CHSN
+2026-04-25 00:17:58 | INFO     | main | Top signals of day generated
+2026-04-25 00:17:58 | INFO     | main | JOB DONE: Signals | 11048 scored | 2.1s
+2026-04-25 00:20:31 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-25 00:20:31 | INFO     | main | ============================================================
+2026-04-25 00:20:31 | INFO     | main | JOB START: Signal generation
+2026-04-25 00:20:32 | INFO     | main |   Scoring 11048 tickers...
+2026-04-25 00:20:33 | INFO     | signals.scorer | Scored 11048 tickers
+2026-04-25 00:20:34 | INFO     | signals.scanner | Running all scans...
+2026-04-25 00:20:34 | INFO     | signals.scanner |   insider_oversold: 4 candidates
+2026-04-25 00:20:34 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-25 00:20:34 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-25 00:20:34 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-04-25 00:20:34 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-25 00:20:34 | INFO     | main |   STRONG_BUY: 10 | BUY: 578 | HOLD: 0
+2026-04-25 00:20:34 | INFO     | main |   Scan [insider_oversold]: 4 hits | Top: BEAT
+2026-04-25 00:20:34 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: XNDU
+2026-04-25 00:20:34 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: CHSN
+2026-04-25 00:20:34 | INFO     | main | Top signals of day generated
+2026-04-25 00:20:34 | INFO     | main | JOB DONE: Signals | 11048 scored | 2.1s
+2026-04-27 08:00:01 | INFO     | apscheduler.executors.default | Running job "Screener 08:00 (trigger: cron[day_of_week='mon-fri', hour='8', minute='0'], next run at: 2026-04-28 08:00:00 BST)" (scheduled at 2026-04-27 08:00:00+01:00)
+2026-04-27 08:00:01 | INFO     | main | ============================================================
+2026-04-27 08:00:01 | INFO     | main | JOB START: Screener scrape
+2026-04-27 08:00:01 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-27 08:00:01 | INFO     | apscheduler.executors.default | Running job "Screener 08:00 (trigger: cron[day_of_week='mon-fri', hour='8', minute='0'], next run at: 2026-04-28 08:00:00 BST)" (scheduled at 2026-04-27 08:00:00+01:00)
+2026-04-27 08:00:01 | INFO     | apscheduler.executors.default | Running job "Screener 08:00 (trigger: cron[day_of_week='mon-fri', hour='8', minute='0'], next run at: 2026-04-28 08:00:00 BST)" (scheduled at 2026-04-27 08:00:00+01:00)
+2026-04-27 08:00:01 | INFO     | main | ============================================================
+2026-04-27 08:00:01 | INFO     | main | ============================================================
+2026-04-27 08:00:01 | INFO     | main | JOB START: Screener scrape
+2026-04-27 08:00:01 | INFO     | main | JOB START: Screener scrape
+2026-04-27 08:00:01 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-27 08:00:01 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-27 08:00:46 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-27 08:00:46 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-27 08:00:46 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-27 08:02:26 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-27 08:02:27 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-27 08:02:27 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-27 08:02:31 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-27 08:02:32 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-27 08:02:32 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-27 08:03:35 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-27 08:03:35 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-27 08:03:35 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-27 08:05:51 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-27 08:05:51 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-27 08:05:52 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-27 08:05:56 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-27 08:05:56 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-27 08:05:57 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-27 08:12:30 | INFO     | scrapers.screener_scraper |   Financial: 6529 tickers from overview
+2026-04-27 08:12:30 | INFO     | scrapers.screener_scraper |   Financial: 6529 tickers from overview
+2026-04-27 08:12:30 | INFO     | scrapers.screener_scraper |   Financial: 6529 tickers from overview
+2026-04-27 08:25:46 | INFO     | scrapers.screener_scraper |   Financial: 6529 complete rows merged
+2026-04-27 08:25:46 | INFO     | scrapers.screener_scraper |   Financial: 6529 complete rows merged
+2026-04-27 08:25:46 | INFO     | scrapers.screener_scraper |   Financial: 6529 complete rows merged
+2026-04-27 08:25:51 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-27 08:25:51 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-27 08:25:51 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-27 08:26:23 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-27 08:26:23 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-27 08:26:23 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-27 08:27:36 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-27 08:27:36 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-27 08:27:37 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-27 08:27:41 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-27 08:27:42 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-27 08:27:42 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-27 08:28:22 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-27 08:28:22 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-27 08:28:22 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-27 08:29:53 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-27 08:29:53 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-27 08:29:53 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-27 08:29:58 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-27 08:29:58 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-27 08:29:58 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-27 08:30:00 | INFO     | apscheduler.executors.default | Running job "Signals 08:30 (trigger: cron[day_of_week='mon-fri', hour='8', minute='30'], next run at: 2026-04-28 08:30:00 BST)" (scheduled at 2026-04-27 08:30:00+01:00)
+2026-04-27 08:30:00 | INFO     | main | ============================================================
+2026-04-27 08:30:00 | INFO     | main | JOB START: Signal generation
+2026-04-27 08:30:00 | INFO     | apscheduler.executors.default | Running job "Signals 08:30 (trigger: cron[day_of_week='mon-fri', hour='8', minute='30'], next run at: 2026-04-28 08:30:00 BST)" (scheduled at 2026-04-27 08:30:00+01:00)
+2026-04-27 08:30:00 | INFO     | apscheduler.executors.default | Running job "Signals 08:30 (trigger: cron[day_of_week='mon-fri', hour='8', minute='30'], next run at: 2026-04-28 08:30:00 BST)" (scheduled at 2026-04-27 08:30:00+01:00)
+2026-04-27 08:30:00 | INFO     | main | ============================================================
+2026-04-27 08:30:00 | INFO     | main | ============================================================
+2026-04-27 08:30:00 | INFO     | main | JOB START: Signal generation
+2026-04-27 08:30:00 | INFO     | main | JOB START: Signal generation
+2026-04-27 08:30:00 | INFO     | main |   Scoring 281 tickers...
+2026-04-27 08:30:00 | INFO     | main |   Scoring 281 tickers...
+2026-04-27 08:30:00 | INFO     | main |   Scoring 281 tickers...
+2026-04-27 08:30:00 | INFO     | signals.scorer | Scored 281 tickers
+2026-04-27 08:30:00 | INFO     | signals.scorer | Scored 281 tickers
+2026-04-27 08:30:00 | INFO     | signals.scorer | Scored 281 tickers
+2026-04-27 08:30:00 | INFO     | signals.scanner | Running all scans...
+2026-04-27 08:30:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-27 08:30:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-27 08:30:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-27 08:30:00 | INFO     | signals.scanner |   mean_reversion: 3 candidates
+2026-04-27 08:30:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-27 08:30:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 28 | REVERSION: 1
+2026-04-27 08:30:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-27 08:30:00 | INFO     | main |   Scan [mean_reversion]: 3 hits | Top: INHD
+2026-04-27 08:30:00 | INFO     | main | JOB DONE: Signals | 281 scored | 0.2s
+2026-04-27 08:30:00 | INFO     | signals.scanner | Running all scans...
+2026-04-27 08:30:00 | INFO     | apscheduler.executors.default | Job "Signals 08:30 (trigger: cron[day_of_week='mon-fri', hour='8', minute='30'], next run at: 2026-04-28 08:30:00 BST)" executed successfully
+2026-04-27 08:30:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-27 08:30:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-27 08:30:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-27 08:30:00 | INFO     | signals.scanner |   mean_reversion: 3 candidates
+2026-04-27 08:30:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-27 08:30:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 28 | REVERSION: 1
+2026-04-27 08:30:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-27 08:30:00 | INFO     | main |   Scan [mean_reversion]: 3 hits | Top: INHD
+2026-04-27 08:30:00 | INFO     | signals.scanner | Running all scans...
+2026-04-27 08:30:00 | INFO     | main | JOB DONE: Signals | 281 scored | 0.2s
+2026-04-27 08:30:00 | INFO     | apscheduler.executors.default | Job "Signals 08:30 (trigger: cron[day_of_week='mon-fri', hour='8', minute='30'], next run at: 2026-04-28 08:30:00 BST)" executed successfully
+2026-04-27 08:30:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-27 08:30:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-27 08:30:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-27 08:30:00 | INFO     | signals.scanner |   mean_reversion: 3 candidates
+2026-04-27 08:30:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-27 08:30:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 28 | REVERSION: 1
+2026-04-27 08:30:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-27 08:30:00 | INFO     | main |   Scan [mean_reversion]: 3 hits | Top: INHD
+2026-04-27 08:30:00 | INFO     | main | JOB DONE: Signals | 281 scored | 0.2s
+2026-04-27 08:30:00 | INFO     | apscheduler.executors.default | Job "Signals 08:30 (trigger: cron[day_of_week='mon-fri', hour='8', minute='30'], next run at: 2026-04-28 08:30:00 BST)" executed successfully
+2026-04-27 08:30:12 | INFO     | scrapers.screener_scraper |   Energy: 253 tickers from overview
+2026-04-27 08:30:12 | INFO     | scrapers.screener_scraper |   Energy: 253 tickers from overview
+2026-04-27 08:30:12 | INFO     | scrapers.screener_scraper |   Energy: 253 tickers from overview
+2026-04-27 08:30:50 | INFO     | scrapers.screener_scraper |   Energy: 253 complete rows merged
+2026-04-27 08:30:50 | INFO     | scrapers.screener_scraper |   Energy: 253 complete rows merged
+2026-04-27 08:30:50 | INFO     | scrapers.screener_scraper |   Energy: 253 complete rows merged
+2026-04-27 08:30:55 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-27 08:30:55 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-27 08:30:55 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-27 08:31:09 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-27 08:31:09 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-27 08:31:10 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-27 08:31:47 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-27 08:31:48 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-27 08:31:48 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-27 08:31:52 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-27 08:31:53 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-27 08:31:53 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-27 08:31:58 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-27 08:31:59 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-27 08:31:59 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-27 08:32:19 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-27 08:32:19 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-27 08:32:20 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-27 08:32:24 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-27 08:32:24 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-27 08:32:25 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-27 08:32:39 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-27 08:32:39 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-27 08:32:41 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-27 08:33:20 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-27 08:33:20 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-27 08:33:21 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-27 08:33:25 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-27 08:33:25 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-27 08:33:26 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-27 08:33:40 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-27 08:33:40 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-27 08:33:41 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-27 08:34:18 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-27 08:34:19 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-27 08:34:20 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-27 08:34:23 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-27 08:34:24 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-27 08:34:25 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-27 08:34:39 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-27 08:34:40 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-27 08:34:41 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-27 08:35:19 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-27 08:35:19 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-27 08:35:22 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-27 08:35:24 | INFO     | main |   Stored 777 rows for Technology
+2026-04-27 08:35:24 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-27 08:35:24 | INFO     | main |   Stored 6529 rows for Financial
+2026-04-27 08:35:24 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-27 08:35:24 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-27 08:35:24 | INFO     | main |   Stored 253 rows for Energy
+2026-04-27 08:35:24 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-27 08:35:24 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-27 08:35:24 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-27 08:35:24 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-27 08:35:24 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-27 08:35:24 | INFO     | main | JOB DONE: Screener | 11025 rows | 2123.1s
+2026-04-27 08:35:24 | INFO     | apscheduler.executors.default | Job "Screener 08:00 (trigger: cron[day_of_week='mon-fri', hour='8', minute='0'], next run at: 2026-04-28 08:00:00 BST)" executed successfully
+2026-04-27 08:35:24 | INFO     | main |   Stored 777 rows for Technology
+2026-04-27 08:35:24 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-27 08:35:24 | INFO     | main |   Stored 6529 rows for Financial
+2026-04-27 08:35:24 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-27 08:35:24 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-27 08:35:24 | INFO     | main |   Stored 253 rows for Energy
+2026-04-27 08:35:24 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-27 08:35:24 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-27 08:35:24 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-27 08:35:24 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-27 08:35:24 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-27 08:35:24 | INFO     | main | JOB DONE: Screener | 11025 rows | 2123.6s
+2026-04-27 08:35:24 | INFO     | apscheduler.executors.default | Job "Screener 08:00 (trigger: cron[day_of_week='mon-fri', hour='8', minute='0'], next run at: 2026-04-28 08:00:00 BST)" executed successfully
+2026-04-27 08:35:27 | INFO     | main |   Stored 777 rows for Technology
+2026-04-27 08:35:27 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-27 08:35:27 | INFO     | main |   Stored 6529 rows for Financial
+2026-04-27 08:35:27 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-27 08:35:27 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-27 08:35:27 | INFO     | main |   Stored 253 rows for Energy
+2026-04-27 08:35:27 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-27 08:35:27 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-27 08:35:27 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-27 08:35:27 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-27 08:35:27 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-27 08:35:27 | INFO     | main | JOB DONE: Screener | 11025 rows | 2126.0s
+2026-04-27 08:35:27 | INFO     | apscheduler.executors.default | Job "Screener 08:00 (trigger: cron[day_of_week='mon-fri', hour='8', minute='0'], next run at: 2026-04-28 08:00:00 BST)" executed successfully
+2026-04-27 09:00:00 | INFO     | apscheduler.executors.default | Running job "Insider 09:00 (trigger: cron[day_of_week='mon-fri', hour='9', minute='0'], next run at: 2026-04-28 09:00:00 BST)" (scheduled at 2026-04-27 09:00:00+01:00)
+2026-04-27 09:00:00 | INFO     | apscheduler.executors.default | Running job "Insider 09:00 (trigger: cron[day_of_week='mon-fri', hour='9', minute='0'], next run at: 2026-04-28 09:00:00 BST)" (scheduled at 2026-04-27 09:00:00+01:00)
+2026-04-27 09:00:00 | INFO     | apscheduler.executors.default | Running job "Insider 09:00 (trigger: cron[day_of_week='mon-fri', hour='9', minute='0'], next run at: 2026-04-28 09:00:00 BST)" (scheduled at 2026-04-27 09:00:00+01:00)
+2026-04-27 09:00:00 | INFO     | main | ============================================================
+2026-04-27 09:00:00 | INFO     | main | ============================================================
+2026-04-27 09:00:00 | INFO     | main | ============================================================
+2026-04-27 09:00:00 | INFO     | main | JOB START: Insider trade scrape
+2026-04-27 09:00:00 | INFO     | main | JOB START: Insider trade scrape
+2026-04-27 09:00:00 | INFO     | main | JOB START: Insider trade scrape
+2026-04-27 09:00:00 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Buy, pages=5)
+2026-04-27 09:00:00 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Buy, pages=5)
+2026-04-27 09:00:00 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Buy, pages=5)
+2026-04-27 09:00:00 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-27 09:00:00 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-27 09:00:00 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-27 09:00:03 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-27 09:00:03 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-27 09:00:03 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-27 09:00:06 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-27 09:00:06 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-27 09:00:07 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-27 09:00:09 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-27 09:00:09 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-27 09:00:10 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-27 09:00:12 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-27 09:00:13 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-27 09:00:14 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-27 09:00:15 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-27 09:00:16 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-27 09:00:17 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-27 09:00:18 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Sale, pages=5)
+2026-04-27 09:00:18 | INFO     | scrapers.insider_scraper |   Page 1: 145 rows
+2026-04-27 09:00:18 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Sale, pages=5)
+2026-04-27 09:00:19 | INFO     | scrapers.insider_scraper |   Page 1: 145 rows
+2026-04-27 09:00:20 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Sale, pages=5)
+2026-04-27 09:00:21 | INFO     | scrapers.insider_scraper |   Page 1: 145 rows
+2026-04-27 09:00:22 | INFO     | scrapers.insider_scraper |   Page 2: 145 rows
+2026-04-27 09:00:22 | INFO     | scrapers.insider_scraper |   Page 2: 145 rows
+2026-04-27 09:00:24 | INFO     | scrapers.insider_scraper |   Page 2: 145 rows
+2026-04-27 09:00:24 | INFO     | scrapers.insider_scraper |   Page 3: 145 rows
+2026-04-27 09:00:25 | INFO     | scrapers.insider_scraper |   Page 3: 145 rows
+2026-04-27 09:00:27 | INFO     | scrapers.insider_scraper |   Page 3: 145 rows
+2026-04-27 09:00:27 | INFO     | scrapers.insider_scraper |   Page 4: 145 rows
+2026-04-27 09:00:28 | INFO     | scrapers.insider_scraper |   Page 4: 145 rows
+2026-04-27 09:00:30 | INFO     | scrapers.insider_scraper |   Page 4: 145 rows
+2026-04-27 09:00:30 | INFO     | scrapers.insider_scraper |   Page 5: 145 rows
+2026-04-27 09:00:32 | INFO     | scrapers.insider_scraper |   Page 5: 145 rows
+2026-04-27 09:00:33 | INFO     | scrapers.insider_scraper | Total insider rows: 725
+2026-04-27 09:00:34 | INFO     | scrapers.insider_scraper |   Page 5: 145 rows
+2026-04-27 09:00:34 | INFO     | scrapers.insider_scraper | Total insider rows: 725
+2026-04-27 09:00:36 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Option Exercise, pages=5)
+2026-04-27 09:00:36 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-27 09:00:36 | INFO     | scrapers.insider_scraper | Total insider rows: 725
+2026-04-27 09:00:37 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Option Exercise, pages=5)
+2026-04-27 09:00:38 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-27 09:00:39 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-27 09:00:40 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Option Exercise, pages=5)
+2026-04-27 09:00:40 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-27 09:00:41 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-27 09:00:43 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-27 09:00:43 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-27 09:00:44 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-27 09:00:46 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-27 09:00:46 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-27 09:00:47 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-27 09:00:50 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-27 09:00:50 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-27 09:00:50 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-27 09:00:53 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-27 09:00:53 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-27 09:00:53 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | Total unique insider trades: 378
+2026-04-27 09:00:56 | INFO     | main |   Stored 54 new insider trade rows
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: BMI | 5 Buys | $777,128
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: KLRA | 5 Buys | $326,750,016
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CHCO | 4 Buys | $57,873
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CRWV | 3 Sales | $379,679,953
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: VINP | 3 Sales | $417,856
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: UTHR | 3 Sales | $12,816,540
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PHVS | 3 Sales | $865,464
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: SE | 3 Sales | $1,965,520
+2026-04-27 09:00:56 | INFO     | main | JOB DONE: Insider | 54 rows | 3 buy | 5 sell | 56.3s
+2026-04-27 09:00:56 | INFO     | apscheduler.executors.default | Job "Insider 09:00 (trigger: cron[day_of_week='mon-fri', hour='9', minute='0'], next run at: 2026-04-28 09:00:00 BST)" executed successfully
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | Total unique insider trades: 378
+2026-04-27 09:00:56 | INFO     | main |   Stored 0 new insider trade rows
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: BMI | 5 Buys | $777,128
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: KLRA | 5 Buys | $326,750,016
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CHCO | 4 Buys | $57,873
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CRWV | 3 Sales | $379,679,953
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: VINP | 3 Sales | $417,856
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: UTHR | 3 Sales | $12,816,540
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PHVS | 3 Sales | $865,464
+2026-04-27 09:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: SE | 3 Sales | $1,965,520
+2026-04-27 09:00:56 | INFO     | main | JOB DONE: Insider | 0 rows | 3 buy | 5 sell | 56.6s
+2026-04-27 09:00:56 | INFO     | apscheduler.executors.default | Job "Insider 09:00 (trigger: cron[day_of_week='mon-fri', hour='9', minute='0'], next run at: 2026-04-28 09:00:00 BST)" executed successfully
+2026-04-27 09:00:58 | INFO     | scrapers.insider_scraper | Total unique insider trades: 378
+2026-04-27 09:00:58 | INFO     | main |   Stored 0 new insider trade rows
+2026-04-27 09:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: BMI | 5 Buys | $777,128
+2026-04-27 09:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: KLRA | 5 Buys | $326,750,016
+2026-04-27 09:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CHCO | 4 Buys | $57,873
+2026-04-27 09:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CRWV | 3 Sales | $379,679,953
+2026-04-27 09:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: VINP | 3 Sales | $417,856
+2026-04-27 09:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: UTHR | 3 Sales | $12,816,540
+2026-04-27 09:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PHVS | 3 Sales | $865,464
+2026-04-27 09:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: SE | 3 Sales | $1,965,520
+2026-04-27 09:00:58 | INFO     | main | JOB DONE: Insider | 0 rows | 3 buy | 5 sell | 58.9s
+2026-04-27 09:00:58 | INFO     | apscheduler.executors.default | Job "Insider 09:00 (trigger: cron[day_of_week='mon-fri', hour='9', minute='0'], next run at: 2026-04-28 09:00:00 BST)" executed successfully
+2026-04-27 12:00:00 | INFO     | apscheduler.executors.default | Running job "Screener 12:00 (trigger: cron[day_of_week='mon-fri', hour='12', minute='0'], next run at: 2026-04-28 12:00:00 BST)" (scheduled at 2026-04-27 12:00:00+01:00)
+2026-04-27 12:00:00 | INFO     | main | ============================================================
+2026-04-27 12:00:00 | INFO     | main | JOB START: Screener scrape
+2026-04-27 12:00:00 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-27 12:00:00 | INFO     | apscheduler.executors.default | Running job "Screener 12:00 (trigger: cron[day_of_week='mon-fri', hour='12', minute='0'], next run at: 2026-04-28 12:00:00 BST)" (scheduled at 2026-04-27 12:00:00+01:00)
+2026-04-27 12:00:00 | INFO     | main | ============================================================
+2026-04-27 12:00:00 | INFO     | main | JOB START: Screener scrape
+2026-04-27 12:00:00 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-27 12:00:00 | INFO     | apscheduler.executors.default | Running job "Screener 12:00 (trigger: cron[day_of_week='mon-fri', hour='12', minute='0'], next run at: 2026-04-28 12:00:00 BST)" (scheduled at 2026-04-27 12:00:00+01:00)
+2026-04-27 12:00:00 | INFO     | main | ============================================================
+2026-04-27 12:00:00 | INFO     | main | JOB START: Screener scrape
+2026-04-27 12:00:00 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-27 12:00:45 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-27 12:00:45 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-27 12:00:45 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-27 12:02:25 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-27 12:02:25 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-27 12:02:26 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-27 12:02:30 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-27 12:02:30 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-27 12:02:31 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-27 12:03:34 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-27 12:03:34 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-27 12:03:35 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-27 12:05:49 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-27 12:05:50 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-27 12:05:51 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-27 12:05:54 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-27 12:05:55 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-27 12:05:56 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-27 12:12:29 | INFO     | scrapers.screener_scraper |   Financial: 6530 tickers from overview
+2026-04-27 12:12:29 | INFO     | scrapers.screener_scraper |   Financial: 6530 tickers from overview
+2026-04-27 12:12:29 | INFO     | scrapers.screener_scraper |   Financial: 6530 tickers from overview
+2026-04-27 12:25:42 | INFO     | scrapers.screener_scraper |   Financial: 6530 complete rows merged
+2026-04-27 12:25:43 | INFO     | scrapers.screener_scraper |   Financial: 6530 complete rows merged
+2026-04-27 12:25:43 | INFO     | scrapers.screener_scraper |   Financial: 6530 complete rows merged
+2026-04-27 12:25:47 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-27 12:25:48 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-27 12:25:48 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-27 12:26:19 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-27 12:26:20 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-27 12:26:20 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-27 12:27:32 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-27 12:27:33 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-27 12:27:33 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-27 12:27:37 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-27 12:27:38 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-27 12:27:38 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-27 12:28:17 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-27 12:28:19 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-27 12:28:19 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-27 12:29:48 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-27 12:29:49 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-27 12:29:49 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-27 12:29:53 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-27 12:29:54 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-27 12:29:54 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-27 12:30:00 | INFO     | apscheduler.executors.default | Running job "Signals 12:30 (trigger: cron[day_of_week='mon-fri', hour='12', minute='30'], next run at: 2026-04-28 12:30:00 BST)" (scheduled at 2026-04-27 12:30:00+01:00)
+2026-04-27 12:30:00 | INFO     | main | ============================================================
+2026-04-27 12:30:00 | INFO     | main | JOB START: Signal generation
+2026-04-27 12:30:00 | INFO     | apscheduler.executors.default | Running job "Signals 12:30 (trigger: cron[day_of_week='mon-fri', hour='12', minute='30'], next run at: 2026-04-28 12:30:00 BST)" (scheduled at 2026-04-27 12:30:00+01:00)
+2026-04-27 12:30:00 | INFO     | main | ============================================================
+2026-04-27 12:30:00 | INFO     | main | JOB START: Signal generation
+2026-04-27 12:30:00 | INFO     | apscheduler.executors.default | Running job "Signals 12:30 (trigger: cron[day_of_week='mon-fri', hour='12', minute='30'], next run at: 2026-04-28 12:30:00 BST)" (scheduled at 2026-04-27 12:30:00+01:00)
+2026-04-27 12:30:00 | INFO     | main | ============================================================
+2026-04-27 12:30:00 | INFO     | main | JOB START: Signal generation
+2026-04-27 12:30:00 | INFO     | main |   Scoring 280 tickers...
+2026-04-27 12:30:00 | INFO     | main |   Scoring 280 tickers...
+2026-04-27 12:30:00 | INFO     | main |   Scoring 280 tickers...
+2026-04-27 12:30:00 | INFO     | signals.scorer | Scored 280 tickers
+2026-04-27 12:30:00 | INFO     | signals.scorer | Scored 280 tickers
+2026-04-27 12:30:00 | INFO     | signals.scorer | Scored 280 tickers
+2026-04-27 12:30:00 | INFO     | signals.scanner | Running all scans...
+2026-04-27 12:30:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-27 12:30:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-27 12:30:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-27 12:30:00 | INFO     | signals.scanner |   mean_reversion: 3 candidates
+2026-04-27 12:30:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-27 12:30:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 28 | REVERSION: 1
+2026-04-27 12:30:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-27 12:30:00 | INFO     | main |   Scan [mean_reversion]: 3 hits | Top: INHD
+2026-04-27 12:30:00 | INFO     | main | JOB DONE: Signals | 280 scored | 0.2s
+2026-04-27 12:30:00 | INFO     | apscheduler.executors.default | Job "Signals 12:30 (trigger: cron[day_of_week='mon-fri', hour='12', minute='30'], next run at: 2026-04-28 12:30:00 BST)" executed successfully
+2026-04-27 12:30:00 | INFO     | signals.scanner | Running all scans...
+2026-04-27 12:30:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-27 12:30:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-27 12:30:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-27 12:30:00 | INFO     | signals.scanner |   mean_reversion: 3 candidates
+2026-04-27 12:30:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-27 12:30:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 28 | REVERSION: 1
+2026-04-27 12:30:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-27 12:30:00 | INFO     | main |   Scan [mean_reversion]: 3 hits | Top: INHD
+2026-04-27 12:30:00 | INFO     | signals.scanner | Running all scans...
+2026-04-27 12:30:00 | INFO     | main | JOB DONE: Signals | 280 scored | 0.2s
+2026-04-27 12:30:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-27 12:30:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-27 12:30:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-27 12:30:00 | INFO     | apscheduler.executors.default | Job "Signals 12:30 (trigger: cron[day_of_week='mon-fri', hour='12', minute='30'], next run at: 2026-04-28 12:30:00 BST)" executed successfully
+2026-04-27 12:30:00 | INFO     | signals.scanner |   mean_reversion: 3 candidates
+2026-04-27 12:30:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-27 12:30:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 28 | REVERSION: 1
+2026-04-27 12:30:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-27 12:30:00 | INFO     | main |   Scan [mean_reversion]: 3 hits | Top: INHD
+2026-04-27 12:30:00 | INFO     | main | JOB DONE: Signals | 280 scored | 0.2s
+2026-04-27 12:30:00 | INFO     | apscheduler.executors.default | Job "Signals 12:30 (trigger: cron[day_of_week='mon-fri', hour='12', minute='30'], next run at: 2026-04-28 12:30:00 BST)" executed successfully
+2026-04-27 12:30:08 | INFO     | scrapers.screener_scraper |   Energy: 254 tickers from overview
+2026-04-27 12:30:08 | INFO     | scrapers.screener_scraper |   Energy: 254 tickers from overview
+2026-04-27 12:30:09 | INFO     | scrapers.screener_scraper |   Energy: 254 tickers from overview
+2026-04-27 12:30:45 | INFO     | scrapers.screener_scraper |   Energy: 254 complete rows merged
+2026-04-27 12:30:47 | INFO     | scrapers.screener_scraper |   Energy: 254 complete rows merged
+2026-04-27 12:30:47 | INFO     | scrapers.screener_scraper |   Energy: 254 complete rows merged
+2026-04-27 12:30:50 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-27 12:30:52 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-27 12:30:52 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-27 12:31:05 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-27 12:31:06 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-27 12:31:06 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-27 12:31:42 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-27 12:31:44 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-27 12:31:45 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-27 12:31:47 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-27 12:31:49 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-27 12:31:50 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-27 12:31:53 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-27 12:31:55 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-27 12:31:56 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-27 12:32:15 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-27 12:32:17 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-27 12:32:18 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-27 12:32:20 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-27 12:32:22 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-27 12:32:23 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-27 12:32:36 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-27 12:32:38 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-27 12:32:38 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-27 12:33:17 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-27 12:33:18 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-27 12:33:19 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-27 12:33:22 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-27 12:33:23 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-27 12:33:24 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-27 12:33:36 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-27 12:33:38 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-27 12:33:38 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-27 12:34:13 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-27 12:34:15 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-27 12:34:17 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-27 12:34:18 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-27 12:34:20 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-27 12:34:22 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-27 12:34:34 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-27 12:34:36 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-27 12:34:37 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-27 12:35:14 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-27 12:35:16 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-27 12:35:17 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-27 12:35:19 | INFO     | main |   Stored 777 rows for Technology
+2026-04-27 12:35:19 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-27 12:35:19 | INFO     | main |   Stored 6530 rows for Financial
+2026-04-27 12:35:19 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-27 12:35:19 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-27 12:35:19 | INFO     | main |   Stored 254 rows for Energy
+2026-04-27 12:35:19 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-27 12:35:19 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-27 12:35:19 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-27 12:35:19 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-27 12:35:19 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-27 12:35:19 | INFO     | main | JOB DONE: Screener | 11027 rows | 2119.7s
+2026-04-27 12:35:19 | INFO     | apscheduler.executors.default | Job "Screener 12:00 (trigger: cron[day_of_week='mon-fri', hour='12', minute='0'], next run at: 2026-04-28 12:00:00 BST)" executed successfully
+2026-04-27 12:35:21 | INFO     | main |   Stored 777 rows for Technology
+2026-04-27 12:35:21 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-27 12:35:21 | INFO     | main |   Stored 6530 rows for Financial
+2026-04-27 12:35:21 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-27 12:35:21 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-27 12:35:21 | INFO     | main |   Stored 254 rows for Energy
+2026-04-27 12:35:21 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-27 12:35:21 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-27 12:35:21 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-27 12:35:21 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-27 12:35:21 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-27 12:35:21 | INFO     | main | JOB DONE: Screener | 11027 rows | 2121.9s
+2026-04-27 12:35:21 | INFO     | apscheduler.executors.default | Job "Screener 12:00 (trigger: cron[day_of_week='mon-fri', hour='12', minute='0'], next run at: 2026-04-28 12:00:00 BST)" executed successfully
+2026-04-27 12:35:22 | INFO     | main |   Stored 777 rows for Technology
+2026-04-27 12:35:23 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-27 12:35:23 | INFO     | main |   Stored 6530 rows for Financial
+2026-04-27 12:35:23 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-27 12:35:23 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-27 12:35:23 | INFO     | main |   Stored 254 rows for Energy
+2026-04-27 12:35:23 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-27 12:35:23 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-27 12:35:23 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-27 12:35:23 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-27 12:35:23 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-27 12:35:23 | INFO     | main | JOB DONE: Screener | 11027 rows | 2123.1s
+2026-04-27 12:35:23 | INFO     | apscheduler.executors.default | Job "Screener 12:00 (trigger: cron[day_of_week='mon-fri', hour='12', minute='0'], next run at: 2026-04-28 12:00:00 BST)" executed successfully
+2026-04-27 16:30:00 | INFO     | apscheduler.executors.default | Running job "Screener 16:30 (trigger: cron[day_of_week='mon-fri', hour='16', minute='30'], next run at: 2026-04-28 16:30:00 BST)" (scheduled at 2026-04-27 16:30:00+01:00)
+2026-04-27 16:30:00 | INFO     | apscheduler.executors.default | Running job "Screener 16:30 (trigger: cron[day_of_week='mon-fri', hour='16', minute='30'], next run at: 2026-04-28 16:30:00 BST)" (scheduled at 2026-04-27 16:30:00+01:00)
+2026-04-27 16:30:00 | INFO     | apscheduler.executors.default | Running job "Screener 16:30 (trigger: cron[day_of_week='mon-fri', hour='16', minute='30'], next run at: 2026-04-28 16:30:00 BST)" (scheduled at 2026-04-27 16:30:00+01:00)
+2026-04-27 16:30:00 | INFO     | main | ============================================================
+2026-04-27 16:30:00 | INFO     | main | JOB START: Screener scrape
+2026-04-27 16:30:00 | INFO     | main | ============================================================
+2026-04-27 16:30:00 | INFO     | main | ============================================================
+2026-04-27 16:30:00 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-27 16:30:00 | INFO     | main | JOB START: Screener scrape
+2026-04-27 16:30:00 | INFO     | main | JOB START: Screener scrape
+2026-04-27 16:30:00 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-27 16:30:00 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-27 16:30:45 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-27 16:30:45 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-27 16:30:45 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-27 16:32:25 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-27 16:32:26 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-27 16:32:26 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-27 16:32:30 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-27 16:32:31 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-27 16:32:31 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-27 16:33:34 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-27 16:33:34 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-27 16:33:34 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-27 16:35:51 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-27 16:35:51 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-27 16:35:51 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-27 16:35:56 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-27 16:35:56 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-27 16:35:56 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-27 16:42:32 | INFO     | scrapers.screener_scraper |   Financial: 6530 tickers from overview
+2026-04-27 16:42:32 | INFO     | scrapers.screener_scraper |   Financial: 6530 tickers from overview
+2026-04-27 16:42:32 | INFO     | scrapers.screener_scraper |   Financial: 6530 tickers from overview
+2026-04-27 16:55:50 | INFO     | scrapers.screener_scraper |   Financial: 6530 complete rows merged
+2026-04-27 16:55:50 | INFO     | scrapers.screener_scraper |   Financial: 6530 complete rows merged
+2026-04-27 16:55:51 | INFO     | scrapers.screener_scraper |   Financial: 6530 complete rows merged
+2026-04-27 16:55:55 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-27 16:55:55 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-27 16:55:56 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-27 16:56:27 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-27 16:56:27 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-27 16:56:29 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-27 16:57:40 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-27 16:57:40 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-27 16:57:43 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-27 16:57:45 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-27 16:57:45 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-27 16:57:48 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-27 16:58:26 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-27 16:58:26 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-27 16:58:28 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-27 16:59:57 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-27 16:59:57 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-27 16:59:59 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-27 17:00:00 | INFO     | apscheduler.executors.default | Running job "Insider 17:00 (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-28 17:00:00 BST)" (scheduled at 2026-04-27 17:00:00+01:00)
+2026-04-27 17:00:00 | INFO     | apscheduler.executors.default | Running job "Signals 17:00 (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-28 17:00:00 BST)" (scheduled at 2026-04-27 17:00:00+01:00)
+2026-04-27 17:00:00 | INFO     | main | ============================================================
+2026-04-27 17:00:00 | INFO     | main | ============================================================
+2026-04-27 17:00:00 | INFO     | main | JOB START: Insider trade scrape
+2026-04-27 17:00:00 | INFO     | main | JOB START: Signal generation
+2026-04-27 17:00:00 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Buy, pages=5)
+2026-04-27 17:00:00 | INFO     | apscheduler.executors.default | Running job "Insider 17:00 (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-28 17:00:00 BST)" (scheduled at 2026-04-27 17:00:00+01:00)
+2026-04-27 17:00:00 | INFO     | apscheduler.executors.default | Running job "Insider 17:00 (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-28 17:00:00 BST)" (scheduled at 2026-04-27 17:00:00+01:00)
+2026-04-27 17:00:00 | INFO     | main | ============================================================
+2026-04-27 17:00:00 | INFO     | main | ============================================================
+2026-04-27 17:00:00 | INFO     | main | JOB START: Insider trade scrape
+2026-04-27 17:00:00 | INFO     | apscheduler.executors.default | Running job "Signals 17:00 (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-28 17:00:00 BST)" (scheduled at 2026-04-27 17:00:00+01:00)
+2026-04-27 17:00:00 | INFO     | main | JOB START: Insider trade scrape
+2026-04-27 17:00:00 | INFO     | apscheduler.executors.default | Running job "Signals 17:00 (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-28 17:00:00 BST)" (scheduled at 2026-04-27 17:00:00+01:00)
+2026-04-27 17:00:00 | INFO     | main | ============================================================
+2026-04-27 17:00:00 | INFO     | main | JOB START: Signal generation
+2026-04-27 17:00:00 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Buy, pages=5)
+2026-04-27 17:00:00 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Buy, pages=5)
+2026-04-27 17:00:00 | INFO     | main | ============================================================
+2026-04-27 17:00:00 | INFO     | main | JOB START: Signal generation
+2026-04-27 17:00:00 | INFO     | main |   Scoring 280 tickers...
+2026-04-27 17:00:00 | INFO     | main |   Scoring 280 tickers...
+2026-04-27 17:00:00 | INFO     | main |   Scoring 280 tickers...
+2026-04-27 17:00:00 | INFO     | signals.scorer | Scored 280 tickers
+2026-04-27 17:00:00 | INFO     | signals.scorer | Scored 280 tickers
+2026-04-27 17:00:00 | INFO     | signals.scorer | Scored 280 tickers
+2026-04-27 17:00:00 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-27 17:00:00 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-27 17:00:00 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-27 17:00:00 | INFO     | signals.scanner | Running all scans...
+2026-04-27 17:00:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-27 17:00:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-27 17:00:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-27 17:00:00 | INFO     | signals.scanner |   mean_reversion: 3 candidates
+2026-04-27 17:00:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-27 17:00:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 28 | REVERSION: 1
+2026-04-27 17:00:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-27 17:00:00 | INFO     | main |   Scan [mean_reversion]: 3 hits | Top: INHD
+2026-04-27 17:00:00 | INFO     | signals.scanner | Running all scans...
+2026-04-27 17:00:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-27 17:00:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-27 17:00:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-27 17:00:00 | INFO     | signals.scanner |   mean_reversion: 3 candidates
+2026-04-27 17:00:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-27 17:00:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 28 | REVERSION: 1
+2026-04-27 17:00:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-27 17:00:00 | INFO     | main |   Scan [mean_reversion]: 3 hits | Top: INHD
+2026-04-27 17:00:00 | INFO     | signals.scanner | Running all scans...
+2026-04-27 17:00:00 | INFO     | main | JOB DONE: Signals | 280 scored | 0.3s
+2026-04-27 17:00:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-27 17:00:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-27 17:00:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-27 17:00:00 | INFO     | signals.scanner |   mean_reversion: 3 candidates
+2026-04-27 17:00:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-27 17:00:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 28 | REVERSION: 1
+2026-04-27 17:00:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-27 17:00:00 | INFO     | main |   Scan [mean_reversion]: 3 hits | Top: INHD
+2026-04-27 17:00:00 | INFO     | apscheduler.executors.default | Job "Signals 17:00 (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-28 17:00:00 BST)" executed successfully
+2026-04-27 17:00:00 | INFO     | main | JOB DONE: Signals | 280 scored | 0.3s
+2026-04-27 17:00:00 | INFO     | apscheduler.executors.default | Job "Signals 17:00 (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-28 17:00:00 BST)" executed successfully
+2026-04-27 17:00:00 | INFO     | main | JOB DONE: Signals | 280 scored | 0.3s
+2026-04-27 17:00:00 | INFO     | apscheduler.executors.default | Job "Signals 17:00 (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-28 17:00:00 BST)" executed successfully
+2026-04-27 17:00:02 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-27 17:00:02 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-27 17:00:03 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-27 17:00:03 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-27 17:00:03 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-27 17:00:04 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-27 17:00:06 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-27 17:00:06 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-27 17:00:06 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-27 17:00:09 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-27 17:00:09 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-27 17:00:10 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-27 17:00:12 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-27 17:00:12 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-27 17:00:14 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-27 17:00:15 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-27 17:00:16 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-27 17:00:16 | INFO     | scrapers.screener_scraper |   Energy: 254 tickers from overview
+2026-04-27 17:00:16 | INFO     | scrapers.screener_scraper |   Energy: 254 tickers from overview
+2026-04-27 17:00:17 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-27 17:00:18 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Sale, pages=5)
+2026-04-27 17:00:19 | INFO     | scrapers.insider_scraper |   Page 1: 160 rows
+2026-04-27 17:00:19 | INFO     | scrapers.screener_scraper |   Energy: 254 tickers from overview
+2026-04-27 17:00:19 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Sale, pages=5)
+2026-04-27 17:00:19 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Sale, pages=5)
+2026-04-27 17:00:19 | INFO     | scrapers.insider_scraper |   Page 1: 160 rows
+2026-04-27 17:00:20 | INFO     | scrapers.insider_scraper |   Page 1: 160 rows
+2026-04-27 17:00:22 | INFO     | scrapers.insider_scraper |   Page 2: 160 rows
+2026-04-27 17:00:22 | INFO     | scrapers.insider_scraper |   Page 2: 160 rows
+2026-04-27 17:00:23 | INFO     | scrapers.insider_scraper |   Page 2: 160 rows
+2026-04-27 17:00:25 | INFO     | scrapers.insider_scraper |   Page 3: 160 rows
+2026-04-27 17:00:26 | INFO     | scrapers.insider_scraper |   Page 3: 160 rows
+2026-04-27 17:00:26 | INFO     | scrapers.insider_scraper |   Page 3: 160 rows
+2026-04-27 17:00:28 | INFO     | scrapers.insider_scraper |   Page 4: 160 rows
+2026-04-27 17:00:29 | INFO     | scrapers.insider_scraper |   Page 4: 160 rows
+2026-04-27 17:00:30 | INFO     | scrapers.insider_scraper |   Page 4: 160 rows
+2026-04-27 17:00:31 | INFO     | scrapers.insider_scraper |   Page 5: 160 rows
+2026-04-27 17:00:33 | INFO     | scrapers.insider_scraper |   Page 5: 160 rows
+2026-04-27 17:00:33 | INFO     | scrapers.insider_scraper |   Page 5: 160 rows
+2026-04-27 17:00:34 | INFO     | scrapers.insider_scraper | Total insider rows: 800
+2026-04-27 17:00:35 | INFO     | scrapers.insider_scraper | Total insider rows: 800
+2026-04-27 17:00:36 | INFO     | scrapers.insider_scraper | Total insider rows: 800
+2026-04-27 17:00:37 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Option Exercise, pages=5)
+2026-04-27 17:00:37 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-27 17:00:39 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Option Exercise, pages=5)
+2026-04-27 17:00:39 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-27 17:00:39 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Option Exercise, pages=5)
+2026-04-27 17:00:39 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-27 17:00:41 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-27 17:00:42 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-27 17:00:43 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-27 17:00:43 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-27 17:00:45 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-27 17:00:46 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-27 17:00:47 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-27 17:00:49 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-27 17:00:49 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-27 17:00:50 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-27 17:00:52 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-27 17:00:52 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-27 17:00:53 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-27 17:00:55 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-27 17:00:55 | INFO     | scrapers.screener_scraper |   Energy: 254 complete rows merged
+2026-04-27 17:00:55 | INFO     | scrapers.screener_scraper |   Energy: 254 complete rows merged
+2026-04-27 17:00:55 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-27 17:00:56 | INFO     | scrapers.insider_scraper | Total unique insider trades: 401
+2026-04-27 17:00:56 | INFO     | main |   Stored 58 new insider trade rows
+2026-04-27 17:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: EFOR | 8 Buys | $1,536,414
+2026-04-27 17:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: BMI | 5 Buys | $777,128
+2026-04-27 17:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: KLRA | 5 Buys | $326,750,016
+2026-04-27 17:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CHCO | 4 Buys | $57,873
+2026-04-27 17:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: VINP | 3 Sales | $417,856
+2026-04-27 17:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: UTHR | 3 Sales | $12,816,540
+2026-04-27 17:00:56 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PHVS | 3 Sales | $865,464
+2026-04-27 17:00:56 | INFO     | main | JOB DONE: Insider | 58 rows | 4 buy | 3 sell | 56.1s
+2026-04-27 17:00:56 | INFO     | apscheduler.executors.default | Job "Insider 17:00 (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-28 17:00:00 BST)" executed successfully
+2026-04-27 17:00:57 | INFO     | scrapers.screener_scraper |   Energy: 254 complete rows merged
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | Total unique insider trades: 401
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | Total unique insider trades: 401
+2026-04-27 17:00:58 | INFO     | main |   Stored 0 new insider trade rows
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: EFOR | 8 Buys | $1,536,414
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: BMI | 5 Buys | $777,128
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: KLRA | 5 Buys | $326,750,016
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CHCO | 4 Buys | $57,873
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: VINP | 3 Sales | $417,856
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: UTHR | 3 Sales | $12,816,540
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PHVS | 3 Sales | $865,464
+2026-04-27 17:00:58 | INFO     | main |   Stored 0 new insider trade rows
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: EFOR | 8 Buys | $1,536,414
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: BMI | 5 Buys | $777,128
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: KLRA | 5 Buys | $326,750,016
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: CHCO | 4 Buys | $57,873
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: VINP | 3 Sales | $417,856
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: UTHR | 3 Sales | $12,816,540
+2026-04-27 17:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: PHVS | 3 Sales | $865,464
+2026-04-27 17:00:58 | INFO     | main | JOB DONE: Insider | 0 rows | 4 buy | 3 sell | 58.4s
+2026-04-27 17:00:58 | INFO     | apscheduler.executors.default | Job "Insider 17:00 (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-28 17:00:00 BST)" executed successfully
+2026-04-27 17:00:58 | INFO     | main | JOB DONE: Insider | 0 rows | 4 buy | 3 sell | 58.5s
+2026-04-27 17:00:58 | INFO     | apscheduler.executors.default | Job "Insider 17:00 (trigger: cron[day_of_week='mon-fri', hour='17', minute='0'], next run at: 2026-04-28 17:00:00 BST)" executed successfully
+2026-04-27 17:01:00 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-27 17:01:00 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-27 17:01:02 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-27 17:01:14 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-27 17:01:15 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-27 17:01:16 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-27 17:01:53 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-27 17:01:54 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-27 17:01:54 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-27 17:01:58 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-27 17:01:59 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-27 17:01:59 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-27 17:02:04 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-27 17:02:05 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-27 17:02:05 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-27 17:02:26 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-27 17:02:26 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-27 17:02:27 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-27 17:02:31 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-27 17:02:31 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-27 17:02:32 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-27 17:02:46 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-27 17:02:47 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-27 17:02:47 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-27 17:03:26 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-27 17:03:27 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-27 17:03:27 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-27 17:03:31 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-27 17:03:32 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-27 17:03:32 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-27 17:03:46 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-27 17:03:46 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-27 17:03:47 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-27 17:04:24 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-27 17:04:25 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-27 17:04:25 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-27 17:04:29 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-27 17:04:30 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-27 17:04:30 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-27 17:04:45 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-27 17:04:46 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-27 17:04:46 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-27 17:05:26 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-27 17:05:26 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-27 17:05:26 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-27 17:05:31 | INFO     | main |   Stored 777 rows for Technology
+2026-04-27 17:05:31 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-27 17:05:31 | INFO     | main |   Stored 777 rows for Technology
+2026-04-27 17:05:31 | INFO     | main |   Stored 6530 rows for Financial
+2026-04-27 17:05:31 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-27 17:05:31 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-27 17:05:31 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-27 17:05:31 | INFO     | main |   Stored 254 rows for Energy
+2026-04-27 17:05:31 | INFO     | main |   Stored 6530 rows for Financial
+2026-04-27 17:05:31 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-27 17:05:31 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-27 17:05:31 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-27 17:05:31 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-27 17:05:31 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-27 17:05:31 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-27 17:05:31 | INFO     | main |   Stored 254 rows for Energy
+2026-04-27 17:05:31 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-27 17:05:31 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-27 17:05:31 | INFO     | main | JOB DONE: Screener | 11027 rows | 2131.7s
+2026-04-27 17:05:31 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-27 17:05:31 | INFO     | apscheduler.executors.default | Job "Screener 16:30 (trigger: cron[day_of_week='mon-fri', hour='16', minute='30'], next run at: 2026-04-28 16:30:00 BST)" executed successfully
+2026-04-27 17:05:31 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-27 17:05:31 | INFO     | main |   Stored 777 rows for Technology
+2026-04-27 17:05:31 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-27 17:05:31 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-27 17:05:31 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-27 17:05:31 | INFO     | main | JOB DONE: Screener | 11027 rows | 2131.7s
+2026-04-27 17:05:31 | INFO     | apscheduler.executors.default | Job "Screener 16:30 (trigger: cron[day_of_week='mon-fri', hour='16', minute='30'], next run at: 2026-04-28 16:30:00 BST)" executed successfully
+2026-04-27 17:05:31 | INFO     | main |   Stored 6530 rows for Financial
+2026-04-27 17:05:31 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-27 17:05:31 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-27 17:05:31 | INFO     | main |   Stored 254 rows for Energy
+2026-04-27 17:05:31 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-27 17:05:31 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-27 17:05:31 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-27 17:05:31 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-27 17:05:31 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-27 17:05:31 | INFO     | main | JOB DONE: Screener | 11027 rows | 2131.9s
+2026-04-27 17:05:31 | INFO     | apscheduler.executors.default | Job "Screener 16:30 (trigger: cron[day_of_week='mon-fri', hour='16', minute='30'], next run at: 2026-04-28 16:30:00 BST)" executed successfully
+2026-04-27 17:30:00 | INFO     | apscheduler.executors.default | Running job "News & Calendar 17:30 (trigger: cron[day_of_week='mon-fri', hour='17', minute='30'], next run at: 2026-04-28 17:30:00 BST)" (scheduled at 2026-04-27 17:30:00+01:00)
+2026-04-27 17:30:00 | INFO     | apscheduler.executors.default | Running job "News & Calendar 17:30 (trigger: cron[day_of_week='mon-fri', hour='17', minute='30'], next run at: 2026-04-28 17:30:00 BST)" (scheduled at 2026-04-27 17:30:00+01:00)
+2026-04-27 17:30:00 | INFO     | apscheduler.executors.default | Running job "News & Calendar 17:30 (trigger: cron[day_of_week='mon-fri', hour='17', minute='30'], next run at: 2026-04-28 17:30:00 BST)" (scheduled at 2026-04-27 17:30:00+01:00)
+2026-04-27 17:30:00 | INFO     | main | ============================================================
+2026-04-27 17:30:00 | INFO     | main | ============================================================
+2026-04-27 17:30:00 | INFO     | main | ============================================================
+2026-04-27 17:30:00 | INFO     | main | JOB START: News & Calendar
+2026-04-27 17:30:00 | INFO     | main | JOB START: News & Calendar
+2026-04-27 17:30:00 | INFO     | main | JOB START: News & Calendar
+2026-04-27 17:30:00 | INFO     | main |   Scraping news for 28 top-rated tickers...
+2026-04-27 17:30:00 | INFO     | main |   Scraping news for 28 top-rated tickers...
+2026-04-27 17:30:00 | INFO     | main |   Scraping news for 28 top-rated tickers...
+2026-04-27 17:30:00 | INFO     | scrapers.news_scraper |   News [1/20]: CSTM
+2026-04-27 17:30:00 | INFO     | scrapers.news_scraper |   News [1/20]: CSTM
+2026-04-27 17:30:00 | INFO     | scrapers.news_scraper |   News [1/20]: CSTM
+2026-04-27 17:30:06 | INFO     | scrapers.news_scraper |   News [2/20]: IDR
+2026-04-27 17:30:07 | INFO     | scrapers.news_scraper |   News [2/20]: IDR
+2026-04-27 17:30:07 | INFO     | scrapers.news_scraper |   News [2/20]: IDR
+2026-04-27 17:30:12 | INFO     | scrapers.news_scraper |   News [3/20]: THM
+2026-04-27 17:30:13 | INFO     | scrapers.news_scraper |   News [3/20]: THM
+2026-04-27 17:30:13 | INFO     | scrapers.news_scraper |   News [3/20]: THM
+2026-04-27 17:30:19 | INFO     | scrapers.news_scraper |   News [4/20]: UAN
+2026-04-27 17:30:19 | INFO     | scrapers.news_scraper |   News [4/20]: UAN
+2026-04-27 17:30:19 | INFO     | scrapers.news_scraper |   News [4/20]: UAN
+2026-04-27 17:30:25 | INFO     | scrapers.news_scraper |   News [5/20]: ALTO
+2026-04-27 17:30:26 | INFO     | scrapers.news_scraper |   News [5/20]: ALTO
+2026-04-27 17:30:26 | INFO     | scrapers.news_scraper |   News [5/20]: ALTO
+2026-04-27 17:30:31 | INFO     | scrapers.news_scraper |   News [6/20]: BHP
+2026-04-27 17:30:32 | INFO     | scrapers.news_scraper |   News [6/20]: BHP
+2026-04-27 17:30:32 | INFO     | scrapers.news_scraper |   News [6/20]: BHP
+2026-04-27 17:30:38 | INFO     | scrapers.news_scraper |   News [7/20]: MAKO
+2026-04-27 17:30:38 | INFO     | scrapers.news_scraper |   News [7/20]: MAKO
+2026-04-27 17:30:38 | INFO     | scrapers.news_scraper |   News [7/20]: MAKO
+2026-04-27 17:30:44 | INFO     | scrapers.news_scraper |   News [8/20]: NEM
+2026-04-27 17:30:44 | INFO     | scrapers.news_scraper |   News [8/20]: NEM
+2026-04-27 17:30:44 | INFO     | scrapers.news_scraper |   News [8/20]: NEM
+2026-04-27 17:30:50 | INFO     | scrapers.news_scraper |   News [9/20]: CGAU
+2026-04-27 17:30:50 | INFO     | scrapers.news_scraper |   News [9/20]: CGAU
+2026-04-27 17:30:50 | INFO     | scrapers.news_scraper |   News [9/20]: CGAU
+2026-04-27 17:30:56 | INFO     | scrapers.news_scraper |   News [10/20]: KGC
+2026-04-27 17:30:56 | INFO     | scrapers.news_scraper |   News [10/20]: KGC
+2026-04-27 17:30:56 | INFO     | scrapers.news_scraper |   News [10/20]: KGC
+2026-04-27 17:31:02 | INFO     | scrapers.news_scraper |   News [11/20]: NEXA
+2026-04-27 17:31:02 | INFO     | scrapers.news_scraper |   News [11/20]: NEXA
+2026-04-27 17:31:03 | INFO     | scrapers.news_scraper |   News [11/20]: NEXA
+2026-04-27 17:31:08 | INFO     | scrapers.news_scraper |   News [12/20]: ODC
+2026-04-27 17:31:08 | INFO     | scrapers.news_scraper |   News [12/20]: ODC
+2026-04-27 17:31:09 | INFO     | scrapers.news_scraper |   News [12/20]: ODC
+2026-04-27 17:31:14 | INFO     | scrapers.news_scraper |   News [13/20]: REX
+2026-04-27 17:31:14 | INFO     | scrapers.news_scraper |   News [13/20]: REX
+2026-04-27 17:31:15 | INFO     | scrapers.news_scraper |   News [13/20]: REX
+2026-04-27 17:31:20 | INFO     | scrapers.news_scraper |   News [14/20]: SQM
+2026-04-27 17:31:20 | INFO     | scrapers.news_scraper |   News [14/20]: SQM
+2026-04-27 17:31:22 | INFO     | scrapers.news_scraper |   News [14/20]: SQM
+2026-04-27 17:31:26 | INFO     | scrapers.news_scraper |   News [15/20]: ASIX
+2026-04-27 17:31:27 | INFO     | scrapers.news_scraper |   News [15/20]: ASIX
+2026-04-27 17:31:28 | INFO     | scrapers.news_scraper |   News [15/20]: ASIX
+2026-04-27 17:31:32 | INFO     | scrapers.news_scraper |   News [16/20]: ECVT
+2026-04-27 17:31:34 | INFO     | scrapers.news_scraper |   News [16/20]: ECVT
+2026-04-27 17:31:34 | INFO     | scrapers.news_scraper |   News [16/20]: ECVT
+2026-04-27 17:31:38 | INFO     | scrapers.news_scraper |   News [17/20]: ESI
+2026-04-27 17:31:40 | INFO     | scrapers.news_scraper |   News [17/20]: ESI
+2026-04-27 17:31:40 | INFO     | scrapers.news_scraper |   News [17/20]: ESI
+2026-04-27 17:31:45 | INFO     | scrapers.news_scraper |   News [18/20]: KNF
+2026-04-27 17:31:46 | INFO     | scrapers.news_scraper |   News [18/20]: KNF
+2026-04-27 17:31:46 | INFO     | scrapers.news_scraper |   News [18/20]: KNF
+2026-04-27 17:31:51 | INFO     | scrapers.news_scraper |   News [19/20]: KOP
+2026-04-27 17:31:52 | INFO     | scrapers.news_scraper |   News [19/20]: KOP
+2026-04-27 17:31:52 | INFO     | scrapers.news_scraper |   News [19/20]: KOP
+2026-04-27 17:31:56 | INFO     | scrapers.news_scraper |   News [20/20]: RIO
+2026-04-27 17:31:58 | INFO     | scrapers.news_scraper |   News [20/20]: RIO
+2026-04-27 17:31:58 | INFO     | scrapers.news_scraper |   News [20/20]: RIO
+2026-04-27 17:32:03 | INFO     | main |   Stored 582 articles, 20 sentiment scores
+2026-04-27 17:32:03 | INFO     | main |   Most bullish news: CSTM (+0.400)
+2026-04-27 17:32:03 | INFO     | main |   Most bearish news: THM (+0.000)
+2026-04-27 17:32:03 | INFO     | main |   Scraping economic calendar...
+2026-04-27 17:32:03 | WARNING  | scrapers.calendar_scraper | Could not find calendar table
+2026-04-27 17:32:03 | INFO     | main | JOB DONE: News & Calendar | 123.7s
+2026-04-27 17:32:03 | INFO     | main | ============================================================
+2026-04-27 17:32:03 | INFO     | main | JOB START: Signal generation
+2026-04-27 17:32:03 | ERROR    | main | Signals FAILED: name 'sector' is not defined
+Traceback (most recent call last):
+  File "/Users/markn/Documents/trading-system/main.py", line 175, in job_news_and_calendar
+    logger.info("=" * 60)
+NameError: name 'sector' is not defined
+2026-04-27 17:32:03 | INFO     | apscheduler.executors.default | Job "News & Calendar 17:30 (trigger: cron[day_of_week='mon-fri', hour='17', minute='30'], next run at: 2026-04-28 17:30:00 BST)" executed successfully
+2026-04-27 17:32:04 | INFO     | main |   Stored 582 articles, 20 sentiment scores
+2026-04-27 17:32:04 | INFO     | main |   Most bullish news: CSTM (+0.400)
+2026-04-27 17:32:04 | INFO     | main |   Most bearish news: THM (+0.000)
+2026-04-27 17:32:04 | INFO     | main |   Scraping economic calendar...
+2026-04-27 17:32:04 | WARNING  | scrapers.calendar_scraper | Could not find calendar table
+2026-04-27 17:32:04 | INFO     | main | JOB DONE: News & Calendar | 124.6s
+2026-04-27 17:32:04 | INFO     | main | ============================================================
+2026-04-27 17:32:04 | INFO     | main | JOB START: Signal generation
+2026-04-27 17:32:04 | ERROR    | main | Signals FAILED: name 'sector' is not defined
+Traceback (most recent call last):
+  File "/Users/markn/Documents/trading-system/main.py", line 175, in job_news_and_calendar
+    logger.info("=" * 60)
+NameError: name 'sector' is not defined
+2026-04-27 17:32:04 | INFO     | apscheduler.executors.default | Job "News & Calendar 17:30 (trigger: cron[day_of_week='mon-fri', hour='17', minute='30'], next run at: 2026-04-28 17:30:00 BST)" executed successfully
+2026-04-27 17:32:04 | INFO     | main |   Stored 582 articles, 20 sentiment scores
+2026-04-27 17:32:04 | INFO     | main |   Most bullish news: CSTM (+0.400)
+2026-04-27 17:32:04 | INFO     | main |   Most bearish news: THM (+0.000)
+2026-04-27 17:32:04 | INFO     | main |   Scraping economic calendar...
+2026-04-27 17:32:04 | WARNING  | scrapers.calendar_scraper | Could not find calendar table
+2026-04-27 17:32:04 | INFO     | main | JOB DONE: News & Calendar | 124.9s
+2026-04-27 17:32:04 | INFO     | main | ============================================================
+2026-04-27 17:32:04 | INFO     | main | JOB START: Signal generation
+2026-04-27 17:32:04 | ERROR    | main | Signals FAILED: name 'sector' is not defined
+Traceback (most recent call last):
+  File "/Users/markn/Documents/trading-system/main.py", line 175, in job_news_and_calendar
+    logger.info("=" * 60)
+NameError: name 'sector' is not defined
+2026-04-27 17:32:05 | INFO     | apscheduler.executors.default | Job "News & Calendar 17:30 (trigger: cron[day_of_week='mon-fri', hour='17', minute='30'], next run at: 2026-04-28 17:30:00 BST)" executed successfully
+2026-04-28 08:00:00 | INFO     | apscheduler.executors.default | Running job "Screener 08:00 (trigger: cron[day_of_week='mon-fri', hour='8', minute='0'], next run at: 2026-04-29 08:00:00 BST)" (scheduled at 2026-04-28 08:00:00+01:00)
+2026-04-28 08:00:00 | INFO     | main | ============================================================
+2026-04-28 08:00:00 | INFO     | apscheduler.executors.default | Running job "Screener 08:00 (trigger: cron[day_of_week='mon-fri', hour='8', minute='0'], next run at: 2026-04-29 08:00:00 BST)" (scheduled at 2026-04-28 08:00:00+01:00)
+2026-04-28 08:00:00 | INFO     | apscheduler.executors.default | Running job "Screener 08:00 (trigger: cron[day_of_week='mon-fri', hour='8', minute='0'], next run at: 2026-04-29 08:00:00 BST)" (scheduled at 2026-04-28 08:00:00+01:00)
+2026-04-28 08:00:00 | INFO     | main | JOB START: Screener scrape
+2026-04-28 08:00:00 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-28 08:00:00 | INFO     | main | ============================================================
+2026-04-28 08:00:00 | INFO     | main | ============================================================
+2026-04-28 08:00:00 | INFO     | main | JOB START: Screener scrape
+2026-04-28 08:00:00 | INFO     | main | JOB START: Screener scrape
+2026-04-28 08:00:00 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-28 08:00:00 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-28 08:00:45 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-28 08:00:45 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-28 08:00:45 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-28 08:02:24 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-28 08:02:25 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-28 08:02:25 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-28 08:02:29 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-28 08:02:30 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-28 08:02:30 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-28 08:03:32 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-28 08:03:33 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-28 08:03:33 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-28 08:05:49 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-28 08:05:49 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-28 08:05:50 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-28 08:05:54 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-28 08:05:54 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-28 08:05:55 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-28 08:12:27 | INFO     | scrapers.screener_scraper |   Financial: 6530 tickers from overview
+2026-04-28 08:12:27 | INFO     | scrapers.screener_scraper |   Financial: 6530 tickers from overview
+2026-04-28 08:12:28 | INFO     | scrapers.screener_scraper |   Financial: 6530 tickers from overview
+2026-04-28 08:25:41 | INFO     | scrapers.screener_scraper |   Financial: 6530 complete rows merged
+2026-04-28 08:25:42 | INFO     | scrapers.screener_scraper |   Financial: 6530 complete rows merged
+2026-04-28 08:25:42 | INFO     | scrapers.screener_scraper |   Financial: 6530 complete rows merged
+2026-04-28 08:25:46 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-28 08:25:47 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-28 08:25:47 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Cyclical
+2026-04-28 08:26:18 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-28 08:26:18 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-28 08:26:18 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 tickers from overview
+2026-04-28 08:27:31 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-28 08:27:32 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-28 08:27:32 | INFO     | scrapers.screener_scraper |   Consumer Cyclical: 548 complete rows merged
+2026-04-28 08:27:36 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-28 08:27:37 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-28 08:27:37 | INFO     | scrapers.screener_scraper | Scraping sector: Industrials
+2026-04-28 08:28:17 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-28 08:28:17 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-28 08:28:17 | INFO     | scrapers.screener_scraper |   Industrials: 690 tickers from overview
+2026-04-28 08:29:48 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-28 08:29:48 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-28 08:29:49 | INFO     | scrapers.screener_scraper |   Industrials: 690 complete rows merged
+2026-04-28 08:29:53 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-28 08:29:53 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-28 08:29:54 | INFO     | scrapers.screener_scraper | Scraping sector: Energy
+2026-04-28 08:30:00 | INFO     | apscheduler.executors.default | Running job "Signals 08:30 (trigger: cron[day_of_week='mon-fri', hour='8', minute='30'], next run at: 2026-04-29 08:30:00 BST)" (scheduled at 2026-04-28 08:30:00+01:00)
+2026-04-28 08:30:00 | INFO     | main | ============================================================
+2026-04-28 08:30:00 | INFO     | main | JOB START: Signal generation
+2026-04-28 08:30:00 | INFO     | apscheduler.executors.default | Running job "Signals 08:30 (trigger: cron[day_of_week='mon-fri', hour='8', minute='30'], next run at: 2026-04-29 08:30:00 BST)" (scheduled at 2026-04-28 08:30:00+01:00)
+2026-04-28 08:30:00 | INFO     | main | ============================================================
+2026-04-28 08:30:00 | INFO     | main | JOB START: Signal generation
+2026-04-28 08:30:00 | INFO     | apscheduler.executors.default | Running job "Signals 08:30 (trigger: cron[day_of_week='mon-fri', hour='8', minute='30'], next run at: 2026-04-29 08:30:00 BST)" (scheduled at 2026-04-28 08:30:00+01:00)
+2026-04-28 08:30:00 | INFO     | main | ============================================================
+2026-04-28 08:30:00 | INFO     | main | JOB START: Signal generation
+2026-04-28 08:30:00 | INFO     | main |   Scoring 280 tickers...
+2026-04-28 08:30:00 | INFO     | main |   Scoring 280 tickers...
+2026-04-28 08:30:00 | INFO     | main |   Scoring 280 tickers...
+2026-04-28 08:30:00 | INFO     | signals.scorer | Scored 280 tickers
+2026-04-28 08:30:00 | INFO     | signals.scorer | Scored 280 tickers
+2026-04-28 08:30:00 | INFO     | signals.scorer | Scored 280 tickers
+2026-04-28 08:30:00 | INFO     | signals.scanner | Running all scans...
+2026-04-28 08:30:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-28 08:30:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-28 08:30:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-28 08:30:00 | INFO     | signals.scanner |   mean_reversion: 2 candidates
+2026-04-28 08:30:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-28 08:30:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 23 | REVERSION: 1
+2026-04-28 08:30:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-28 08:30:00 | INFO     | main |   Scan [mean_reversion]: 2 hits | Top: INHD
+2026-04-28 08:30:00 | INFO     | signals.scanner | Running all scans...
+2026-04-28 08:30:00 | INFO     | main | JOB DONE: Signals | 280 scored | 0.3s
+2026-04-28 08:30:00 | INFO     | apscheduler.executors.default | Job "Signals 08:30 (trigger: cron[day_of_week='mon-fri', hour='8', minute='30'], next run at: 2026-04-29 08:30:00 BST)" executed successfully
+2026-04-28 08:30:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-28 08:30:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-28 08:30:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-28 08:30:00 | INFO     | signals.scanner |   mean_reversion: 2 candidates
+2026-04-28 08:30:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-28 08:30:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 23 | REVERSION: 1
+2026-04-28 08:30:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-28 08:30:00 | INFO     | main |   Scan [mean_reversion]: 2 hits | Top: INHD
+2026-04-28 08:30:00 | INFO     | signals.scanner | Running all scans...
+2026-04-28 08:30:00 | INFO     | main | JOB DONE: Signals | 280 scored | 0.3s
+2026-04-28 08:30:00 | INFO     | signals.scanner |   insider_oversold: 0 candidates
+2026-04-28 08:30:00 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-28 08:30:00 | INFO     | apscheduler.executors.default | Job "Signals 08:30 (trigger: cron[day_of_week='mon-fri', hour='8', minute='30'], next run at: 2026-04-29 08:30:00 BST)" executed successfully
+2026-04-28 08:30:00 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-28 08:30:00 | INFO     | signals.scanner |   mean_reversion: 2 candidates
+2026-04-28 08:30:00 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-28 08:30:00 | INFO     | main |   STRONG_BUY: 0 | BUY: 23 | REVERSION: 1
+2026-04-28 08:30:00 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: LWLG
+2026-04-28 08:30:00 | INFO     | main |   Scan [mean_reversion]: 2 hits | Top: INHD
+2026-04-28 08:30:00 | INFO     | main | JOB DONE: Signals | 280 scored | 0.3s
+2026-04-28 08:30:00 | INFO     | apscheduler.executors.default | Job "Signals 08:30 (trigger: cron[day_of_week='mon-fri', hour='8', minute='30'], next run at: 2026-04-29 08:30:00 BST)" executed successfully
+2026-04-28 08:30:07 | INFO     | scrapers.screener_scraper |   Energy: 254 tickers from overview
+2026-04-28 08:30:08 | INFO     | scrapers.screener_scraper |   Energy: 254 tickers from overview
+2026-04-28 08:30:08 | INFO     | scrapers.screener_scraper |   Energy: 254 tickers from overview
+2026-04-28 08:30:45 | INFO     | scrapers.screener_scraper |   Energy: 254 complete rows merged
+2026-04-28 08:30:45 | INFO     | scrapers.screener_scraper |   Energy: 254 complete rows merged
+2026-04-28 08:30:45 | INFO     | scrapers.screener_scraper |   Energy: 254 complete rows merged
+2026-04-28 08:30:50 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-28 08:30:50 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-28 08:30:50 | INFO     | scrapers.screener_scraper | Scraping sector: Real Estate
+2026-04-28 08:31:04 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-28 08:31:04 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-28 08:31:05 | INFO     | scrapers.screener_scraper |   Real Estate: 255 tickers from overview
+2026-04-28 08:31:42 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-28 08:31:42 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-28 08:31:42 | INFO     | scrapers.screener_scraper |   Real Estate: 255 complete rows merged
+2026-04-28 08:31:47 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-28 08:31:47 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-28 08:31:47 | INFO     | scrapers.screener_scraper | Scraping sector: Utilities
+2026-04-28 08:31:53 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-28 08:31:53 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-28 08:31:53 | INFO     | scrapers.screener_scraper |   Utilities: 110 tickers from overview
+2026-04-28 08:32:14 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-28 08:32:15 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-28 08:32:16 | INFO     | scrapers.screener_scraper |   Utilities: 110 complete rows merged
+2026-04-28 08:32:19 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-28 08:32:20 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-28 08:32:21 | INFO     | scrapers.screener_scraper | Scraping sector: Communication Services
+2026-04-28 08:32:35 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-28 08:32:35 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-28 08:32:37 | INFO     | scrapers.screener_scraper |   Communication Services: 264 tickers from overview
+2026-04-28 08:33:16 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-28 08:33:16 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-28 08:33:18 | INFO     | scrapers.screener_scraper |   Communication Services: 264 complete rows merged
+2026-04-28 08:33:21 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-28 08:33:21 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-28 08:33:23 | INFO     | scrapers.screener_scraper | Scraping sector: Consumer Defensive
+2026-04-28 08:33:35 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-28 08:33:35 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-28 08:33:37 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 tickers from overview
+2026-04-28 08:34:12 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-28 08:34:13 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-28 08:34:14 | INFO     | scrapers.screener_scraper |   Consumer Defensive: 243 complete rows merged
+2026-04-28 08:34:17 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-28 08:34:18 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-28 08:34:19 | INFO     | scrapers.screener_scraper | Scraping sector: Basic Materials
+2026-04-28 08:34:33 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-28 08:34:34 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-28 08:34:35 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 tickers from overview
+2026-04-28 08:35:13 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-28 08:35:13 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-28 08:35:15 | INFO     | scrapers.screener_scraper |   Basic Materials: 280 complete rows merged
+2026-04-28 08:35:18 | INFO     | main |   Stored 777 rows for Technology
+2026-04-28 08:35:18 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-28 08:35:18 | INFO     | main |   Stored 6530 rows for Financial
+2026-04-28 08:35:18 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-28 08:35:18 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-28 08:35:18 | INFO     | main |   Stored 254 rows for Energy
+2026-04-28 08:35:18 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-28 08:35:18 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-28 08:35:18 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-28 08:35:18 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-28 08:35:18 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-28 08:35:18 | INFO     | main | JOB DONE: Screener | 11027 rows | 2118.4s
+2026-04-28 08:35:18 | INFO     | apscheduler.executors.default | Job "Screener 08:00 (trigger: cron[day_of_week='mon-fri', hour='8', minute='0'], next run at: 2026-04-29 08:00:00 BST)" executed successfully
+2026-04-28 08:35:18 | INFO     | main |   Stored 777 rows for Technology
+2026-04-28 08:35:19 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-28 08:35:19 | INFO     | main |   Stored 6530 rows for Financial
+2026-04-28 08:35:19 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-28 08:35:19 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-28 08:35:19 | INFO     | main |   Stored 254 rows for Energy
+2026-04-28 08:35:19 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-28 08:35:19 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-28 08:35:19 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-28 08:35:19 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-28 08:35:19 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-28 08:35:19 | INFO     | main | JOB DONE: Screener | 11027 rows | 2118.8s
+2026-04-28 08:35:19 | INFO     | apscheduler.executors.default | Job "Screener 08:00 (trigger: cron[day_of_week='mon-fri', hour='8', minute='0'], next run at: 2026-04-29 08:00:00 BST)" executed successfully
+2026-04-28 08:35:21 | INFO     | main |   Stored 777 rows for Technology
+2026-04-28 08:35:21 | INFO     | main |   Stored 1076 rows for Healthcare
+2026-04-28 08:35:21 | INFO     | main |   Stored 6530 rows for Financial
+2026-04-28 08:35:21 | INFO     | main |   Stored 548 rows for Consumer Cyclical
+2026-04-28 08:35:21 | INFO     | main |   Stored 690 rows for Industrials
+2026-04-28 08:35:21 | INFO     | main |   Stored 254 rows for Energy
+2026-04-28 08:35:21 | INFO     | main |   Stored 255 rows for Real Estate
+2026-04-28 08:35:21 | INFO     | main |   Stored 110 rows for Utilities
+2026-04-28 08:35:21 | INFO     | main |   Stored 264 rows for Communication Services
+2026-04-28 08:35:21 | INFO     | main |   Stored 243 rows for Consumer Defensive
+2026-04-28 08:35:21 | INFO     | main |   Stored 280 rows for Basic Materials
+2026-04-28 08:35:21 | INFO     | main | JOB DONE: Screener | 11027 rows | 2120.9s
+2026-04-28 08:35:21 | INFO     | apscheduler.executors.default | Job "Screener 08:00 (trigger: cron[day_of_week='mon-fri', hour='8', minute='0'], next run at: 2026-04-29 08:00:00 BST)" executed successfully
+2026-04-28 09:00:00 | INFO     | apscheduler.executors.default | Running job "Insider 09:00 (trigger: cron[day_of_week='mon-fri', hour='9', minute='0'], next run at: 2026-04-29 09:00:00 BST)" (scheduled at 2026-04-28 09:00:00+01:00)
+2026-04-28 09:00:00 | INFO     | apscheduler.executors.default | Running job "Insider 09:00 (trigger: cron[day_of_week='mon-fri', hour='9', minute='0'], next run at: 2026-04-29 09:00:00 BST)" (scheduled at 2026-04-28 09:00:00+01:00)
+2026-04-28 09:00:00 | INFO     | main | ============================================================
+2026-04-28 09:00:00 | INFO     | apscheduler.executors.default | Running job "Insider 09:00 (trigger: cron[day_of_week='mon-fri', hour='9', minute='0'], next run at: 2026-04-29 09:00:00 BST)" (scheduled at 2026-04-28 09:00:00+01:00)
+2026-04-28 09:00:00 | INFO     | main | JOB START: Insider trade scrape
+2026-04-28 09:00:00 | INFO     | main | ============================================================
+2026-04-28 09:00:00 | INFO     | main | ============================================================
+2026-04-28 09:00:00 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Buy, pages=5)
+2026-04-28 09:00:00 | INFO     | main | JOB START: Insider trade scrape
+2026-04-28 09:00:00 | INFO     | main | JOB START: Insider trade scrape
+2026-04-28 09:00:00 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Buy, pages=5)
+2026-04-28 09:00:00 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Buy, pages=5)
+2026-04-28 09:00:00 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-28 09:00:00 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-28 09:00:00 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-28 09:00:03 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-28 09:00:03 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-28 09:00:03 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-28 09:00:06 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-28 09:00:06 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-28 09:00:07 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-28 09:00:09 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-28 09:00:10 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-28 09:00:10 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-28 09:00:12 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-28 09:00:13 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-28 09:00:14 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-28 09:00:15 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-28 09:00:16 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-28 09:00:17 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-28 09:00:18 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Sale, pages=5)
+2026-04-28 09:00:19 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-28 09:00:19 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Sale, pages=5)
+2026-04-28 09:00:20 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Sale, pages=5)
+2026-04-28 09:00:20 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-28 09:00:20 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-28 09:00:22 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-28 09:00:23 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-28 09:00:24 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-28 09:00:25 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-28 09:00:26 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-28 09:00:27 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-28 09:00:29 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-28 09:00:30 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-28 09:00:30 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-28 09:00:32 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-28 09:00:33 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-28 09:00:34 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-28 09:00:35 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-28 09:00:37 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-28 09:00:37 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-28 09:00:39 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Option Exercise, pages=5)
+2026-04-28 09:00:39 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-28 09:00:39 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Option Exercise, pages=5)
+2026-04-28 09:00:39 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-28 09:00:40 | INFO     | scrapers.insider_scraper | Scraping insider trades (type=Option Exercise, pages=5)
+2026-04-28 09:00:40 | INFO     | scrapers.insider_scraper |   Page 1: 200 rows
+2026-04-28 09:00:42 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-28 09:00:43 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-28 09:00:44 | INFO     | scrapers.insider_scraper |   Page 2: 200 rows
+2026-04-28 09:00:45 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-28 09:00:45 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-28 09:00:46 | INFO     | scrapers.insider_scraper |   Page 3: 200 rows
+2026-04-28 09:00:48 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-28 09:00:49 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-28 09:00:50 | INFO     | scrapers.insider_scraper |   Page 4: 200 rows
+2026-04-28 09:00:51 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-28 09:00:52 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-28 09:00:53 | INFO     | scrapers.insider_scraper |   Page 5: 200 rows
+2026-04-28 09:00:54 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-28 09:00:55 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-28 09:00:57 | INFO     | scrapers.insider_scraper | Total insider rows: 1000
+2026-04-28 09:00:57 | INFO     | scrapers.insider_scraper | Total unique insider trades: 418
+2026-04-28 09:00:57 | INFO     | main |   Stored 294 new insider trade rows
+2026-04-28 09:00:57 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: EFOR | 12 Buys | $1,796,763
+2026-04-28 09:00:57 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: SYM | 4 Sales | $4,131,087
+2026-04-28 09:00:57 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: VINP | 3 Sales | $238,216
+2026-04-28 09:00:57 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: TXN | 7 Sales | $28,707,628
+2026-04-28 09:00:57 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: IRD | 6 Sales | $201,606
+2026-04-28 09:00:57 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: VICR | 3 Sales | $6,156,528
+2026-04-28 09:00:57 | INFO     | main | JOB DONE: Insider | 294 rows | 1 buy | 5 sell | 57.5s
+2026-04-28 09:00:57 | INFO     | apscheduler.executors.default | Job "Insider 09:00 (trigger: cron[day_of_week='mon-fri', hour='9', minute='0'], next run at: 2026-04-29 09:00:00 BST)" executed successfully
+2026-04-28 09:00:58 | INFO     | scrapers.insider_scraper | Total unique insider trades: 418
+2026-04-28 09:00:58 | INFO     | main |   Stored 0 new insider trade rows
+2026-04-28 09:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: EFOR | 12 Buys | $1,796,763
+2026-04-28 09:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: SYM | 4 Sales | $4,131,087
+2026-04-28 09:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: VINP | 3 Sales | $238,216
+2026-04-28 09:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: TXN | 7 Sales | $28,707,628
+2026-04-28 09:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: IRD | 6 Sales | $201,606
+2026-04-28 09:00:58 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: VICR | 3 Sales | $6,156,528
+2026-04-28 09:00:58 | INFO     | main | JOB DONE: Insider | 0 rows | 1 buy | 5 sell | 58.7s
+2026-04-28 09:00:58 | INFO     | apscheduler.executors.default | Job "Insider 09:00 (trigger: cron[day_of_week='mon-fri', hour='9', minute='0'], next run at: 2026-04-29 09:00:00 BST)" executed successfully
+2026-04-28 09:00:59 | INFO     | scrapers.insider_scraper | Total unique insider trades: 418
+2026-04-28 09:00:59 | INFO     | main |   Stored 0 new insider trade rows
+2026-04-28 09:00:59 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: EFOR | 12 Buys | $1,796,763
+2026-04-28 09:00:59 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: SYM | 4 Sales | $4,131,087
+2026-04-28 09:00:59 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: VINP | 3 Sales | $238,216
+2026-04-28 09:00:59 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: TXN | 7 Sales | $28,707,628
+2026-04-28 09:00:59 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: IRD | 6 Sales | $201,606
+2026-04-28 09:00:59 | INFO     | scrapers.insider_scraper | CLUSTER SIGNAL: VICR | 3 Sales | $6,156,528
+2026-04-28 09:00:59 | INFO     | main | JOB DONE: Insider | 0 rows | 1 buy | 5 sell | 59.9s
+2026-04-28 09:00:59 | INFO     | apscheduler.executors.default | Job "Insider 09:00 (trigger: cron[day_of_week='mon-fri', hour='9', minute='0'], next run at: 2026-04-29 09:00:00 BST)" executed successfully
+2026-04-28 10:27:03 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-28 10:27:03 | INFO     | main | ============================================================
+2026-04-28 10:27:03 | INFO     | main | JOB START: Signal generation
+2026-04-28 10:27:03 | INFO     | main |   Scoring 11054 tickers...
+2026-04-28 10:27:06 | INFO     | signals.scorer | Scored 11054 tickers
+2026-04-28 10:27:06 | INFO     | signals.scanner | Running all scans...
+2026-04-28 10:27:06 | INFO     | signals.scanner |   insider_oversold: 4 candidates
+2026-04-28 10:27:06 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-28 10:27:06 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-28 10:27:06 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-04-28 10:27:06 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-28 10:27:06 | INFO     | main |   STRONG_BUY: 9 | BUY: 587 | HOLD: 0
+2026-04-28 10:27:06 | INFO     | main |   Scan [insider_oversold]: 4 hits | Top: EFOR
+2026-04-28 10:27:06 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: BWET
+2026-04-28 10:27:06 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: CHSN
+2026-04-28 10:27:06 | INFO     | main | Top signals of day generated
+2026-04-28 10:27:06 | INFO     | main | JOB DONE: Signals | 11054 scored | 2.6s
+2026-04-28 12:00:00 | INFO     | apscheduler.executors.default | Running job "Screener 12:00 (trigger: cron[day_of_week='mon-fri', hour='12', minute='0'], next run at: 2026-04-29 12:00:00 BST)" (scheduled at 2026-04-28 12:00:00+01:00)
+2026-04-28 12:00:00 | INFO     | apscheduler.executors.default | Running job "Screener 12:00 (trigger: cron[day_of_week='mon-fri', hour='12', minute='0'], next run at: 2026-04-29 12:00:00 BST)" (scheduled at 2026-04-28 12:00:00+01:00)
+2026-04-28 12:00:00 | INFO     | main | ============================================================
+2026-04-28 12:00:00 | INFO     | main | ============================================================
+2026-04-28 12:00:00 | INFO     | main | JOB START: Screener scrape
+2026-04-28 12:00:00 | INFO     | main | JOB START: Screener scrape
+2026-04-28 12:00:00 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-28 12:00:00 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-28 12:00:00 | INFO     | apscheduler.executors.default | Running job "Screener 12:00 (trigger: cron[day_of_week='mon-fri', hour='12', minute='0'], next run at: 2026-04-29 12:00:00 BST)" (scheduled at 2026-04-28 12:00:00+01:00)
+2026-04-28 12:00:00 | INFO     | main | ============================================================
+2026-04-28 12:00:00 | INFO     | main | JOB START: Screener scrape
+2026-04-28 12:00:00 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
