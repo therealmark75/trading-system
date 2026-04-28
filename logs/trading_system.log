@@ -2556,3 +2556,21 @@ NameError: name 'sector' is not defined
 2026-04-28 12:00:00 | INFO     | main | ============================================================
 2026-04-28 12:00:00 | INFO     | main | JOB START: Screener scrape
 2026-04-28 12:00:00 | INFO     | scrapers.screener_scraper | Scraping sector: Technology
+2026-04-28 12:00:49 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-28 12:00:49 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-28 12:00:49 | INFO     | scrapers.screener_scraper |   Technology: 777 tickers from overview
+2026-04-28 12:02:37 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-28 12:02:37 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-28 12:02:38 | INFO     | scrapers.screener_scraper |   Technology: 777 complete rows merged
+2026-04-28 12:02:42 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-28 12:02:42 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-28 12:02:43 | INFO     | scrapers.screener_scraper | Scraping sector: Healthcare
+2026-04-28 12:03:50 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-28 12:03:50 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-28 12:03:52 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 tickers from overview
+2026-04-28 12:06:18 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-28 12:06:18 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-28 12:06:18 | INFO     | scrapers.screener_scraper |   Healthcare: 1076 complete rows merged
+2026-04-28 12:06:23 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-28 12:06:23 | INFO     | scrapers.screener_scraper | Scraping sector: Financial
+2026-04-28 12:06:23 | INFO     | scrapers.screener_scraper | Scraping sector: Financial

@@ -372,27 +372,6 @@ def api_run_log():
     ))
 
 
-@app.route("/api/backtest")
-@login_required
-def api_backtest():
-    try:
-        return jsonify(db_query("""
-            SELECT * FROM backtest_results
-            WHERE run_at = (SELECT MAX(run_at) FROM backtest_results)
-            ORDER BY rating, hold_days
-        """))
-    except Exception:
-        return jsonify([])
-
-
-if __name__ == "__main__":
-    print("\n" + "="*50)
-    print("  SignalIntel Web Dashboard")
-    print("  Open: http://localhost:5000")
-    print("="*50 + "\n")
-    app.run(debug=True, host="0.0.0.0", port=5001)
-
-# ── Portfolio API ────────────────────────────────────
 
 @app.route("/api/portfolios")
 @login_required
@@ -651,3 +630,11 @@ def api_backtest_stats():
         })
 
     return jsonify({'stats': result, 'recent': recent})
+
+
+if __name__ == '__main__':
+    print("=" * 50)
+    print("  SignalIntel Web Dashboard")
+    print("  Open: http://localhost:5000")
+    print("=" * 50)
+    app.run(debug=True, host="0.0.0.0", port=5001)
