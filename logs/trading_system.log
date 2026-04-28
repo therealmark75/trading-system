@@ -2859,3 +2859,72 @@ NameError: name 'detect_rating_changes' is not defined
 2026-04-28 14:49:08 | INFO     | main | JOB DONE: Signals | 11062 scored | 2.5s
 2026-04-28 14:49:08 | INFO     | apscheduler.executors.default | Job "Startup signal generation (trigger: date[2026-04-28 14:49:05 BST], next run at: 2026-04-28 14:49:05 BST)" executed successfully
 2026-04-28 15:06:56 | INFO     | main | Scheduler stopped.
+2026-04-28 16:17:20 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Adding job tentatively -- it will be properly scheduled when the scheduler starts
+2026-04-28 16:17:20 | INFO     | main | Scheduled jobs:
+2026-04-28 16:17:20 | INFO     | main |   Screener 08:00
+2026-04-28 16:17:20 | INFO     | main |   Screener 12:00
+2026-04-28 16:17:20 | INFO     | main |   Screener 16:30
+2026-04-28 16:17:20 | INFO     | main |   Insider 09:00
+2026-04-28 16:17:20 | INFO     | main |   Insider 17:00
+2026-04-28 16:17:20 | INFO     | main |   Signals 08:30
+2026-04-28 16:17:20 | INFO     | main |   Signals 12:30
+2026-04-28 16:17:20 | INFO     | main |   Signals 17:00
+2026-04-28 16:17:20 | INFO     | main |   Analyst Recom 08:35
+2026-04-28 16:17:20 | INFO     | main |   Analyst Recom 12:35
+2026-04-28 16:17:20 | INFO     | main |   Analyst Recom 17:05
+2026-04-28 16:17:20 | INFO     | main |   Analyst Recom Bulk 02:00
+2026-04-28 16:17:20 | INFO     | main |   News & Calendar 08:30
+2026-04-28 16:17:20 | INFO     | main |   News & Calendar 17:30
+2026-04-28 16:17:20 | INFO     | main |   Startup signal generation
+2026-04-28 16:17:20 | INFO     | main | Scheduler running. Press Ctrl+C to stop.
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "Screener 08:00" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "Screener 12:00" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "Screener 16:30" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "Insider 09:00" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "Insider 17:00" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "Signals 08:30" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "Signals 12:30" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "Signals 17:00" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "Analyst Recom 08:35" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "Analyst Recom 12:35" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "Analyst Recom 17:05" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "Analyst Recom Bulk 02:00" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "News & Calendar 08:30" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "News & Calendar 17:30" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Added job "Startup signal generation" to job store "default"
+2026-04-28 16:17:20 | INFO     | apscheduler.scheduler | Scheduler started
+2026-04-28 16:17:25 | INFO     | apscheduler.executors.default | Running job "Startup signal generation (trigger: date[2026-04-28 16:17:25 BST], next run at: 2026-04-28 16:17:25 BST)" (scheduled at 2026-04-28 16:17:25.174817+01:00)
+2026-04-28 16:17:25 | INFO     | apscheduler.scheduler | Removed job startup_signals
+2026-04-28 16:17:25 | INFO     | main | ============================================================
+2026-04-28 16:17:25 | INFO     | main | JOB START: Signal generation
+2026-04-28 16:17:25 | INFO     | main |   Scoring 11062 tickers...
+2026-04-28 16:17:27 | INFO     | signals.scorer | Scored 11062 tickers
+2026-04-28 16:17:27 | INFO     | signals.scanner | Running all scans...
+2026-04-28 16:17:27 | INFO     | signals.scanner |   insider_oversold: 4 candidates
+2026-04-28 16:17:27 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-04-28 16:17:27 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-04-28 16:17:27 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-04-28 16:17:27 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-04-28 16:17:27 | INFO     | main |   STRONG_BUY: 9 | BUY: 590 | HOLD: 0
+2026-04-28 16:17:27 | INFO     | main |   Scan [insider_oversold]: 4 hits | Top: EFOR
+2026-04-28 16:17:27 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: BWET
+2026-04-28 16:17:27 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: CHSN
+2026-04-28 16:17:27 | INFO     | main | Top signals of day generated
+2026-04-28 16:17:27 | INFO     | main | Rating changes detected and logged
+2026-04-28 16:17:27 | INFO     | main | JOB DONE: Signals | 11062 scored | 2.5s
+2026-04-28 16:17:27 | INFO     | apscheduler.executors.default | Job "Startup signal generation (trigger: date[2026-04-28 16:17:25 BST], next run at: 2026-04-28 16:17:25 BST)" executed successfully
