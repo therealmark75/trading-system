@@ -286,6 +286,10 @@ def insert_signal_scores(db_path: str, rows: list[dict]) -> int:
         return 0
     conn = get_connection(db_path)
     cur  = conn.cursor()
+    # Delete today's existing scores before inserting fresh ones
+    cur.execute(
+        "DELETE FROM signal_scores WHERE DATE(scored_at) = DATE('now')"
+    )
     cur.executemany("""
         INSERT INTO signal_scores
             (scored_at, ticker, composite_score, momentum_score, quality_score,
