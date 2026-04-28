@@ -122,6 +122,53 @@ def job_generate_signals(sector=None):
         return [], {}
 
 
+
+def job_recom_bulk():
+    """
+    Nightly bulk enrichment of analyst_recom for ALL tickers in screener_snapshots.
+    Skips tickers already scraped in the last 20 hours (priority job covers those).
+    Runs at 02:00 on weeknights.
+    """
+    start = time.time()
+    logger.info("JOB START: Analyst Recom (bulk nightly)")
+    try:
+        conn = get_connection(DATABASE_PATH)
+        cur = conn.cursor()
+
+        # Get all tickers that DON'T have a fresh recom value
+        # (not updated in last 20 hours - priority job handles those)
+        cur.execute("""
+            SELECT DISTINCT ticker FROM screener_snapshots
+            WHERE scraped_at >= datetime('now', '-2 days')
+            AND (
+                analyst_recom IS NULL
+                OR ticker NOT IN (
+                    SELECT DISTINCT ticker FROM screener_snapshots
+                    WHERE analyst_recom IS NOT NULL
+                    AND scraped_at >= datetime('now', '-20 hours')
+                )
+            )
+            ORDER BY ticker
+        """)
+        tickers = [r[0] for r in cur.fetchall()]
+        conn.close()
+
+        if not tickers:
+            logger.info("JOB DONE: Bulk Recom | all tickers already have fresh data")
+            return
+
+        logger.info(f"  Bulk recom targets: {len(tickers)} tickers")
+
+        from scrapers.quote_scraper import scrape_recom_bulk
+        recom_map = scrape_recom_bulk(tickers, delay=0.5, threads=2)
+        updated = update_analyst_recom(DATABASE_PATH, recom_map)
+
+        duration = time.time() - start
+        logger.info(f"JOB DONE: Bulk Recom | {updated} rows updated | {duration/60:.1f} mins")
+
+    except Exception as e:
+        logger.error(f"Bulk recom job FAILED: {e}", exc_info=True)
+
 def job_recom_priority():
     """
     Scrape analyst recom from individual FinViz ticker pages
@@ -375,6 +422,13 @@ def main():
                 CronTrigger(hour=h2, minute=m2, day_of_week="mon-fri"),
                 id=f"recom_{t}", name=f"Analyst Recom {h2:02d}:{m2:02d}",
             )
+
+        # Nightly bulk recom job - 02:00 Mon-Fri
+        scheduler.add_job(
+            job_recom_bulk,
+            CronTrigger(hour=2, minute=0, day_of_week="mon-fri"),
+            id="recom_bulk_nightly", name="Analyst Recom Bulk 02:00",
+        )
 
         for t in NEWS_SCRAPE_TIMES:
             h, m = t.split(":")
