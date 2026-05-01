@@ -112,6 +112,8 @@ def job_generate_signals(sector=None):
         
         # Detect and log any rating changes
         detect_rating_changes(DATABASE_PATH)
+        from scrapers.screener_scraper import scrape_analyst_recom_priority
+        scrape_analyst_recom_priority(DATABASE_PATH)
         logger.info("Rating changes detected and logged")
         log_run(DATABASE_PATH, "signal_generation", "SUCCESS", len(signals), duration_s=duration)
         logger.info(f"JOB DONE: Signals | {len(signals)} scored | {duration:.1f}s")

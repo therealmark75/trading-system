@@ -134,7 +134,7 @@ def scrape_yahoo_news(ticker: str) -> list[dict]:
                 "headline":  hl_text,
                 "url":       link.get_text(strip=True) if link else "",
                 "source":    "yahoo",
-                "published": pub_date.get_text(strip=True)[:10] if pub_date else "",
+                "published": pub_date.get_text(strip=True) if pub_date else "",
                 "sentiment": score_headline(hl_text),
             })
 

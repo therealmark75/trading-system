@@ -7569,3 +7569,56 @@ Traceback (most recent call last):
     for high-priority tickers: watchlist + today's top signals.
 NameError: name 'sector' is not defined
 2026-05-01 17:32:07 | INFO     | apscheduler.executors.default | Job "News & Calendar 17:30 (trigger: cron[day_of_week='mon-fri', hour='17', minute='30'], next run at: 2026-05-04 17:30:00 BST)" executed successfully
+2026-05-01 22:32:28 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-05-01 22:32:28 | INFO     | main | ============================================================
+2026-05-01 22:32:28 | INFO     | main | JOB START: News & Calendar
+2026-05-01 22:32:28 | INFO     | main |   Scraping news for 30 top-rated tickers...
+2026-05-01 22:32:28 | INFO     | scrapers.news_scraper |   News [1/20]: CRT
+2026-05-01 22:32:35 | INFO     | scrapers.news_scraper |   News [2/20]: HG
+2026-05-01 22:32:41 | INFO     | scrapers.news_scraper |   News [3/20]: PRIM
+2026-05-01 22:32:48 | INFO     | scrapers.news_scraper |   News [4/20]: SSSS
+2026-05-01 22:32:53 | INFO     | scrapers.news_scraper |   News [5/20]: GAM
+2026-05-01 22:33:00 | INFO     | scrapers.news_scraper |   News [6/20]: LOVE
+2026-05-01 22:33:06 | INFO     | scrapers.news_scraper |   News [7/20]: TEN
+2026-05-01 22:33:13 | INFO     | scrapers.news_scraper |   News [8/20]: GABC
+2026-05-01 22:33:19 | INFO     | scrapers.news_scraper |   News [9/20]: AVBC
+2026-05-01 22:33:25 | INFO     | scrapers.news_scraper |   News [10/20]: AXR
+2026-05-01 22:33:31 | INFO     | scrapers.news_scraper |   News [11/20]: NMM
+2026-05-01 22:33:38 | INFO     | scrapers.news_scraper |   News [12/20]: KYN
+2026-05-01 22:33:45 | INFO     | scrapers.news_scraper |   News [13/20]: PBR
+2026-05-01 22:33:51 | INFO     | scrapers.news_scraper |   News [14/20]: PBR-A
+2026-05-01 22:33:57 | INFO     | scrapers.news_scraper |   News [15/20]: CHCO
+2026-05-01 22:34:04 | INFO     | scrapers.news_scraper |   News [16/20]: GF
+2026-05-01 22:34:10 | INFO     | scrapers.news_scraper |   News [17/20]: SOGP
+2026-05-01 22:34:17 | INFO     | scrapers.news_scraper |   News [18/20]: IREN
+2026-05-01 22:34:23 | INFO     | scrapers.news_scraper |   News [19/20]: TORO
+2026-05-01 22:34:29 | INFO     | scrapers.news_scraper |   News [20/20]: AAMI
+2026-05-01 22:34:36 | INFO     | main |   Stored 556 articles, 20 sentiment scores
+2026-05-01 22:34:36 | INFO     | main |   Most bullish news: PBR-A (+0.371)
+2026-05-01 22:34:36 | INFO     | main |   Most bearish news: GF (+0.000)
+2026-05-01 22:34:36 | INFO     | main |   Scraping economic calendar...
+2026-05-01 22:34:36 | WARNING  | scrapers.calendar_scraper | Could not find calendar table
+2026-05-01 22:34:36 | INFO     | main | JOB DONE: News & Calendar | 128.2s
+2026-05-01 22:34:36 | INFO     | main | ============================================================
+2026-05-01 22:34:36 | INFO     | main | JOB START: Signal generation
+2026-05-01 22:34:37 | INFO     | main |   Scoring 11100 tickers...
+2026-05-01 22:34:40 | INFO     | signals.scorer | Scored 11100 tickers
+2026-05-01 22:34:40 | INFO     | signals.scanner | Running all scans...
+2026-05-01 22:34:40 | INFO     | signals.scanner |   insider_oversold: 7 candidates
+2026-05-01 22:34:40 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-05-01 22:34:40 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-05-01 22:34:40 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-05-01 22:34:40 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-05-01 22:34:40 | INFO     | main |   STRONG_BUY: 14 | BUY: 660 | HOLD: 0
+2026-05-01 22:34:40 | INFO     | main |   Top STRONG_BUY:
+2026-05-01 22:34:40 | INFO     | main |     CRT | Score 79.2 | RSI 55.06 | ↑ Above 50d SMA | ↑ Above 200d SMA
+2026-05-01 22:34:40 | INFO     | main |     HG | Score 77.8 | RSI 62.94 | ↑ Above 50d SMA | ↑ Above 200d SMA
+2026-05-01 22:34:40 | INFO     | main |     PRIM | Score 77.4 | RSI 65.01 | ↑ Above 50d SMA | ↑ Above 200d SMA
+2026-05-01 22:34:40 | INFO     | main |     SSSS | Score 74.0 | RSI 66.43 | ↑ Above 50d SMA | ↑ Above 200d SMA
+2026-05-01 22:34:40 | INFO     | main |     LOVE | Score 73.2 | RSI 54.7 | ↑ Above 50d SMA | ↑ Above 200d SMA
+2026-05-01 22:34:40 | INFO     | main |   Scan [insider_oversold]: 7 hits | Top: EFOR
+2026-05-01 22:34:40 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: BBGI
+2026-05-01 22:34:40 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: SDOT
+2026-05-01 22:34:40 | INFO     | main | Top signals of day generated
+2026-05-01 22:34:40 | INFO     | main | Rating changes detected and logged
+2026-05-01 22:34:40 | INFO     | main | JOB DONE: Signals | 11100 scored | 3.8s
