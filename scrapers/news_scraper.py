@@ -45,20 +45,24 @@ BEARISH_WORDS = {
 def score_headline(headline: str) -> float:
     """
     Score a single headline from -1.0 (very bearish) to +1.0 (very bullish).
-    Simple keyword approach - fast and transparent.
+    Uses VADER sentiment analysis for nuanced scoring.
     """
     if not headline:
         return 0.0
-
-    words  = set(headline.lower().split())
-    bull   = len(words & BULLISH_WORDS)
-    bear   = len(words & BEARISH_WORDS)
-    total  = bull + bear
-
-    if total == 0:
-        return 0.0
-
-    return round((bull - bear) / total, 3)
+    try:
+        from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
+        analyzer = SentimentIntensityAnalyzer()
+        scores = analyzer.polarity_scores(headline)
+        return round(scores['compound'], 3)
+    except Exception:
+        # Fallback to keyword approach
+        words  = set(headline.lower().split())
+        bull   = len(words & BULLISH_WORDS)
+        bear   = len(words & BEARISH_WORDS)
+        total  = bull + bear
+        if total == 0:
+            return 0.0
+        return round((bull - bear) / total, 3)
 
 
 def scrape_finviz_news(ticker: str) -> list[dict]:

@@ -4,20 +4,83 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ ticker }} News — SignalIntel</title>
-    <link rel="stylesheet" href="/static/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:#080c14;--surface:#0d1520;--surface2:#111d2e;--border:#1a2d45;
+            --accent:#00d4ff;--accent2:#00ff88;--warning:#ff9500;--danger:#ff3b5c;
+            --text:#e2eaf4;--muted:#4a6380;
+            --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{background:var(--bg);color:var(--text);font-family:var(--sans);
+            background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),
+            linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
+            background-size:40px 40px;}
+        header{position:sticky;top:0;z-index:100;background:rgba(8,12,20,0.95);
+            backdrop-filter:blur(12px);border-bottom:1px solid var(--border);
+            padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;}
+        .logo{font-family:var(--mono);font-size:15px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;text-decoration:none;}
+        .logo span{color:var(--accent2);}
+        nav{display:flex;gap:4px;padding:12px 24px;border-bottom:1px solid var(--border);}
+        .tab{padding:6px 16px;border-radius:4px;font-size:12px;font-weight:500;letter-spacing:0.5px;
+            cursor:pointer;border:1px solid transparent;color:var(--muted);transition:all 0.15s;
+            font-family:var(--mono);text-transform:uppercase;text-decoration:none;display:inline-block;}
+        .tab:hover{color:var(--text);border-color:var(--border);}
+        .tab.active{background:rgba(0,212,255,0.08);border-color:rgba(0,212,255,0.3);color:var(--accent);}
+        .user-menu{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted);}
+        .user-menu a{color:var(--accent);text-decoration:none;font-family:var(--mono);font-size:11px;}
+        main{padding:24px;max-width:1400px;margin:0 auto;}
+        h1{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:20px;}
+        .add-bar{display:flex;gap:10px;margin-bottom:24px;}
+        .add-bar input{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:6px;
+            padding:10px 14px;color:var(--text);font-family:var(--mono);font-size:13px;outline:none;
+            text-transform:uppercase;}
+        .add-bar input:focus{border-color:var(--accent);}
+        .add-bar input::placeholder{text-transform:none;color:var(--muted);}
+        .btn{padding:10px 20px;border-radius:6px;border:none;background:var(--accent);color:var(--bg);
+            font-family:var(--mono);font-size:12px;font-weight:700;letter-spacing:1px;
+            text-transform:uppercase;cursor:pointer;transition:opacity 0.15s;white-space:nowrap;}
+        .btn:hover{opacity:0.85;}
+        .btn-danger{background:var(--danger);}
+        .table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+        table{width:100%;border-collapse:collapse;}
+        th{background:var(--surface2);padding:10px 14px;text-align:left;font-family:var(--mono);
+            font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);
+            border-bottom:1px solid var(--border);}
+        td{padding:10px 14px;border-bottom:1px solid rgba(26,45,69,0.5);vertical-align:middle;}
+        tr:last-child td{border-bottom:none;}
+        tr:hover td{background:rgba(0,212,255,0.03);}
+        .ticker{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--accent);cursor:pointer;}
+        .ticker:hover{text-decoration:underline;}
+        .rating{display:inline-block;padding:2px 8px;border-radius:3px;font-family:var(--mono);font-size:10px;font-weight:700;}
+        .rating-BUY{background:rgba(0,212,255,0.12);color:#00d4ff;border:1px solid rgba(0,212,255,0.25);}
+        .rating-STRONG_BUY{background:rgba(0,255,136,0.15);color:#00ff88;border:1px solid rgba(0,255,136,0.3);}
+        .rating-WATCH{background:rgba(255,149,0,0.1);color:#ff9500;border:1px solid rgba(255,149,0,0.2);}
+        .rating-REVERSION{background:rgba(175,82,222,0.12);color:#af52de;border:1px solid rgba(175,82,222,0.25);}
+        .rating-AVOID,.rating-SHORT_WATCH{background:rgba(255,59,92,0.1);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2);}
+        .empty{text-align:center;padding:60px;color:var(--muted);font-family:var(--mono);font-size:13px;}
+        .score{font-family:var(--mono);font-size:13px;}
+        .hi{color:var(--accent2)}.mid{color:var(--accent)}.lo{color:var(--warning)}.bad{color:var(--danger)}
+        .msg{padding:10px 14px;border-radius:6px;margin-bottom:16px;font-size:13px;}
+        .msg-ok{background:rgba(0,255,136,0.1);border:1px solid rgba(0,255,136,0.3);color:var(--accent2);}
+        .msg-err{background:rgba(255,59,92,0.1);border:1px solid rgba(255,59,92,0.3);color:var(--danger);}
+    </style>
 </head>
 <body>
-<nav class="navbar">
-    <a href="/" class="nav-brand">SIGNALINTEL</a>
-    <div class="nav-links">
-        <a href="/ticker/{{ ticker }}" class="btn btn-secondary">← Back to {{ ticker }}</a>
-        <a href="/logout" class="btn btn-secondary">Sign out</a>
+<header>
+    <a href="/" class="logo">Signal<span>Intel</span></a>
+    <div class="user-menu">
+        <a href="/ticker/{{ ticker }}">← Back to {{ ticker }}</a>
+        <a href="/logout">Sign out</a>
     </div>
-</nav>
+</header>
 
-<div style="max-width:1100px;margin:40px auto;padding:0 20px">
+<main>
     <div style="margin-bottom:28px">
-        <h1 style="color:var(--cyan);font-family:var(--mono);margin:0 0 6px 0">{{ ticker }} — News Articles</h1>
+        <h1 style="color:var(--accent);font-family:var(--mono);margin:0 0 6px 0;font-size:20px;letter-spacing:2px">
+            {{ ticker }} — NEWS ARTICLES
+        </h1>
         <span style="color:var(--muted);font-size:13px">{{ articles|length }} articles found</span>
     </div>
 
@@ -26,30 +89,30 @@
         {% for a in articles %}
         <a href="{{ 'https://finviz.com' + a.url if a.url and a.url.startswith('/') else a.url or '#' }}"
            target="_blank" rel="noopener"
-           style="display:block;background:var(--card);border:1px solid var(--border);border-radius:8px;
+           style="display:block;background:var(--surface);border:1px solid var(--border);border-radius:8px;
                   padding:16px 20px;text-decoration:none;transition:border-color 0.2s"
-           onmouseover="this.style.borderColor='var(--cyan)'"
+           onmouseover="this.style.borderColor='var(--accent)'"
            onmouseout="this.style.borderColor='var(--border)'">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px">
                 <div style="flex:1">
-                    <div style="color:var(--text);font-size:15px;font-weight:500;margin-bottom:6px;line-height:1.4">
+                    <div style="color:var(--text);font-size:14px;font-weight:500;margin-bottom:6px;line-height:1.5">
                         {{ a.headline }}
                     </div>
                     <div style="display:flex;gap:16px">
-                        <span style="color:var(--muted);font-size:12px">{{ a.source or 'Unknown' }}</span>
-                        <span style="color:var(--muted2);font-size:12px">{{ a.published or '' }}</span>
+                        <span style="color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:0.5px">{{ a.source or 'Unknown' }}</span>
+                        <span style="color:var(--muted);font-size:11px">{{ a.published or '' }}</span>
                     </div>
                 </div>
-                <div style="flex-shrink:0;text-align:right;min-width:70px">
-                    {% if a.sentiment and a.sentiment > 0.1 %}
-                        <div style="color:#00ff88;font-family:var(--mono);font-size:13px;font-weight:700">+{{ "%.3f"|format(a.sentiment) }}</div>
-                        <div style="color:#00ff88;font-size:10px;margin-top:2px">BULLISH</div>
-                    {% elif a.sentiment and a.sentiment < -0.1 %}
-                        <div style="color:#ff3b5c;font-family:var(--mono);font-size:13px;font-weight:700">{{ "%.3f"|format(a.sentiment) }}</div>
-                        <div style="color:#ff3b5c;font-size:10px;margin-top:2px">BEARISH</div>
+                <div style="flex-shrink:0;text-align:right;min-width:80px">
+                    {% if a.sentiment and a.sentiment > 0.05 %}
+                        <div style="color:var(--accent2);font-family:var(--mono);font-size:12px;font-weight:700">+{{ "%.3f"|format(a.sentiment) }}</div>
+                        <div style="color:var(--accent2);font-size:10px;margin-top:2px;letter-spacing:0.5px">BULLISH</div>
+                    {% elif a.sentiment and a.sentiment < -0.05 %}
+                        <div style="color:var(--danger);font-family:var(--mono);font-size:12px;font-weight:700">{{ "%.3f"|format(a.sentiment) }}</div>
+                        <div style="color:var(--danger);font-size:10px;margin-top:2px;letter-spacing:0.5px">BEARISH</div>
                     {% else %}
-                        <div style="color:var(--muted);font-family:var(--mono);font-size:13px">{{ "%.3f"|format(a.sentiment or 0) }}</div>
-                        <div style="color:var(--muted);font-size:10px;margin-top:2px">NEUTRAL</div>
+                        <div style="color:var(--muted);font-family:var(--mono);font-size:12px">{{ "%.3f"|format(a.sentiment or 0) }}</div>
+                        <div style="color:var(--muted);font-size:10px;margin-top:2px;letter-spacing:0.5px">NEUTRAL</div>
                     {% endif %}
                 </div>
             </div>
@@ -57,8 +120,10 @@
         {% endfor %}
     </div>
     {% else %}
-    <div style="color:var(--muted);text-align:center;padding:60px">No articles found for {{ ticker }}</div>
+    <div style="color:var(--muted);text-align:center;padding:60px;font-family:var(--mono)">
+        No articles found for {{ ticker }}
+    </div>
     {% endif %}
-</div>
+</main>
 </body>
 </html>
