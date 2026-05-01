@@ -227,7 +227,7 @@ def job_news_and_calendar(top_n: int = 30):
     try:
         # Get top signals to focus news scraping
         top_signals = get_top_signals(DATABASE_PATH, limit=top_n)
-        tickers = [s["ticker"] for s in top_signals if s.get("rating") in ("BUY","STRONG_BUY","REVERSION")]
+        tickers = [s["ticker"] for s in top_signals if s.get("rating") in ("BUY","STRONG_BUY")]
 
         if tickers:
             logger.info(f"  Scraping news for {len(tickers)} top-rated tickers...")
