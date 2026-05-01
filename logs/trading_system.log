@@ -7622,3 +7622,21 @@ NameError: name 'sector' is not defined
 2026-05-01 22:34:40 | INFO     | main | Top signals of day generated
 2026-05-01 22:34:40 | INFO     | main | Rating changes detected and logged
 2026-05-01 22:34:40 | INFO     | main | JOB DONE: Signals | 11100 scored | 3.8s
+2026-05-01 23:14:50 | INFO     | database.db | Database schema ready at: data/trading_system.db
+2026-05-01 23:14:50 | INFO     | main | ============================================================
+2026-05-01 23:14:50 | INFO     | main | JOB START: Signal generation
+2026-05-01 23:14:50 | INFO     | main |   Scoring 11100 tickers...
+2026-05-01 23:14:53 | INFO     | signals.scorer | Scored 11100 tickers
+2026-05-01 23:14:53 | INFO     | signals.scanner | Running all scans...
+2026-05-01 23:14:53 | INFO     | signals.scanner |   insider_oversold: 7 candidates
+2026-05-01 23:14:53 | INFO     | signals.scanner |   momentum_breakout: 50 candidates
+2026-05-01 23:14:53 | INFO     | signals.scanner |   quality_value: 0 candidates
+2026-05-01 23:14:53 | INFO     | signals.scanner |   mean_reversion: 30 candidates
+2026-05-01 23:14:53 | INFO     | signals.scanner |   short_watch: 0 candidates
+2026-05-01 23:14:53 | INFO     | main |   STRONG_BUY: 14 | BUY: 660 | HOLD: 0
+2026-05-01 23:14:53 | INFO     | main |   Scan [insider_oversold]: 7 hits | Top: EFOR
+2026-05-01 23:14:53 | INFO     | main |   Scan [momentum_breakout]: 50 hits | Top: BBGI
+2026-05-01 23:14:53 | INFO     | main |   Scan [mean_reversion]: 30 hits | Top: SDOT
+2026-05-01 23:14:53 | INFO     | main | Top signals of day generated
+2026-05-01 23:15:01 | INFO     | main | Rating changes detected and logged
+2026-05-01 23:15:01 | INFO     | main | JOB DONE: Signals | 11100 scored | 3.2s

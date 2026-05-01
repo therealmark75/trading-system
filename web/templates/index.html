@@ -659,7 +659,7 @@ async function loadNews() {
             <td><div class="sentiment-track">${bar}</div></td>
             <td style="color:var(--accent2)">${n.bullish_count}</td>
             <td style="color:var(--danger)">${n.bearish_count}</td>
-            <td style="color:var(--muted2)">${n.article_count}</td>
+            <td style="color:var(--muted2)"><a href="/news/${n.ticker}" target="_blank" style="color:var(--cyan);text-decoration:none;font-weight:600">${n.article_count}</a></td>
         </tr>`;
     }).join('');
     document.getElementById('news-table-content').innerHTML=`<table>

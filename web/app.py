@@ -745,6 +745,23 @@ def api_backtest_stats():
     return jsonify({'stats': result, 'recent': recent})
 
 
+
+@app.route('/news/<ticker>')
+@login_required
+def ticker_news(ticker):
+    conn = get_connection(DATABASE_PATH)
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT headline, url, source, published, sentiment
+        FROM news_sentiment
+        WHERE ticker = ?
+        ORDER BY scraped_at DESC
+        LIMIT 50
+    """, (ticker,))
+    articles = [dict(r) for r in cur.fetchall()]
+    conn.close()
+    return render_template('ticker_news.html', ticker=ticker, articles=articles)
+
 if __name__ == '__main__':
     print("=" * 50)
     print("  SignalIntel Web Dashboard")
