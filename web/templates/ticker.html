@@ -216,6 +216,13 @@ let inWatchlist = false;
 let tvWidget = null;
 let currentInterval = 'D';
 
+
+function fmtDate(d) {
+    if(!d) return '-';
+    const dt = new Date(d);
+    if(isNaN(dt)) return d;
+    return dt.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'2-digit'});
+}
 function scoreC(s) {
     if(s==null) return 'mid';
     return s>=70?'hi':s>=55?'mid':s>=45?'lo':'bad';
@@ -335,7 +342,7 @@ async function loadPage() {
         const buy = i.transaction_type === 'Buy';
         const c   = buy ? 'var(--accent2)' : 'var(--danger)';
         return `<tr>
-            <td style="color:var(--muted2);font-family:var(--mono);font-size:11px">${i.transaction_date||'-'}</td>
+            <td style="color:var(--muted2);font-family:var(--mono);font-size:11px">${fmtDate(i.transaction_date)}</td>
             <td>${i.insider_name||'-'}</td>
             <td style="color:var(--muted2);font-size:12px">${i.insider_title||'-'}</td>
             <td style="color:${c};font-family:var(--mono);font-size:11px;font-weight:700">${i.transaction_type}</td>
@@ -364,7 +371,7 @@ async function loadPage() {
         const c = h.rating === 'BUY' || h.rating === 'STRONG_BUY' ? 'var(--accent2)' :
                   h.rating === 'AVOID' || h.rating === 'SHORT_WATCH' ? 'var(--danger)' : 'var(--muted2)';
         return `<tr>
-            <td style="font-family:var(--mono);color:var(--muted2);font-size:11px">${h.date||'-'}</td>
+            <td style="font-family:var(--mono);color:var(--muted2);font-size:11px">${fmtDate(h.date)}</td>
             <td style="color:${c};font-family:var(--mono);font-size:11px;font-weight:700">${h.rating||'-'}</td>
             <td style="font-family:var(--mono);font-size:12px">${fmt(h.composite_score,1)}</td>
         </tr>`;
