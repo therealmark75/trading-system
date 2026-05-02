@@ -1,3 +1,5 @@
+import sys, os; sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from scrapers.legal_risk_scraper import get_legal_risk, fetch_legal_risk, save_legal_risk
 # web/app.py - Phase 5 full web dashboard
 import sys, json, sqlite3
 from pathlib import Path
@@ -128,7 +130,19 @@ def logout():
 @app.route("/ticker/<ticker>")
 @login_required
 def ticker_page(ticker):
-    return render_template("ticker.html", ticker=ticker.upper())
+    legal_risk_data = get_legal_risk(ticker.upper())
+    if legal_risk_data is None:
+        try:
+            result = fetch_legal_risk(ticker.upper())
+            save_legal_risk(ticker.upper(), result)
+            legal_risk_data = result
+        except:
+            legal_risk_data = {
+                'risk_level': 'NONE', 'risk_label': 'Unavailable',
+                'risk_color': '#6b7280', 'penalty': 0, 'findings': [],
+                'scraped_at': None,
+            }
+    return render_template('ticker.html', ticker=ticker.upper(), legal_risk=legal_risk_data)
 
 
 

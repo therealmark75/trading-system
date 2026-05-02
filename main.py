@@ -16,6 +16,7 @@ from database.db import (get_connection, initialise_schema, insert_screener_rows
     log_run, get_latest_screener, get_recent_insiders, get_cluster_signals,
     get_top_signals, get_ticker_sentiment)
 from scrapers.quote_scraper import scrape_recom_for_tickers
+from scrapers.legal_risk_scraper import scrape_priority_tickers
 from scrapers.screener_scraper import scrape_all_sectors
 from scrapers.insider_scraper import scrape_all_insider_types, detect_cluster_signals
 from signals.scorer import score_all_tickers
@@ -456,7 +457,16 @@ def main():
         logger.info("Scheduler running. Press Ctrl+C to stop.")
 
         try:
-            scheduler.start()
+        
+    # Legal risk scraper - SEC EDGAR (daily, pre-market)
+    scheduler.add_job(
+        scrape_priority_tickers,
+        CronTrigger(hour=6, minute=0),
+        id="legal_risk_scraper",
+        name="SEC EDGAR Legal Risk Scraper",
+        replace_existing=True,
+    )
+    scheduler.start()
         except (KeyboardInterrupt, SystemExit):
             logger.info("Scheduler stopped.")
 

@@ -1,0 +1,184 @@
+<!-- ═══════════════════════════════════════════════════════
+     LEGAL & REGULATORY RISK CARD  (insert in ticker.html)
+     ═══════════════════════════════════════════════════════ -->
+<div class="widget-card" id="legal-risk-card">
+  <div class="widget-header">
+    <span class="widget-icon">⚖️</span>
+    <h3>Legal &amp; Regulatory Risk</h3>
+    <a href="https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={{ ticker }}&type=&dateb=&owner=include&count=10"
+       target="_blank" class="edgar-link" title="View on SEC EDGAR">
+      SEC EDGAR ↗
+    </a>
+  </div>
+
+  {% set lr = legal_risk %}
+  {% if lr %}
+    <!-- Risk Badge -->
+    <div class="legal-risk-badge" style="background: {{ lr.risk_color }}22; border: 1.5px solid {{ lr.risk_color }}; color: {{ lr.risk_color }};">
+      <span class="risk-dot" style="background: {{ lr.risk_color }};"></span>
+      {{ lr.risk_label }}
+      {% if lr.penalty != 0 %}
+        <span class="risk-penalty" title="Impact on composite score">
+          {% if lr.penalty > 0 %}+{% endif %}{{ lr.penalty }} pts
+        </span>
+      {% endif %}
+    </div>
+
+    <!-- Score Impact Bar -->
+    <div class="legal-score-impact">
+      <span class="impact-label">Score Impact</span>
+      <div class="impact-bar">
+        {% set pct = ((lr.penalty | abs) / 60 * 100) | int %}
+        {% if lr.penalty < 0 %}
+          <div class="impact-fill negative" style="width: {{ pct }}%;"></div>
+        {% elif lr.penalty > 0 %}
+          <div class="impact-fill positive" style="width: {{ [pct, 10] | max }}%;"></div>
+        {% else %}
+          <div class="impact-fill neutral" style="width: 2%;"></div>
+        {% endif %}
+      </div>
+      <span class="impact-value {% if lr.penalty < 0 %}red{% elif lr.penalty > 0 %}green{% endif %}">
+        {% if lr.penalty > 0 %}+{% endif %}{{ lr.penalty }}
+      </span>
+    </div>
+
+    <!-- Findings -->
+    {% if lr.findings %}
+      <div class="legal-findings">
+        <p class="findings-header">Recent Filings ({{ lr.findings | length }})</p>
+        {% for f in lr.findings %}
+          <div class="finding-row risk-{{ f.risk_level | lower }}">
+            <div class="finding-meta">
+              <span class="finding-type" style="color: {{ lr.risk_color }};">{{ f.type }}</span>
+              <span class="finding-date">{{ f.date }}</span>
+            </div>
+            <p class="finding-desc">{{ f.description }}</p>
+            {% if f.source_url %}
+              <a href="{{ f.source_url }}" target="_blank" class="finding-link">View filing ↗</a>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="no-findings">No significant legal filings found in the past 2 years.</p>
+    {% endif %}
+
+    {% if lr.scraped_at %}
+      <p class="legal-updated">Updated: {{ lr.scraped_at[:10] }}</p>
+    {% endif %}
+
+  {% else %}
+    <p class="no-findings">Legal risk data not yet available for this ticker.</p>
+  {% endif %}
+</div>
+
+<style>
+/* ── Legal Risk Card Styles ── */
+#legal-risk-card { position: relative; }
+
+.edgar-link {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: #60a5fa;
+  text-decoration: none;
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.edgar-link:hover { opacity: 1; }
+
+.legal-risk-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+.risk-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.risk-penalty {
+  font-size: 0.75rem;
+  opacity: 0.85;
+  margin-left: 4px;
+}
+
+.legal-score-impact {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  font-size: 0.78rem;
+}
+.impact-label { color: #9ca3af; white-space: nowrap; }
+.impact-bar {
+  flex: 1;
+  height: 6px;
+  background: #374151;
+  border-radius: 3px;
+  overflow: hidden;
+}
+.impact-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.6s ease;
+}
+.impact-fill.negative { background: #ef4444; }
+.impact-fill.positive { background: #22c55e; }
+.impact-fill.neutral  { background: #6b7280; }
+.impact-value { font-weight: 600; min-width: 32px; text-align: right; }
+.impact-value.red   { color: #ef4444; }
+.impact-value.green { color: #22c55e; }
+
+.findings-header {
+  font-size: 0.75rem;
+  color: #9ca3af;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.finding-row {
+  border-left: 3px solid #374151;
+  padding: 8px 12px;
+  margin-bottom: 10px;
+  background: #1f2937;
+  border-radius: 0 6px 6px 0;
+}
+.finding-row.risk-criminal         { border-left-color: #7c2d12; }
+.finding-row.risk-sec_enforcement  { border-left-color: #ef4444; }
+.finding-row.risk-sec_investigation{ border-left-color: #f97316; }
+.finding-row.risk-class_action     { border-left-color: #f59e0b; }
+.finding-row.risk-minor            { border-left-color: #84cc16; }
+.finding-row.risk-none             { border-left-color: #22c55e; }
+
+.finding-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+.finding-type { font-size: 0.78rem; font-weight: 600; }
+.finding-date { font-size: 0.72rem; color: #9ca3af; }
+.finding-desc { font-size: 0.8rem; color: #d1d5db; margin-bottom: 4px; line-height: 1.4; }
+.finding-link { font-size: 0.72rem; color: #60a5fa; text-decoration: none; }
+.finding-link:hover { text-decoration: underline; }
+
+.no-findings {
+  font-size: 0.82rem;
+  color: #6b7280;
+  text-align: center;
+  padding: 12px 0;
+}
+.legal-updated {
+  font-size: 0.7rem;
+  color: #4b5563;
+  text-align: right;
+  margin-top: 10px;
+}
+</style>
