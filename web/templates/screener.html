@@ -228,7 +228,7 @@ tr:hover td{background:rgba(0,212,255,0.03);cursor:pointer;}
                     <th data-tip="Company name" onclick="setSort('company')">COMPANY<span class="sort-arrow" id="sa-company"></span></th>
                     <th data-tip="Market sector classification" onclick="setSort('sector')">SECTOR<span class="sort-arrow" id="sa-sector"></span></th>
                     <th data-tip="Total market capitalisation. Micro <$300M, Small $300M-$2B, Mid $2-10B, Large >$10B" onclick="setSort('market_cap')">MKT CAP<span class="sort-arrow" id="sa-market_cap"></span></th>
-                    <th data-tip="SignalIntel 7-tier signal rating" onclick="setSort('rating')">RATING<span class="sort-arrow" id="sa-rating"></span></th>
+                    <th data-tip="SignalIntel 7-tier signal strength" onclick="setSort('rating')">SIGNAL<span class="sort-arrow" id="sa-rating"></span></th>
                     <th data-tip="Composite score 0–100 combining Momentum, Quality, Insider, Reversion and Legal signals" onclick="setSort('composite_score')">SCORE<span class="sort-arrow" id="sa-composite_score"></span></th>
                     <th data-tip="Sector relative strength score 0-100 based on the ticker's sector ETF 7-day performance." onclick="setSort('sector_strength_score')">SECT SS<span class="sort-arrow" id="sa-sector_strength_score"></span></th>
                     <th data-tip="12-month price target: DCF (40%) + analyst consensus (35%) + technical projection (15%) + quality/legal (10%). Re-calculated daily." onclick="setSort('target_price')">12M TARGET<span class="sort-arrow" id="sa-target_price"></span></th>
@@ -264,6 +264,7 @@ const RATING_COLORS = {
     STRONG_BUY:'#00ff88', BUY:'#00d4ff', STRONG_HOLD:'#94a3b8',
     HOLD:'#64748b', WEAK_HOLD:'#ff9500', SELL:'#ff3b5c', STRONG_SELL:'#ff3b5c',
 };
+const TIER_SHORT = {STRONG_BUY:'Very Strong',BUY:'Strong',STRONG_HOLD:'Stable',HOLD:'Neutral',WEAK_HOLD:'Soft',SELL:'Bearish',STRONG_SELL:'Very Bearish'};
 
 let state = {
     sort: 'composite_score', dir: 'desc', page: 1, per_page: 50,
@@ -405,7 +406,7 @@ async function load() {
             <td class="company-cell">${r.company || '-'}</td>
             <td class="mono" style="color:var(--muted);font-size:11px">${r.sector || '-'}</td>
             <td class="mono">${fmtMC(r.market_cap)}</td>
-            <td>${r.rating ? `<span class="rating-badge" style="background:${rc}22;color:${rc}">${r.rating.replace(/_/g,' ')}</span>` : '-'}</td>
+            <td>${r.rating ? `<span class="rating-badge" style="background:${rc}22;color:${rc}">${TIER_SHORT[r.rating]||r.rating}</span>` : '-'}</td>
             <td class="score-cell" style="color:${scoreColor}">${fmt(r.composite_score,1)}</td>
             <td class="mono" style="color:${r.sector_strength_score >= 80 ? 'var(--accent)' : r.sector_strength_score <= 20 ? 'var(--danger)' : 'inherit'}">${r.sector_strength_score != null ? Math.round(r.sector_strength_score) : '-'}</td>
             <td class="mono">${r.target_price ? '$'+fmt(r.target_price,2) : '-'}</td>
