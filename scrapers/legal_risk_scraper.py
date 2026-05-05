@@ -144,6 +144,38 @@ def _classify(text, ticker=None):
         # Accounting/accrual context — "settled for" in reserve/estimate language
         "reserved item", "accrual", "accrued liabilities", "previously accrued",
         "reserve for", "amount exceeding the previous estim",
+        # Routine/ordinary-course language — not indicative of misconduct
+        "ordinary course of business", "in the ordinary course",
+        "various legal proceedings", "ordinary business",
+        "may become a party to", "may become parties to",
+        "routine legal proceedings", "normal course of business",
+        # Pharma/biotech Paragraph IV — routine generic drug challenge process
+        "paragraph iv certification", "paragraph iv certif",
+        "paragraph iv",           # catches "paragraph iv challenges" etc.
+        "hatch-waxman", "anda filer", "anda filing",
+        "paragraph iv patent", "inter partes review",
+        "post-grant review",
+        # Industry-level descriptions (boilerplate section headers)
+        "in the biotechnology and pharmaceutical industries",
+        "in the pharmaceutical industry",
+        "involving patent and other intellectual property rights",
+        "patent infringement lawsuits, interferences",
+        "including patent infringement lawsuits",
+        # Risk-factor list language — "litigation, settlement costs" as category listing
+        "settlement costs, regulatory scrutiny",
+        "regulatory scrutiny and government enforcement",
+        "a variety of matters, including employment",
+        # Past/completed settlements — risk is resolved, not ongoing
+        "we settled our",         # "we settled our disputes/patent/claims with X"
+        # Business agreements that contain "party to" but are not litigation
+        "joint venture",          # "we are party to [JV]" = normal business partnership
+        "supply agreement",       # "we are party to a [supply agreement]"
+        "license agreement",      # "we are party to a [license agreement]"
+        # EPA environmental cleanup — not SEC/fraud type legal risk
+        "superfund",              # "named as responsible party at superfund sites"
+        "national priorities list",
+        "hazardous material releases",
+        "environmental cleanup",
     ]
 
     def is_hypothetical(snippet):
@@ -389,8 +421,14 @@ def fetch_legal_risk(ticker):
 
         logger.info(f"[LegalRisk] {ticker} 10-K fetched ({len(doc_r.text):,} chars)")
 
+        # Strip HTML tags so is_hypothetical() sees clean prose context rather than
+        # CSS/markup noise, which pollutes the ±400-char window around keyword matches
+        clean_text = re.sub(r"<[^>]+>", " ", doc_r.text)
+        clean_text = re.sub(r"&#[0-9]+;", " ", clean_text)
+        clean_text = re.sub(r"\s+", " ", clean_text)
+
         # Classify full document text for high-confidence signals
-        full_risk = _classify(doc_r.text, ticker)
+        full_risk = _classify(clean_text, ticker)
         logger.info(f"[LegalRisk] {ticker} 10-K full doc risk: {RISK_LABELS[full_risk]}")
 
         if full_risk != RISK_NONE:
