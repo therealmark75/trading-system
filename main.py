@@ -11,6 +11,7 @@ from config.settings import (DATABASE_PATH, SECTORS, SCREENER_SCRAPE_TIMES, NEWS
     INSIDER_SCRAPE_TIMES, INSIDER_CLUSTER_BUY_COUNT, INSIDER_CLUSTER_DAYS,
     LOG_DIR, LOG_LEVEL, REQUEST_DELAY_SECONDS)
 from notifications.telegram import send_alert
+from signals.signal_labels import tier_label
 from database.db import (get_connection, initialise_schema, insert_screener_rows, generate_top_signals_of_day, prune_old_snapshots,
     insert_insider_trades, insert_insider_signal, insert_signal_scores, detect_rating_changes, update_analyst_recom,
     insert_news_articles, insert_ticker_sentiment, insert_calendar_events,
@@ -399,23 +400,23 @@ def _send_rating_alerts(changes: list):
 
         if new == "STRONG_BUY" and old and old != "STRONG_BUY":
             send_alert(
-                f"🟢 <b>STRONG BUY SIGNAL</b>\n"
+                f"🟢 <b>VERY STRONG SIGNAL</b>\n"
                 f"<b>${ticker}</b>  |  Score: {score:.1f}\n"
-                f"Price: {price}  |  was {old.replace('_', ' ')}"
+                f"Price: {price}  |  was {tier_label(old)}"
             )
         elif new == "STRONG_SELL" and old and old != "STRONG_SELL":
             send_alert(
-                f"⛔ <b>STRONG SELL SIGNAL</b>\n"
+                f"⛔ <b>STRONG BEARISH SIGNAL</b>\n"
                 f"<b>${ticker}</b>  |  Score: {score:.1f}\n"
-                f"Price: {price}  |  was {old.replace('_', ' ')}"
+                f"Price: {price}  |  was {tier_label(old)}"
             )
         elif old and new and old in _RATING_ORDER and new in _RATING_ORDER:
             if _RATING_ORDER.index(new) > _RATING_ORDER.index(old):
                 old_e = _RATING_EMOJI.get(old, "")
                 new_e = _RATING_EMOJI.get(new, "")
                 send_alert(
-                    f"🔻 <b>RATING DOWNGRADE</b>\n"
-                    f"<b>${ticker}</b>  {old_e} {old.replace('_', ' ')} → {new_e} {new.replace('_', ' ')}\n"
+                    f"🔻 <b>SIGNAL DOWNGRADE</b>\n"
+                    f"<b>${ticker}</b>  {old_e} {tier_label(old)} → {new_e} {tier_label(new)}\n"
                     f"Price: {price}  |  Score: {score:.1f}"
                 )
 
