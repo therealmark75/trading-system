@@ -607,11 +607,11 @@ def api_screener():
         where.append("sig.composite_score <= ?")
         params.append(score_max)
     if mcap == "small":
-        where.append("ss.market_cap < 2000000000")
+        where.append("CAST(ss.market_cap AS REAL) < 2000000000")
     elif mcap == "mid":
-        where.append("ss.market_cap >= 2000000000 AND ss.market_cap < 10000000000")
+        where.append("CAST(ss.market_cap AS REAL) >= 2000000000 AND CAST(ss.market_cap AS REAL) < 10000000000")
     elif mcap == "large":
-        where.append("ss.market_cap >= 10000000000")
+        where.append("CAST(ss.market_cap AS REAL) >= 10000000000")
     if pe_min is not None:
         where.append("ss.pe_ratio >= ?")
         params.append(pe_min)
