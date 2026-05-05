@@ -761,11 +761,12 @@ def api_theme_counts():
     """, (future_date,))
 
     # legally_clean: risk_label None/Minor, good rating
+    # LEFT JOIN so tickers with no legal_risk record are treated as clean
     legally_clean = q(f"""
         SELECT COUNT(DISTINCT ss.ticker) FROM ({latest_ss_cte}) ss
         JOIN ({latest_sig_cte}) sig ON ss.ticker = sig.ticker
-        JOIN legal_risk lr ON ss.ticker = lr.ticker
-        WHERE lr.risk_label IN ('None','Minor')
+        LEFT JOIN legal_risk lr ON ss.ticker = lr.ticker
+        WHERE (lr.risk_label IS NULL OR lr.risk_label IN ('None','Minor'))
           AND sig.rating IN ('STRONG_BUY','BUY','STRONG_HOLD')
     """)
 
@@ -1025,8 +1026,8 @@ def api_screener():
         where.append("ec.earnings_date BETWEEN DATE('now') AND ?")
         params.append(future)
     if legally_clean_param:
-        extra_joins.append("JOIN legal_risk lr ON ss.ticker = lr.ticker")
-        where.append("lr.risk_label IN ('None','Minor')")
+        extra_joins.append("LEFT JOIN legal_risk lr ON ss.ticker = lr.ticker")
+        where.append("(lr.risk_label IS NULL OR lr.risk_label IN ('None','Minor'))")
 
     extra_joins_sql = "\n        ".join(extra_joins)
     where_sql = " AND ".join(where)
