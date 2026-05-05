@@ -508,7 +508,7 @@ async function load() {
     if (_state.rsi_max != null) p.set('rsi_max', _state.rsi_max);
     if (_state.score_min > 0)   p.set('score_min', _state.score_min);
     if (_state.relvol_min != null) p.set('relvol_min', _state.relvol_min);
-    _state.ratings.forEach(r => p.append('rating', r));
+    if (_state.ratings.length) p.set('rating', _state.ratings.join(','));
     p.set('sort', _state.sort);
     p.set('dir',  _state.dir);
     p.set('page', _state.page);
@@ -523,8 +523,8 @@ async function load() {
         return;
     }
 
-    renderTable(data.results || []);
-    renderPagination(data.page, data.total_pages, data.total);
+    renderTable(data.rows || []);
+    renderPagination(data.page, data.pages, data.total);
     document.getElementById('result-count').textContent =
         `${data.total || 0} stocks found`;
     updateSortArrows();
