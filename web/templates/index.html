@@ -402,6 +402,27 @@ let allSignals = [];
 let sectorSignals = [];
 let insiderSignals = [];
 let currentSector = '';
+let signalSectorFilter = null;
+
+const SECTOR_COLORS = {
+    'Technology':             '#00d4ff',
+    'Healthcare':             '#00ff88',
+    'Financial':              '#f59e0b',
+    'Energy':                 '#ef4444',
+    'Consumer Cyclical':      '#a78bfa',
+    'Industrials':            '#6366f1',
+    'Communication Services': '#ec4899',
+    'Consumer Defensive':     '#10b981',
+    'Real Estate':            '#f97316',
+    'Basic Materials':        '#84cc16',
+    'Utilities':              '#94a3b8',
+};
+const SECTOR_SHORT = {'Communication Services':'Comm. Services'};
+function shortSector(s) {
+    if(!s) return '-';
+    if(SECTOR_SHORT[s]) return SECTOR_SHORT[s];
+    return s.length > 14 ? s.slice(0,13)+'…' : s;
+}
 
 const fmt  = (v,d=1) => v==null?'-':Number(v).toFixed(d);
 const fmtP = (v) => v==null?'-':(v>=0?'+':'')+Number(v).toFixed(2)+'%';
@@ -510,6 +531,7 @@ function showPanel(name, btn) {
 async function loadSignals() {
     const res = await fetch('/api/signals');
     allSignals = await res.json();
+    signalSectorFilter = null;
 
     const c = (r) => allSignals.filter(s=>s.rating===r).length;
     const totalSBuy  = c('STRONG_BUY');
@@ -612,11 +634,22 @@ function sortTable(table, col) {
     event.target.textContent = event.target.textContent.replace(' ⇅', state.asc ? ' ↑' : ' ↓');
 }
 
-function filterSignals(rating, btn) {
-    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
-    btn.classList.add('active');
-    const filtered = rating==='ALL' ? allSignals : allSignals.filter(s=>s.rating===rating);
+function filterSignals(rating, btn, newSector) {
+    document.querySelectorAll('#panel-signals .filter-btn').forEach(b=>b.classList.remove('active'));
+    if(btn) btn.classList.add('active');
+    if(newSector !== undefined) signalSectorFilter = newSector;
+    let filtered = rating==='ALL' ? allSignals : allSignals.filter(s=>s.rating===rating);
+    if(signalSectorFilter) filtered = filtered.filter(s=>s.sector===signalSectorFilter);
     renderSignalTable(filtered);
+}
+
+function filterSignalsBySector(sector) {
+    signalSectorFilter = signalSectorFilter === sector ? null : sector;
+    const activeBtn = document.querySelector('#panel-signals .filter-btn.active');
+    const onclickStr = activeBtn ? activeBtn.getAttribute('onclick') : null;
+    const ratingMatch = onclickStr ? onclickStr.match(/'([^']+)'/) : null;
+    const rating = ratingMatch ? ratingMatch[1] : 'ALL';
+    filterSignals(rating, activeBtn || document.querySelector('#panel-signals .filter-btn'));
 }
 
 let currentPage = 1;
@@ -655,9 +688,14 @@ function renderSignalTable(signals, page) {
             return '';
         }).filter(Boolean).join(' ');
 
+        const sc = SECTOR_COLORS[s.sector] || 'var(--muted)';
+        const sectorCell = s.sector
+            ? `<span onclick="filterSignalsBySector('${s.sector}')" title="${s.sector}" style="font-size:11px;cursor:pointer;color:${sc};font-family:var(--mono);white-space:nowrap;padding:2px 5px;border-radius:3px;background:${sc}18;border:1px solid ${sc}30;${signalSectorFilter===s.sector?'border-color:'+sc+';background:'+sc+'30;':''}">${shortSector(s.sector)}</span>`
+            : '<span style="color:var(--muted)">-</span>';
         return `<tr>
             <td><span class="ticker-cell" onclick="openTicker('${s.ticker}')">${s.ticker}</span></td>
             <td><span class="rating rating-${s.rating}">${s.rating}</span></td>
+            <td>${sectorCell}</td>
             <td>${scoreBar(s.composite_score)}</td>
             <td><span class="${scoreC(s.momentum_score)}" style="font-family:var(--mono);font-size:12px">${fmt(s.momentum_score)}</span></td>
             <td><span class="${scoreC(s.quality_score)}" style="font-family:var(--mono);font-size:12px">${fmt(s.quality_score)}</span></td>
@@ -677,8 +715,19 @@ function renderSignalTable(signals, page) {
             </div>
         </div>` : '';
 
+    const sectorFilterIndicator = signalSectorFilter ? ` <span style="font-size:9px;color:var(--accent);cursor:pointer;" onclick="filterSignalsBySector('${signalSectorFilter}')" title="Click to clear sector filter">✕ ${shortSector(signalSectorFilter)}</span>` : '';
     document.getElementById('signal-table-content').innerHTML = `<table>
-        <thead><tr><th onclick="sortTable('signals','ticker')" class="sortable">Ticker ⇅</th><th>Rating</th><th onclick="sortTable('signals','composite_score')" class="sortable">Score ⇅</th><th onclick="sortTable('signals','momentum_score')" class="sortable">Mom ⇅</th><th onclick="sortTable('signals','quality_score')" class="sortable">Qual ⇅</th><th onclick="sortTable('signals','insider_score')" class="sortable">Insider ⇅</th><th onclick="sortTable('signals','reversion_score')" class="sortable">Rev ⇅</th><th>Flags</th></tr></thead>
+        <thead><tr>
+            <th onclick="sortTable('signals','ticker')" class="sortable">Ticker ⇅</th>
+            <th>Rating</th>
+            <th onclick="sortTable('signals','sector')" class="sortable">Sector${sectorFilterIndicator} ⇅</th>
+            <th onclick="sortTable('signals','composite_score')" class="sortable">Score ⇅</th>
+            <th onclick="sortTable('signals','momentum_score')" class="sortable">Mom ⇅</th>
+            <th onclick="sortTable('signals','quality_score')" class="sortable">Qual ⇅</th>
+            <th onclick="sortTable('signals','insider_score')" class="sortable">Insider ⇅</th>
+            <th onclick="sortTable('signals','reversion_score')" class="sortable">Rev ⇅</th>
+            <th>Flags</th>
+        </tr></thead>
         <tbody>${rows}</tbody>
     </table>${pageInfo}`;
 }
