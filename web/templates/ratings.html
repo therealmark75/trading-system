@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SignalIntel – Rating Tiers</title>
+<title>SignalIntel – Signal Strength Tiers</title>
 <style>
     :root {
         --bg:#080c14;--surface:#0d1520;--surface2:#111927;--border:#1a2d45;
@@ -78,7 +78,7 @@
 {% include '_nav.html' %}
 
 <main>
-<h1>RATING TIERS</h1>
+<h1>SIGNAL STRENGTH TIERS</h1>
 <p class="subtitle">SignalIntel's 7-tier signal classification — definitions, scoring logic, and current distribution</p>
 
 {% if last_run %}
@@ -91,9 +91,9 @@
     <div class="tier-card">
         <div class="tier-icon">🟢</div>
         <div class="tier-body">
-            <div class="tier-name c-strong-buy">STRONG BUY</div>
-            <div class="tier-desc">Highest conviction long. Strong momentum, quality fundamentals, and significant insider buying all confirm upside. These are the signals with the highest expected returns.</div>
-            <span class="tier-action action-strong-buy">Enter position — target full allocation</span>
+            <div class="tier-name c-strong-buy">VERY STRONG SIGNAL</div>
+            <div class="tier-desc">Highest conviction signal. Strong momentum, quality fundamentals, and significant insider buying all align. These are the signals with the highest expected returns.</div>
+            <span class="tier-action action-strong-buy">Highest conviction — all factors aligned</span>
             <div class="tier-condition">Composite ≥ 72 AND Insider Score ≥ 65. Insider activity is required — this tier demands institutional-grade conviction from insiders.</div>
         </div>
         <div class="tier-score">Composite ≥ 72<br>+ Insider ≥ 65</div>
@@ -102,9 +102,9 @@
     <div class="tier-card">
         <div class="tier-icon">🔵</div>
         <div class="tier-body">
-            <div class="tier-name c-buy">BUY</div>
-            <div class="tier-desc">Positive signal — enter or add to position. Solid fundamentals with momentum confirming upside. Risk/reward is favourable even without insider confirmation.</div>
-            <span class="tier-action action-buy">Enter or add to position</span>
+            <div class="tier-name c-buy">STRONG SIGNAL</div>
+            <div class="tier-desc">Strong positive signal. Solid fundamentals with momentum confirming upside. Risk/reward is favourable even without insider confirmation.</div>
+            <span class="tier-action action-buy">Strong signal — momentum and quality aligned</span>
             <div class="tier-condition">Composite ≥ 62. Good overall signal strength across momentum and quality factors.</div>
         </div>
         <div class="tier-score">Composite ≥ 62</div>
@@ -113,9 +113,9 @@
     <div class="tier-card">
         <div class="tier-icon">🟡</div>
         <div class="tier-body">
-            <div class="tier-name c-strong-hold">STRONG HOLD</div>
-            <div class="tier-desc">Good fundamentals but not a new entry point. Existing positions should hold. Wait for momentum confirmation before adding. The majority of rated tickers sit here.</div>
-            <span class="tier-action action-strong-hold">Hold existing positions — do not add</span>
+            <div class="tier-name c-strong-hold">STABLE SIGNAL</div>
+            <div class="tier-desc">Stable fundamentals but no clear directional signal. The majority of rated tickers sit here. Wait for momentum confirmation before taking new positions.</div>
+            <span class="tier-action action-strong-hold">Stable — no clear directional signal</span>
             <div class="tier-condition">Composite 45–62 (default tier — no strong signal in either direction).</div>
         </div>
         <div class="tier-score">Composite 45–62</div>
@@ -124,9 +124,9 @@
     <div class="tier-card">
         <div class="tier-icon">⚪</div>
         <div class="tier-body">
-            <div class="tier-name c-hold">HOLD</div>
+            <div class="tier-name c-hold">NEUTRAL SIGNAL</div>
             <div class="tier-desc">Neutral signal triggered by mean-reversion opportunity — the stock has deviated far from its historical mean and may snap back regardless of current momentum or fundamentals.</div>
-            <span class="tier-action action-hold">Watch closely — no directional action yet</span>
+            <span class="tier-action action-hold">Neutral — possible mean-reversion candidate</span>
             <div class="tier-condition">Reversion Score ≥ 75 (overrides composite). High reversion score indicates a potential snap-back candidate.</div>
         </div>
         <div class="tier-score">Reversion ≥ 75</div>
@@ -135,9 +135,9 @@
     <div class="tier-card">
         <div class="tier-icon">🟠</div>
         <div class="tier-body">
-            <div class="tier-name c-weak-hold">WEAK HOLD</div>
-            <div class="tier-desc">Deteriorating signal — reduce exposure or tighten stops. Momentum fading, fundamentals weakening, and insider selling or absence of buying detected.</div>
-            <span class="tier-action action-weak-hold">Reduce exposure — tighten stops</span>
+            <div class="tier-name c-weak-hold">SOFT SIGNAL</div>
+            <div class="tier-desc">Weakening signal — momentum fading, fundamentals softening, insider confidence absent. Signal strength is deteriorating.</div>
+            <span class="tier-action action-weak-hold">Soft — signal strength declining</span>
             <div class="tier-condition">Composite &lt; 38 AND Insider Score ≤ 35. Weak fundamentals combined with lack of insider confidence.</div>
         </div>
         <div class="tier-score">Composite &lt; 38<br>+ Insider ≤ 35</div>
@@ -146,10 +146,10 @@
     <div class="tier-card">
         <div class="tier-icon">🔴</div>
         <div class="tier-body">
-            <div class="tier-name c-sell">SELL</div>
-            <div class="tier-desc">Exit signal. Multiple negative signals across momentum, quality, and insider activity. Risk outweighs remaining upside. Don't wait for a better price.</div>
-            <span class="tier-action action-sell">Exit position</span>
-            <div class="tier-condition">Composite &lt; 45 (where Reversion &lt; 75, to distinguish from HOLD).</div>
+            <div class="tier-name c-sell">BEARISH SIGNAL</div>
+            <div class="tier-desc">Bearish signal. Multiple negative signals across momentum, quality, and insider activity. Risk/reward is unfavourable — deterioration on all fronts.</div>
+            <span class="tier-action action-sell">Bearish — multiple negative factors</span>
+            <div class="tier-condition">Composite &lt; 45 (where Reversion &lt; 75, to distinguish from Neutral Signal).</div>
         </div>
         <div class="tier-score">Composite &lt; 45</div>
     </div>
@@ -157,9 +157,9 @@
     <div class="tier-card">
         <div class="tier-icon">⛔</div>
         <div class="tier-body">
-            <div class="tier-name c-strong-sell">STRONG SELL</div>
-            <div class="tier-desc">Highest conviction exit — get out immediately. Severe deterioration across all factors. Legal risk, insider selling, and momentum breakdown in confluence. Consider shorting.</div>
-            <span class="tier-action action-strong-sell">Exit immediately — consider shorting</span>
+            <div class="tier-name c-strong-sell">STRONG BEARISH SIGNAL</div>
+            <div class="tier-desc">Strongest bearish signal. Severe deterioration across all factors — legal risk, insider selling, and momentum breakdown in confluence. Near-total collapse of positive signals.</div>
+            <span class="tier-action action-strong-sell">Strongly bearish — all factors negative</span>
             <div class="tier-condition">Composite &lt; 25 AND Insider Score ≤ 20. Near-total collapse of all positive signals.</div>
         </div>
         <div class="tier-score">Composite &lt; 25<br>+ Insider ≤ 20</div>
@@ -179,11 +179,11 @@
     </div>
     <div class="score-card">
         <div class="score-name">Insider</div>
-        <div class="score-desc">Recent insider buying activity. 100 = significant cluster buying by company executives — the strongest conviction signal available. Required for STRONG BUY tier.</div>
+        <div class="score-desc">Recent insider buying activity. 100 = significant cluster buying by company executives — the strongest conviction signal available. Required for Very Strong Signal tier.</div>
     </div>
     <div class="score-card">
         <div class="score-name">Reversion</div>
-        <div class="score-desc">Mean reversion opportunity. High = stock has deviated far from its historical mean and may snap back. A reversion score ≥ 75 triggers the HOLD rating regardless of composite.</div>
+        <div class="score-desc">Mean reversion opportunity. High = stock has deviated far from its historical mean and may snap back. A reversion score ≥ 75 triggers the Neutral Signal tier regardless of composite.</div>
     </div>
 </div>
 
@@ -194,18 +194,18 @@
 {% set total_tickers = distribution | sum(attribute='count') %}
 <div class="dist-grid">
 {% set tier_info = {
-    'STRONG_BUY':  ('🟢', 'c-strong-buy',  '#00ff88'),
-    'BUY':         ('🔵', 'c-buy',          '#00d4ff'),
-    'STRONG_HOLD': ('🟡', 'c-strong-hold',  '#facc15'),
-    'HOLD':        ('⚪', 'c-hold',          '#94a3b8'),
-    'WEAK_HOLD':   ('🟠', 'c-weak-hold',    '#fb923c'),
-    'SELL':        ('🔴', 'c-sell',          '#f87171'),
-    'STRONG_SELL': ('⛔', 'c-strong-sell',  '#ff3b5c'),
+    'STRONG_BUY':  ('🟢', 'c-strong-buy',  '#00ff88', 'Very Strong Signal'),
+    'BUY':         ('🔵', 'c-buy',          '#00d4ff', 'Strong Signal'),
+    'STRONG_HOLD': ('🟡', 'c-strong-hold',  '#facc15', 'Stable Signal'),
+    'HOLD':        ('⚪', 'c-hold',          '#94a3b8', 'Neutral Signal'),
+    'WEAK_HOLD':   ('🟠', 'c-weak-hold',    '#fb923c', 'Soft Signal'),
+    'SELL':        ('🔴', 'c-sell',          '#f87171', 'Bearish Signal'),
+    'STRONG_SELL': ('⛔', 'c-strong-sell',  '#ff3b5c', 'Strong Bearish Signal'),
 } %}
 {% for row in distribution %}
-{% set info = tier_info.get(row.rating, ('●', 'c-hold', '#94a3b8')) %}
+{% set info = tier_info.get(row.rating, ('●', 'c-hold', '#94a3b8', row.rating)) %}
 <a href="/signals?rating={{ row.rating }}" class="dist-card">
-    <div class="dist-rating {{ info[1] }}">{{ info[0] }} {{ row.rating | replace('_', ' ') }}</div>
+    <div class="dist-rating {{ info[1] }}">{{ info[0] }} {{ info[3] }}</div>
     <div class="dist-count {{ info[1] }}">{{ row.count }}</div>
     <div class="dist-meta">
         Avg score: {{ row.avg_score }}<br>
