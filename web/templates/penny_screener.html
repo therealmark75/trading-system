@@ -334,7 +334,7 @@ let _state = {
 
 // ── Presets ───────────────────────────────────────
 const PRESETS = {
-    top_rated:      {price_max:5, price_min:null, sort:'composite_score', dir:'desc', score_min:60, rsi_min:null, rsi_max:null, relvol_min:null},
+    top_rated:      {price_max:5, price_min:null, sort:'composite_score', dir:'desc', score_min:70, rsi_min:null, rsi_max:null, relvol_min:null, ratings:['STRONG_BUY','BUY']},
     unusual_volume: {price_max:5, price_min:null, sort:'rel_volume',      dir:'desc', score_min:0, rsi_min:null, rsi_max:null, relvol_min:3},
     oversold:       {price_max:5, price_min:null, sort:'rsi_14',          dir:'asc',  score_min:0, rsi_min:null, rsi_max:30,   relvol_min:null},
     under_dollar:   {price_max:1, price_min:null, sort:'composite_score', dir:'desc', score_min:0, rsi_min:null, rsi_max:null, relvol_min:null},
@@ -411,10 +411,10 @@ function applyPreset(name) {
     if (!p) return;
     clearPreset();
     _state.preset = name;
-    Object.assign(_state, p);
     _state.sector  = '';
     _state.ratings = [];
     _state.page    = 1;
+    Object.assign(_state, p);
     document.getElementById('pb-' + name)?.classList.add('active');
 
     // sync tier tab
