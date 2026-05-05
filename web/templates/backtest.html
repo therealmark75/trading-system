@@ -159,7 +159,7 @@ async function load() {
                 <div style="font-size:10px;color:var(--muted2);margin-bottom:4px;font-family:var(--mono)">SPREAD</div>
                 <div style="font-size:24px;font-weight:700;color:${spreadColor};font-family:var(--mono)">${sc.spread>=0?'+':''}${sc.spread}%</div>
                 <div style="font-size:11px;color:var(--muted)">top minus bottom</div>
-                <div style="font-size:10px;color:${Math.abs(sc.spread||0)>=5?'var(--accent2)':'var(--muted)';margin-top:4px}">${Math.abs(sc.spread||0)>=5?'✓ Modifier validated':'Spread &lt; 5% — monitor'}</div>
+                <div style="font-size:10px;color:${Math.abs(sc.spread||0)>=5?'var(--accent2)':'var(--muted)'};margin-top:4px">${Math.abs(sc.spread||0)>=5?'✓ Modifier validated':'Spread &lt; 5% — monitor'}</div>
             </div>
         </div>
         <div style="font-size:11px;color:var(--muted2)">${sc.note||''}</div>`;
