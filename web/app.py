@@ -1563,6 +1563,15 @@ def backtest():
 @login_required
 def api_backtest_stats():
     from collections import defaultdict
+    try:
+        return _api_backtest_stats_inner()
+    except Exception as e:
+        logger.error(f"[Backtest] stats endpoint error: {e}", exc_info=True)
+        return jsonify({"stats": [], "recent": [], "sector_comparison": {"note": f"Data temporarily unavailable: {e}"},
+                        "message": "Backtest data temporarily unavailable — check server logs."})
+
+def _api_backtest_stats_inner():
+    from collections import defaultdict
     conn = get_connection(DATABASE_PATH)
     cur = conn.cursor()
     cur.execute("""

@@ -86,7 +86,12 @@ async function load() {
 
     // Stats cards
     const grid = document.getElementById('stats-grid');
-    if (!data.stats.length) { grid.innerHTML = '<div class="loading">No completed signal periods yet. Check back tomorrow.</div>'; }
+    const dataMsg = data.message ? `<div style="color:var(--muted);font-family:var(--mono);font-size:12px;padding:8px 0;border-bottom:1px solid var(--border);margin-bottom:12px">${data.message}</div>` : '';
+    if (!data.stats || !data.stats.length) {
+        const earliest = new Date('2026-04-21');  // first rating changes recorded
+        const readyDate = new Date(earliest); readyDate.setDate(readyDate.getDate() + 30);
+        grid.innerHTML = `${dataMsg}<div style="color:var(--muted);font-family:var(--mono);font-size:13px;padding:16px;border:1px solid var(--border);border-radius:6px;line-height:1.6">Insufficient data — backtest data builds as rating history accumulates.<br>Reliable statistics available from <strong>${readyDate.toDateString()}</strong> forward.</div>`;
+    }
     else {
         grid.innerHTML = data.stats.map((s, i) => {
             const sellSide = ['STRONG_SELL','SELL','WEAK_HOLD'].includes(s.rating);
