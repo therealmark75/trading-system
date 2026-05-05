@@ -865,6 +865,31 @@ def detect_rating_changes(db_path: str) -> list:
     return changes
 
 
+def update_target_prices(db_path: str, rows: list[dict]) -> int:
+    """
+    Update target_price and target_upside on today's signal_scores rows.
+    rows: list of {ticker, target_price, target_upside}
+    """
+    if not rows:
+        return 0
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    updated = 0
+    for r in rows:
+        if r.get("target_price") is None:
+            continue
+        cur.execute("""
+            UPDATE signal_scores
+            SET target_price = ?, target_upside = ?
+            WHERE ticker = ?
+              AND DATE(scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
+        """, (r["target_price"], r.get("target_upside"), r["ticker"]))
+        updated += cur.rowcount
+    conn.commit()
+    conn.close()
+    return updated
+
+
 def get_legal_risk_map(db_path: str) -> dict:
     """Return {ticker: {penalty, risk_level, risk_label, risk_color}} for all rows in legal_risk."""
     conn = get_connection(db_path)

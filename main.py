@@ -15,7 +15,7 @@ from database.db import (get_connection, initialise_schema, insert_screener_rows
     insert_insider_trades, insert_insider_signal, insert_signal_scores, detect_rating_changes, update_analyst_recom,
     insert_news_articles, insert_ticker_sentiment, insert_calendar_events,
     log_run, get_latest_screener, get_recent_insiders, get_cluster_signals,
-    get_top_signals, get_ticker_sentiment, get_legal_risk_map)
+    get_top_signals, get_ticker_sentiment, get_legal_risk_map, update_target_prices)
 from scrapers.quote_scraper import scrape_recom_for_tickers
 from scrapers.legal_risk_scraper import scrape_priority_tickers
 from scrapers.screener_scraper import scrape_all_sectors
@@ -102,6 +102,19 @@ def job_generate_signals(sector=None):
             "flags": "|".join(s.flags),
         } for s in signals]
         insert_signal_scores(DATABASE_PATH, score_rows)
+
+        # Compute target prices immediately after scoring
+        try:
+            from signals.target_price import compute_targets_batch
+            from scrapers.fmp_scraper import get_price_targets_map
+            fmp_targets = get_price_targets_map(DATABASE_PATH)
+            tp_rows = compute_targets_batch(screener_rows, legal_risk_map, fmp_targets)
+            update_target_prices(DATABASE_PATH, tp_rows)
+            tp_count = sum(1 for r in tp_rows if r.get("target_price"))
+            logger.info(f"  Target prices computed for {tp_count}/{len(tp_rows)} tickers")
+        except Exception as e:
+            logger.warning(f"  Target price computation failed (non-fatal): {e}")
+
         scan_results = run_all_scans(screener_rows, insider_trades, cluster_signals)
         strong_buys = [s for s in signals if s.rating == "STRONG_BUY"]
         buys        = [s for s in signals if s.rating == "BUY"]
@@ -386,6 +399,49 @@ def _send_rating_alerts(changes: list):
                 )
 
 
+def job_compute_target_prices():
+    """Compute and store SignalIntel target prices for all tickers scored today."""
+    start = time.time()
+    logger.info("JOB START: Target price computation")
+    try:
+        from signals.target_price import compute_targets_batch
+        from scrapers.fmp_scraper import get_price_targets_map
+
+        screener_rows  = get_latest_screener(DATABASE_PATH)
+        legal_risk_map = get_legal_risk_map(DATABASE_PATH)
+        fmp_targets    = get_price_targets_map(DATABASE_PATH)
+
+        rows = compute_targets_batch(screener_rows, legal_risk_map, fmp_targets)
+        updated = update_target_prices(DATABASE_PATH, rows)
+        logger.info(f"JOB DONE: Target prices | {updated} rows updated | {time.time()-start:.1f}s")
+    except Exception as e:
+        logger.error(f"Target price job FAILED: {e}", exc_info=True)
+
+
+def job_fmp_earnings():
+    """Refresh FMP earnings calendar (daily, 06:05)."""
+    start = time.time()
+    logger.info("JOB START: FMP earnings calendar")
+    try:
+        from scrapers.fmp_scraper import job_refresh_earnings
+        n = job_refresh_earnings(DATABASE_PATH, days_ahead=30)
+        logger.info(f"JOB DONE: FMP Earnings | {n} records | {time.time()-start:.1f}s")
+    except Exception as e:
+        logger.error(f"FMP Earnings FAILED: {e}")
+
+
+def job_fmp_dividends():
+    """Refresh FMP dividend data weekly (Sunday 03:00)."""
+    start = time.time()
+    logger.info("JOB START: FMP dividend refresh")
+    try:
+        from scrapers.fmp_scraper import job_refresh_dividends
+        n = job_refresh_dividends(DATABASE_PATH)
+        logger.info(f"JOB DONE: FMP Dividends | {n} records | {time.time()-start:.1f}s")
+    except Exception as e:
+        logger.error(f"FMP Dividends FAILED: {e}")
+
+
 def job_daily_summary():
     """Send top-5 signals of the day to Telegram at market close."""
     from database.db import get_top_signals
@@ -535,6 +591,20 @@ def main():
             id="legal_risk_scraper",
             name="SEC EDGAR Legal Risk Scraper",
             replace_existing=True,
+        )
+
+        # FMP earnings calendar (daily, 06:05 pre-market)
+        scheduler.add_job(
+            job_fmp_earnings,
+            CronTrigger(hour=6, minute=5, day_of_week="mon-fri"),
+            id="fmp_earnings", name="FMP Earnings Calendar 06:05",
+        )
+
+        # FMP dividend refresh (weekly, Sunday 03:00)
+        scheduler.add_job(
+            job_fmp_dividends,
+            CronTrigger(hour=3, minute=0, day_of_week="sun"),
+            id="fmp_dividends", name="FMP Dividend Refresh Sunday 03:00",
         )
 
         logger.info("Scheduled jobs:")
