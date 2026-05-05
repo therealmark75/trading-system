@@ -23,7 +23,7 @@ def _api_key():
     except ImportError:
         return ""
 
-FMP_BASE = "https://financialmodelingprep.com/api/v3"
+FMP_BASE = "https://financialmodelingprep.com/stable"
 _HEADERS = {"User-Agent": "SignalIntel/1.0 marknicholson75@gmail.com"}
 
 
@@ -103,7 +103,7 @@ def _ensure_tables(db_path: str):
 
 def fetch_earnings_calendar(from_date: str = None, to_date: str = None) -> list[dict]:
     """
-    Fetch upcoming earnings from FMP.
+    Fetch upcoming earnings from FMP stable API.
     Default: today → 30 days out.
     """
     if not from_date:
@@ -111,22 +111,22 @@ def fetch_earnings_calendar(from_date: str = None, to_date: str = None) -> list[
     if not to_date:
         to_date = (datetime.now() + timedelta(days=30)).strftime("%Y-%m-%d")
 
-    data = _get("/earning_calendar", {"from": from_date, "to": to_date})
+    data = _get("/earnings-calendar", {"from": from_date, "to": to_date})
     if not data:
         return []
 
     rows = []
     for item in data:
         rows.append({
-            "ticker":          item.get("symbol", ""),
-            "company":         item.get("name", ""),
-            "earnings_date":   item.get("date", ""),
-            "timing":          _parse_timing(item.get("time", "")),
-            "period_ending":   item.get("fiscalDateEnding", ""),
-            "eps_estimate":    item.get("epsEstimated"),
-            "eps_last_year":   item.get("eps"),
+            "ticker":           item.get("symbol", ""),
+            "company":          item.get("name", ""),
+            "earnings_date":    item.get("date", ""),
+            "timing":           _parse_timing(item.get("time", "")),
+            "period_ending":    item.get("fiscalDateEnding", ""),
+            "eps_estimate":     item.get("epsEstimated"),
+            "eps_last_year":    item.get("epsActual"),
             "revenue_estimate": item.get("revenueEstimated"),
-            "last_updated":    datetime.now().isoformat(),
+            "last_updated":     datetime.now().isoformat(),
         })
     return rows
 
@@ -206,25 +206,26 @@ def get_earnings_calendar(db_path: str, from_date: str = None, to_date: str = No
 
 def fetch_dividend_profile(ticker: str) -> dict | None:
     """
-    Fetch dividend data for a single ticker from FMP /profile.
+    Fetch dividend data for a single ticker from FMP stable API.
+    Uses /profile for company info; calculates yield from lastDividend/price.
     Returns normalised dict or None.
     """
-    data = _get(f"/profile/{ticker}")
-    if not data or not isinstance(data, list) or not data[0]:
+    profile_data = _get("/profile", {"symbol": ticker})
+    if not profile_data or not isinstance(profile_data, list) or not profile_data[0]:
         return None
-    p = data[0]
+    p = profile_data[0]
 
-    yield_pct     = p.get("lastDiv") and p.get("price") and (p["lastDiv"] / p["price"]) * 400  # quarterly→annual
-    annual_div    = p.get("lastDiv") and p["lastDiv"] * 4
-    payout        = p.get("payoutRatio")
+    last_div = float(p.get("lastDividend") or 0)
+    price    = float(p.get("price") or 0)
+    yield_pct = round((last_div / price) * 100, 2) if price > 0 and last_div > 0 else 0.0
 
     return {
         "ticker":            ticker,
         "company":           p.get("companyName"),
         "sector":            p.get("sector"),
-        "dividend_yield":    round(float(p.get("dividendYield") or 0) * 100, 2),
-        "annual_dividend":   round(float(p.get("lastDiv") or 0) * 4, 4) if p.get("lastDiv") else None,
-        "payout_ratio":      round(float(payout) * 100, 1) if payout else None,
+        "dividend_yield":    yield_pct,
+        "annual_dividend":   round(last_div, 4) if last_div > 0 else None,
+        "payout_ratio":      None,
         "ex_dividend_date":  None,
         "payment_date":      None,
         "frequency":         None,
@@ -236,32 +237,33 @@ def fetch_dividend_profile(ticker: str) -> dict | None:
 
 def fetch_dividend_history(ticker: str) -> dict:
     """
-    Fetch dividend history from FMP to derive frequency, ex-date,
-    payment date, growth rate, and consecutive years.
+    Fetch dividend history from FMP stable /dividends endpoint.
+    Derives yield, frequency, ex-date, payment date, growth rate, consecutive years.
     """
-    data = _get(f"/historical-price-full/stock_dividend/{ticker}")
-    if not data or "historical" not in data:
+    data = _get("/dividends", {"symbol": ticker})
+    if not data or not isinstance(data, list):
         return {}
 
-    hist = sorted(data["historical"], key=lambda x: x.get("date",""), reverse=True)
+    hist = sorted(data, key=lambda x: x.get("date", ""), reverse=True)
     if not hist:
         return {}
 
-    latest     = hist[0]
-    ex_date    = latest.get("date")
-    pay_date   = latest.get("paymentDate") or latest.get("date")
-    amount     = latest.get("adjDividend") or latest.get("dividend")
+    latest   = hist[0]
+    ex_date  = latest.get("date")
+    pay_date = latest.get("paymentDate") or latest.get("date")
+    amount   = latest.get("adjDividend") or latest.get("dividend")
+    freq     = latest.get("frequency") or _infer_frequency(hist[:8])
 
-    # Determine frequency from spacing of last 4 payments
-    freq = _infer_frequency(hist[:8])
+    # yield is provided directly by FMP in each record
+    yield_pct = latest.get("yield")
+    if yield_pct:
+        yield_pct = round(float(yield_pct), 2)
 
-    # 5-year CAGR
     growth_5yr = _calc_growth(hist, years=5)
-
-    # Consecutive growth years
-    consec = _count_consecutive_growth(hist)
+    consec     = _count_consecutive_growth(hist)
 
     return {
+        "dividend_yield":    yield_pct or 0.0,
         "ex_dividend_date":  ex_date,
         "payment_date":      pay_date,
         "frequency":         freq,
@@ -275,7 +277,6 @@ def _infer_frequency(hist: list) -> str:
     if len(hist) < 2:
         return "Unknown"
     try:
-        from datetime import date
         dates = [datetime.strptime(h["date"], "%Y-%m-%d").date() for h in hist[:6] if h.get("date")]
         if len(dates) < 2:
             return "Unknown"
@@ -393,8 +394,8 @@ def get_dividends(db_path: str, min_yield: float = 0, sector: str = None,
 # ── Analyst price targets ─────────────────────────────────────────────────────
 
 def fetch_price_target(ticker: str) -> float | None:
-    """Fetch consensus analyst price target from FMP."""
-    data = _get(f"/price-target-consensus/{ticker}")
+    """Fetch consensus analyst price target from FMP stable API."""
+    data = _get("/price-target-consensus", {"symbol": ticker})
     if data and isinstance(data, list) and data[0]:
         t = data[0].get("targetConsensus") or data[0].get("targetMedian")
         return float(t) if t else None
