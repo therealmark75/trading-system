@@ -204,6 +204,7 @@ const RATING_COLORS = {
     STRONG_BUY:'#00ff88',BUY:'#00d4ff',STRONG_HOLD:'#94a3b8',
     HOLD:'#64748b',WEAK_HOLD:'#ff6b35',SELL:'#ff3b5c',STRONG_SELL:'#ff0000'
 };
+const TIER_SHORT = {STRONG_BUY:'Very Strong',BUY:'Strong',STRONG_HOLD:'Stable',HOLD:'Neutral',WEAK_HOLD:'Soft',SELL:'Bearish',STRONG_SELL:'Very Bearish'};
 
 function scoreClass(v) {
     if (v == null) return 's-mid';
@@ -222,8 +223,7 @@ function fmtChg(v) {
 
 function ratingBadge(r) {
     if (!r) return '';
-    const label = r.replace(/_/g,' ');
-    return `<span class="sotd-rating rating-${r}">${label}</span>`;
+    return `<span class="sotd-rating rating-${r}">${TIER_SHORT[r]||r}</span>`;
 }
 
 async function loadSOTD() {
@@ -328,7 +328,7 @@ function renderHot(exch) {
         const chgCls = chg > 0 ? 'up' : chg < 0 ? 'dn' : 'neu';
         const sign = chg >= 0 ? '+' : '';
         const rc = RATING_COLORS[s.rating] || 'var(--muted)';
-        const ratingHtml = s.rating ? `<span class="mover-rating" style="background:rgba(0,0,0,0.3);color:${rc};border:1px solid ${rc}40">${s.rating.replace(/_/g,' ')}</span>` : '';
+        const ratingHtml = s.rating ? `<span class="mover-rating" style="background:rgba(0,0,0,0.3);color:${rc};border:1px solid ${rc}40">${TIER_SHORT[s.rating]||s.rating}</span>` : '';
         return `<div class="mover-row" onclick="window.location='/ticker/${s.ticker}'">
             <span class="mover-ticker">${s.ticker}</span>
             <span class="mover-company">${s.company || ''}</span>

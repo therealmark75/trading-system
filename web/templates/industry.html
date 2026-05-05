@@ -90,6 +90,7 @@ const RATING_COLORS = {
     'SELL':        {bg:'rgba(255,59,92,0.15)',color:'#ff3b5c'},
     'STRONG_SELL': {bg:'rgba(255,59,92,0.25)',color:'#ff3b5c'},
 };
+const TIER_SHORT = {STRONG_BUY:'Very Strong',BUY:'Strong',STRONG_HOLD:'Stable',HOLD:'Neutral',WEAK_HOLD:'Soft',SELL:'Bearish',STRONG_SELL:'Very Bearish'};
 
 function fmt(v, d=1){ return v==null ? '-' : parseFloat(v).toFixed(d); }
 function fmtMC(v){
@@ -117,7 +118,7 @@ function renderTable(){
             <td class="score">$${fmt(r.price,2)}</td>
             <td class="score ${chgClass}">${chg>=0?'+':''}${fmt(r.change_pct,2)}%</td>
             <td class="score" style="color:${r.composite_score>=70?'#00ff88':r.composite_score>=50?'#00d4ff':'var(--muted)'}">${fmt(r.composite_score,1)}</td>
-            <td><span class="rating-badge" style="background:${rc.bg};color:${rc.color}">${r.rating||'-'}</span></td>
+            <td><span class="rating-badge" style="background:${rc.bg};color:${rc.color}">${TIER_SHORT[r.rating]||r.rating||'-'}</span></td>
             <td class="score">${fmt(r.momentum_score,1)}</td>
             <td class="score">${fmt(r.quality_score,1)}</td>
             <td class="score">${fmt(r.insider_score,1)}</td>

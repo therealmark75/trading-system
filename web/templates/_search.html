@@ -92,6 +92,7 @@ window.trackRecentlyViewed = function(ticker) {
         STRONG_BUY:'#00ff88', BUY:'#00d4ff', STRONG_HOLD:'#94a3b8',
         HOLD:'#64748b', WEAK_HOLD:'#ff9500', SELL:'#ff3b5c', STRONG_SELL:'#ff3b5c'
     };
+    const TIER_SHORT = {STRONG_BUY:'Very Strong',BUY:'Strong',STRONG_HOLD:'Stable',HOLD:'Neutral',WEAK_HOLD:'Soft',SELL:'Bearish',STRONG_SELL:'Very Bearish'};
 
     function clear() {
         drop.innerHTML = '';
@@ -113,7 +114,7 @@ window.trackRecentlyViewed = function(ticker) {
         }
         drop.innerHTML = items.map((r, i) => {
             const c     = RC[r.rating] || '#8aa4bf';
-            const label = (r.rating || '').replace(/_/g, ' ');
+            const label = TIER_SHORT[r.rating] || '';
             const score = r.composite_score != null ? Number(r.composite_score).toFixed(1) : '';
             let targetHtml = '';
             if (r.target_price != null) {
