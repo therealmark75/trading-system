@@ -1,0 +1,54 @@
+<style>
+/* ── Shared Footer ────────────────────────── */
+.site-footer{margin-top:60px;border-top:1px solid var(--border,#1a2d45);padding:48px 24px 32px;background:rgba(8,12,20,0.5);}
+.footer-inner{max-width:1200px;margin:0 auto;}
+.footer-brand{font-family:var(--mono,monospace);font-size:15px;color:var(--accent,#00d4ff);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.footer-brand span{color:var(--accent2,#00ff88);}
+.footer-tagline{font-size:12px;color:var(--muted,#8aa4bf);margin-bottom:32px;}
+.footer-cols{display:grid;grid-template-columns:repeat(3,1fr);gap:40px;margin-bottom:40px;}
+.footer-col-title{font-family:var(--mono,monospace);font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--muted,#8aa4bf);margin-bottom:14px;}
+.footer-col a{display:block;font-size:12px;color:var(--muted2,#c2d4e8);text-decoration:none;margin-bottom:8px;transition:color .15s;}
+.footer-col a:hover{color:var(--accent,#00d4ff);}
+.footer-bottom{border-top:1px solid var(--border,#1a2d45);padding-top:24px;display:flex;flex-direction:column;align-items:center;gap:10px;}
+.footer-copy{font-family:var(--mono,monospace);font-size:10px;color:var(--muted,#8aa4bf);letter-spacing:1px;text-align:center;}
+.footer-disc{font-size:11px;color:var(--muted,#8aa4bf);max-width:700px;text-align:center;line-height:1.6;}
+@media(max-width:768px){.footer-cols{grid-template-columns:1fr 1fr;gap:24px;}}
+@media(max-width:480px){.footer-cols{grid-template-columns:1fr;}}
+</style>
+<footer class="site-footer">
+    <div class="footer-inner">
+        <div class="footer-brand">SIGNAL<span>INTEL</span></div>
+        <div class="footer-tagline">Institutional-grade market intelligence for serious traders</div>
+        <div class="footer-cols">
+            <div class="footer-col">
+                <div class="footer-col-title">Platform</div>
+                <a href="/">Dashboard</a>
+                <a href="/screener">Screener</a>
+                <a href="/earnings">Earnings</a>
+                <a href="/dividends">Dividends</a>
+                <a href="/events">Events</a>
+                <a href="/markets">Markets</a>
+                <a href="/penny">Penny &amp; Small Cap</a>
+            </div>
+            <div class="footer-col">
+                <div class="footer-col-title">Account</div>
+                <a href="/watchlist">Watchlist</a>
+                <a href="/backtest">Backtest</a>
+                <a href="/ratings">Rating Tiers</a>
+                <a href="/logout">Sign Out</a>
+            </div>
+            <div class="footer-col">
+                <div class="footer-col-title">Company</div>
+                <a href="/about">About Us</a>
+                <a href="/contact">Contact</a>
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/terms">Terms of Service</a>
+                <a href="/disclaimer">Risk Disclaimer</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="footer-copy">© 2026 Mark Nicholson Consulting Limited T/A The Signal Vault. All rights reserved.</div>
+            <div class="footer-disc">SignalIntel is a proprietary data analysis platform. All signals, ratings and scores are generated algorithmically for informational and research purposes only. Nothing on this platform constitutes financial advice or a recommendation to buy or sell any security. Capital is at risk.</div>
+        </div>
+    </div>
+</footer>

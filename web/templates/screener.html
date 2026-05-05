@@ -114,22 +114,7 @@ tr:hover td{background:rgba(0,212,255,0.03);cursor:pointer;}
 </style>
 </head>
 <body>
-<header>
-    <a href="/" class="logo">SIGNAL<span>INTEL</span></a>
-    {% include '_search.html' %}
-    <div class="header-right">
-        <a href="/">Ratings</a>
-        <a href="/screener" class="active">Screener</a>
-        <a href="/earnings">Earnings</a>
-        <a href="/dividends">Dividends</a>
-        <a href="/events">Events</a>
-        <a href="/markets">Markets</a>
-        <a href="/watchlist">Watchlist</a>
-        <a href="/ratings">Rating Tiers</a>
-        <a href="/backtest">Backtest</a>
-        <a href="/logout">Sign out</a>
-    </div>
-</header>
+{% include '_nav.html' %}
 
 <div class="layout">
 <!-- ── Sidebar filters ─────────────────────────────── -->
@@ -594,5 +579,6 @@ if (_urlPreset) {
     loadWatchlist().then(() => {}); // still load watchlist for WL toggle buttons
 }
 </script>
+{% include '_footer.html' %}
 </body>
 </html>

@@ -68,22 +68,7 @@ tr:hover td{background:rgba(0,212,255,0.03);cursor:pointer;}
 </style>
 </head>
 <body>
-<header>
-    <a href="/" class="logo">SIGNAL<span>INTEL</span></a>
-    {% include '_search.html' %}
-    <div class="header-right">
-        <a href="/">Ratings</a>
-        <a href="/screener">Screener</a>
-        <a href="/earnings" class="active">Earnings</a>
-        <a href="/dividends">Dividends</a>
-        <a href="/events">Events</a>
-        <a href="/markets">Markets</a>
-        <a href="/watchlist">Watchlist</a>
-        <a href="/ratings">Rating Tiers</a>
-        <a href="/backtest">Backtest</a>
-        <a href="/logout">Sign out</a>
-    </div>
-</header>
+{% include '_nav.html' %}
 <main>
     <h1>EARNINGS CALENDAR</h1>
     <p class="subtitle">Upcoming earnings announcements with SignalIntel ratings and analyst estimates</p>
@@ -243,5 +228,6 @@ loadData();
 })();
 </script>
 <div id="tip-box" style="position:fixed;display:none;background:#0a1628;border:1px solid var(--border);color:var(--text);padding:7px 11px;border-radius:5px;font-family:var(--sans);font-size:11px;line-height:1.45;max-width:230px;z-index:9999;pointer-events:none;word-wrap:break-word;box-shadow:0 4px 16px rgba(0,0,0,0.4)"></div>
+{% include '_footer.html' %}
 </body>
 </html>

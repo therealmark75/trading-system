@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Risk Disclaimer — The Signal Vault</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080c14;--surface:#0d1520;--surface2:#111d2e;--border:#1a2d45;
+    --accent:#00d4ff;--accent2:#00ff88;--warning:#ff9500;--danger:#ff3b5c;
+    --text:#f0f6ff;--muted:#8aa4bf;--muted2:#c2d4e8;
+    --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;min-height:100vh;
+    background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
+    background-size:40px 40px;}
+main{max-width:800px;margin:0 auto;padding:60px 24px;}
+.warning-header{background:rgba(255,149,0,0.08);border:2px solid rgba(255,149,0,0.4);border-radius:12px;padding:28px 32px;margin-bottom:40px;text-align:center;}
+.warning-icon{font-size:40px;margin-bottom:12px;}
+.warning-title{font-family:var(--mono);font-size:18px;color:var(--warning);text-transform:uppercase;letter-spacing:2px;margin-bottom:8px;}
+.warning-sub{font-size:13px;color:var(--muted2);}
+.section{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px 28px;margin-bottom:16px;}
+.section h2{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--warning);margin-bottom:14px;}
+.section p,.section ul{font-size:13px;color:var(--muted2);line-height:1.8;margin-bottom:10px;}
+.section ul{padding-left:20px;}
+.section ul li{margin-bottom:6px;}
+.fca-box{background:rgba(255,59,92,0.05);border:1px solid rgba(255,59,92,0.25);border-radius:8px;padding:20px 24px;margin-top:24px;}
+.fca-box p{font-size:13px;color:var(--muted2);line-height:1.7;text-align:center;}
+.fca-box strong{color:var(--danger);}
+</style>
+</head>
+<body>
+{% include '_nav.html' %}
+<main>
+    <div class="warning-header">
+        <div class="warning-icon">⚠️</div>
+        <div class="warning-title">Risk Disclaimer</div>
+        <div class="warning-sub">Please read this disclaimer carefully before using SignalIntel</div>
+    </div>
+
+    <div class="section">
+        <h2>Informational Purpose Only</h2>
+        <p>SignalIntel signals, scores, ratings, and target prices are generated algorithmically and are provided for <strong>informational and educational purposes only</strong>. They do not constitute financial advice, investment advice, trading advice, or any other form of advice.</p>
+        <p>Nothing on this platform should be construed as a recommendation to buy, sell, or hold any security or financial instrument.</p>
+    </div>
+
+    <div class="section">
+        <h2>Past Performance</h2>
+        <p>Past signal performance is <strong>not indicative of future results</strong>. Historical signal accuracy data displayed on this platform does not guarantee future returns. Markets are unpredictable and all trading involves risk.</p>
+    </div>
+
+    <div class="section">
+        <h2>Capital at Risk</h2>
+        <ul>
+            <li>You may lose some or all of the capital you invest</li>
+            <li>Never invest more than you can afford to lose</li>
+            <li>Consider your financial situation, investment objectives, and risk tolerance before making any investment decision</li>
+            <li>Always consult a qualified financial adviser before making investment decisions</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Penny Stock Risk Warning</h2>
+        <p>Penny stocks and small-cap stocks are subject to significantly higher risks than established large-cap stocks, including:</p>
+        <ul>
+            <li>Extreme volatility and price manipulation risk</li>
+            <li>Low liquidity — difficulty buying or selling at desired prices</li>
+            <li>Limited financial information and regulatory oversight</li>
+            <li>Higher probability of company failure and total loss of investment</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>Leverage and Short Selling</h2>
+        <p>Leveraged trading amplifies both gains and losses. Using leverage can result in losses exceeding your initial investment. Short selling carries theoretically unlimited downside risk. These strategies are suitable only for experienced traders who fully understand the risks involved.</p>
+    </div>
+
+    <div class="fca-box">
+        <p><strong>Regulatory Status:</strong> The Signal Vault is operated by Mark Nicholson Consulting Limited. <strong>The Signal Vault is not authorised or regulated by the Financial Conduct Authority (FCA)</strong>. This platform does not provide regulated financial advice or investment products. Users are solely responsible for their own investment decisions.</p>
+    </div>
+</main>
+{% include '_footer.html' %}
+</body>
+</html>

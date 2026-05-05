@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SignalIntel — Market Overview</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <style>
 :root{--bg:#080c14;--surface:#0d1520;--surface2:#111d2e;--border:#1a2d45;
     --accent:#00d4ff;--accent2:#00ff88;--warning:#ff9500;--danger:#ff3b5c;
@@ -97,31 +98,12 @@ h1{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacin
 .tv-modal-price{font-family:var(--mono);font-size:13px;}
 .tv-modal-close{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:0 4px;line-height:1;}
 .tv-modal-close:hover{color:var(--text);}
-.tv-modal-body{flex:1;overflow:hidden;}
-.tv-modal-body iframe{width:100%;height:100%;border:none;}
+.tv-modal-body{flex:1;overflow:hidden;position:relative;}
 .loading{text-align:center;padding:40px;color:var(--muted);font-family:var(--mono);font-size:12px;}
 </style>
 </head>
 <body>
-<header>
-    <a href="/" class="logo">SIGNAL<span>INTEL</span></a>
-    {% include '_search.html' %}
-    <div class="user-menu">
-        <span>{{ user.username }}</span>
-        <a href="/logout">Sign out</a>
-    </div>
-</header>
-<nav>
-    <a href="/" class="tab">Ratings</a>
-    <a href="/screener" class="tab">Screener</a>
-    <a href="/earnings" class="tab">Earnings</a>
-    <a href="/dividends" class="tab">Dividends</a>
-    <a href="/events" class="tab">Events</a>
-    <a href="/markets" class="tab active">Markets</a>
-    <a href="/watchlist" class="tab">My Watchlist</a>
-    <a href="/ratings" class="tab">Rating Tiers</a>
-    <a href="/backtest" class="tab">Backtest</a>
-</nav>
+{% include '_nav.html' %}
 <main>
     <div class="page-header">
         <div class="page-header-left">
@@ -246,6 +228,8 @@ function toggleSection(id, key) {
     localStorage.setItem(key, sec.classList.contains('collapsed') ? 'collapsed' : 'expanded');
 }
 
+let _tvWidget = null;
+
 function openModal(sym, label, price, changePct) {
     const tvSym = TV_SYMS[sym];
     if (!tvSym) return;
@@ -254,13 +238,34 @@ function openModal(sym, label, price, changePct) {
     const pctStr   = changePct != null ? ((changePct >= 0 ? '+' : '') + Number(changePct).toFixed(2) + '%') : '';
     const pctColor = changePct > 0 ? '#00ff88' : changePct < 0 ? '#ff3b5c' : '#8aa4bf';
     document.getElementById('tv-modal-price').innerHTML = `<span style="color:var(--muted2)">${priceStr}</span> <span style="color:${pctColor}">${pctStr}</span>`;
-    document.getElementById('tv-modal-body').innerHTML = `<iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tv_modal&symbol=${encodeURIComponent(tvSym)}&interval=60&theme=dark&style=1&locale=en&toolbar_bg=%230d1520&hide_side_toolbar=0&allow_symbol_change=0&save_image=0&studies=[]&hideideas=1&utm_source=signalintel" allowtransparency="true" allow="autoplay; clipboard-write;" allowfullscreen=""></iframe>`;
+
+    const body = document.getElementById('tv-modal-body');
+    body.innerHTML = '<div id="tv-chart-modal" style="width:100%;height:100%;"></div>';
+
+    _tvWidget = new TradingView.widget({
+        autosize: true,
+        symbol: tvSym,
+        interval: '60',
+        timezone: 'Etc/UTC',
+        theme: 'dark',
+        style: '1',
+        locale: 'en',
+        toolbar_bg: '#0d1520',
+        enable_publishing: false,
+        hide_top_toolbar: false,
+        save_image: false,
+        container_id: 'tv-chart-modal',
+        backgroundColor: '#080c14',
+        gridColor: 'rgba(26,45,69,0.5)',
+    });
+
     document.getElementById('tv-modal').classList.add('open');
 }
 
 function closeModal() {
     document.getElementById('tv-modal').classList.remove('open');
     document.getElementById('tv-modal-body').innerHTML = '';
+    _tvWidget = null;
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
@@ -304,5 +309,6 @@ async function loadData(force) {
 loadData();
 setInterval(() => loadData(false), 60000);
 </script>
+{% include '_footer.html' %}
 </body>
 </html>

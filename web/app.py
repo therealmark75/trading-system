@@ -1,7 +1,7 @@
 import sys, os; sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from scrapers.legal_risk_scraper import get_legal_risk, fetch_legal_risk, save_legal_risk
 # web/app.py - Phase 5 full web dashboard
-import sys, json, sqlite3
+import sys, json, sqlite3, requests as http_requests
 from pathlib import Path
 from datetime import datetime
 from functools import wraps
@@ -26,6 +26,35 @@ app.secret_key = "signalintel-secret-change-in-production-2026"
 
 # Ensure user tables exist
 initialise_user_schema(DATABASE_PATH)
+
+# Ensure contact_submissions table exists
+def _init_contact_table():
+    conn = get_connection(DATABASE_PATH)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS contact_submissions (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL,
+            subject TEXT NOT NULL,
+            message TEXT NOT NULL,
+            created_at TEXT DEFAULT (datetime('now'))
+        )
+    """)
+    conn.commit()
+    conn.close()
+_init_contact_table()
+
+from config.settings import TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID
+
+def _send_telegram(msg):
+    try:
+        http_requests.post(
+            f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage",
+            json={"chat_id": TELEGRAM_CHAT_ID, "text": msg},
+            timeout=5,
+        )
+    except Exception:
+        pass
 
 
 # ── Auth helpers ──────────────────────────────────
@@ -1455,6 +1484,45 @@ def ticker_news(ticker):
     articles = [dict(r) for r in cur.fetchall()]
     conn.close()
     return render_template('ticker_news.html', ticker=ticker, articles=articles)
+
+# ── Static / public pages ─────────────────────────────
+
+@app.route("/about")
+def about():
+    return render_template("about.html", user=current_user())
+
+@app.route("/contact", methods=["GET", "POST"])
+def contact():
+    success = False
+    if request.method == "POST":
+        name    = request.form.get("name", "").strip()
+        email   = request.form.get("email", "").strip()
+        subject = request.form.get("subject", "").strip()
+        message = request.form.get("message", "").strip()
+        if name and email and subject and message:
+            conn = get_connection(DATABASE_PATH)
+            conn.execute(
+                "INSERT INTO contact_submissions (name, email, subject, message) VALUES (?,?,?,?)",
+                (name, email, subject, message)
+            )
+            conn.commit()
+            conn.close()
+            _send_telegram(f"📧 New contact form submission from {name}: {subject}")
+            success = True
+    return render_template("contact.html", user=current_user(), success=success)
+
+@app.route("/privacy")
+def privacy():
+    return render_template("privacy.html", user=current_user())
+
+@app.route("/terms")
+def terms():
+    return render_template("terms.html", user=current_user())
+
+@app.route("/disclaimer")
+def disclaimer():
+    return render_template("disclaimer.html", user=current_user())
+
 
 if __name__ == '__main__':
     print("=" * 50)

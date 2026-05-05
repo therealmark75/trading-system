@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About — The Signal Vault</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080c14;--surface:#0d1520;--surface2:#111d2e;--border:#1a2d45;
+    --accent:#00d4ff;--accent2:#00ff88;--warning:#ff9500;--danger:#ff3b5c;
+    --text:#f0f6ff;--muted:#8aa4bf;--muted2:#c2d4e8;
+    --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;min-height:100vh;
+    background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
+    background-size:40px 40px;}
+main{max-width:900px;margin:0 auto;padding:60px 24px;}
+.hero{text-align:center;padding:60px 0 48px;}
+.hero-title{font-family:var(--mono);font-size:36px;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:16px;}
+.hero-tagline{font-size:18px;color:var(--muted2);margin-bottom:24px;font-weight:300;}
+.hero-intro{font-size:15px;color:var(--muted2);max-width:680px;margin:0 auto;line-height:1.7;}
+.section{margin-bottom:48px;}
+.section-title{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:20px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+.diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:600px){.diff-grid{grid-template-columns:1fr;}}
+.diff-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 18px;display:flex;align-items:flex-start;gap:12px;}
+.diff-check{color:var(--accent2);font-size:16px;flex-shrink:0;margin-top:2px;}
+.diff-text{font-size:13px;color:var(--muted2);line-height:1.6;}
+.platform-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:24px;margin-bottom:20px;}
+.platform-card h3{font-family:var(--mono);font-size:12px;color:var(--accent2);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+.platform-card p{font-size:13px;color:var(--muted2);line-height:1.7;}
+.company-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:24px;}
+.company-card p{font-size:13px;color:var(--muted2);line-height:1.7;}
+.disclaimer-box{background:rgba(255,149,0,0.05);border:1px solid rgba(255,149,0,0.2);border-radius:8px;padding:20px;margin-top:48px;}
+.disclaimer-box p{font-size:12px;color:var(--muted);line-height:1.7;text-align:center;}
+</style>
+</head>
+<body>
+{% include '_nav.html' %}
+<main>
+    <div class="hero">
+        <div class="hero-title">The Signal Vault</div>
+        <div class="hero-tagline">Institutional-grade market intelligence for serious traders</div>
+        <div class="hero-intro">The Signal Vault is a proprietary financial signal intelligence platform developed by Mark Nicholson Consulting Limited. We combine quantitative scoring, SEC legal risk analysis, and insider activity tracking to deliver actionable signals across US stocks, Hong Kong markets, and penny stocks.</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">What Makes Us Different</div>
+        <div class="diff-grid">
+            <div class="diff-item"><span class="diff-check">✅</span><span class="diff-text"><strong>Verified signal performance</strong> — every signal logged with date and price, wins AND losses visible</span></div>
+            <div class="diff-item"><span class="diff-check">✅</span><span class="diff-text"><strong>SEC EDGAR legal risk scoring</strong> — unique penalty applied to composite score for enforcement actions</span></div>
+            <div class="diff-item"><span class="diff-check">✅</span><span class="diff-text"><strong>Proprietary target price model</strong> — DCF + technical + analyst consensus + legal risk adjustment</span></div>
+            <div class="diff-item"><span class="diff-check">✅</span><span class="diff-text"><strong>Insider activity intelligence</strong> — cluster buy/sell detection with dollar value tracking</span></div>
+            <div class="diff-item"><span class="diff-check">✅</span><span class="diff-text"><strong>Multi-market coverage</strong> — US stocks, Hong Kong, Penny &amp; Small Cap</span></div>
+            <div class="diff-item"><span class="diff-check">✅</span><span class="diff-text"><strong>Real-time market data</strong> — live indices, forex, commodities and crypto</span></div>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">The Platform</div>
+        <div class="platform-card">
+            <h3>SignalIntel</h3>
+            <p>SignalIntel is the core product of The Signal Vault. It aggregates data from multiple sources — FinViz, SEC EDGAR, Financial Modelling Prep, and proprietary scrapers — to generate composite signal scores for thousands of US-listed stocks. Each stock receives a 7-tier rating from Strong Buy to Strong Sell, updated daily, with full score breakdowns covering momentum, quality, insider activity, mean reversion, and legal risk.</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">The Company</div>
+        <div class="company-card">
+            <p>The Signal Vault is operated by Mark Nicholson Consulting Limited, a UK registered company. Our platform is built for serious retail traders who demand institutional-quality analysis without the institutional price tag. We believe every trader deserves access to the same quality of data and scoring infrastructure previously reserved for hedge funds and proprietary trading desks.</p>
+        </div>
+    </div>
+
+    <div class="disclaimer-box">
+        <p>Nothing on this platform constitutes financial advice. All signals are for informational purposes only. Capital is at risk. Always consult a qualified financial adviser before making investment decisions.</p>
+    </div>
+</main>
+{% include '_footer.html' %}
+</body>
+</html>

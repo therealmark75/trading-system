@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact — The Signal Vault</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080c14;--surface:#0d1520;--surface2:#111d2e;--border:#1a2d45;
+    --accent:#00d4ff;--accent2:#00ff88;--warning:#ff9500;--danger:#ff3b5c;
+    --text:#f0f6ff;--muted:#8aa4bf;--muted2:#c2d4e8;
+    --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;min-height:100vh;
+    background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
+    background-size:40px 40px;}
+main{max-width:700px;margin:0 auto;padding:60px 24px;}
+h1{font-family:var(--mono);font-size:18px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.subtitle{font-size:13px;color:var(--muted2);margin-bottom:40px;line-height:1.6;}
+.contact-info{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px 24px;margin-bottom:32px;}
+.contact-info p{font-size:13px;color:var(--muted2);margin-bottom:8px;line-height:1.6;}
+.contact-info a{color:var(--accent);text-decoration:none;}
+.contact-info a:hover{text-decoration:underline;}
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:28px;}
+.form-title{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);margin-bottom:24px;}
+.field{margin-bottom:18px;}
+.field label{display:block;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:6px;}
+.field input,.field select,.field textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px 14px;color:var(--text);font-family:var(--sans);font-size:13px;outline:none;transition:border-color .15s;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);}
+.field textarea{resize:vertical;min-height:120px;}
+.submit-btn{width:100%;padding:12px;background:rgba(0,212,255,0.1);border:1px solid rgba(0,212,255,0.3);border-radius:6px;color:var(--accent);font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:1px;cursor:pointer;transition:all .15s;}
+.submit-btn:hover{background:rgba(0,212,255,0.2);border-color:var(--accent);}
+.success-box{background:rgba(0,255,136,0.08);border:1px solid rgba(0,255,136,0.3);border-radius:8px;padding:20px 24px;margin-bottom:24px;}
+.success-box p{font-size:13px;color:var(--accent2);line-height:1.6;}
+</style>
+</head>
+<body>
+{% include '_nav.html' %}
+<main>
+    <h1>Contact Us</h1>
+    <p class="subtitle">For support, partnership enquiries or press contact, please email us directly or use the form below.</p>
+
+    <div class="contact-info">
+        <p>📧 Email: <a href="mailto:hello@thesignalvault.io">hello@thesignalvault.io</a></p>
+        <p style="color:var(--muted);font-size:12px;">We aim to respond to all enquiries within 1–2 business days.</p>
+    </div>
+
+    {% if success %}
+    <div class="success-box">
+        <p>✅ Your message has been sent. We'll get back to you within 1–2 business days.</p>
+    </div>
+    {% endif %}
+
+    <div class="form-card">
+        <div class="form-title">Send us a message</div>
+        <form method="POST" action="/contact">
+            <div class="field">
+                <label>Your Name</label>
+                <input type="text" name="name" required placeholder="John Smith">
+            </div>
+            <div class="field">
+                <label>Email Address</label>
+                <input type="email" name="email" required placeholder="john@example.com">
+            </div>
+            <div class="field">
+                <label>Subject</label>
+                <input type="text" name="subject" required placeholder="Support request / Partnership / Press">
+            </div>
+            <div class="field">
+                <label>Message</label>
+                <textarea name="message" required placeholder="Tell us how we can help…"></textarea>
+            </div>
+            <button type="submit" class="submit-btn">Send Message →</button>
+        </form>
+    </div>
+</main>
+{% include '_footer.html' %}
+</body>
+</html>

@@ -72,25 +72,7 @@ h1{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacin
 </style>
 </head>
 <body>
-<header>
-    <a href="/" class="logo">Signal<span>Intel</span></a>
-    {% include '_search.html' %}
-    <div class="user-menu">
-        <span>{{ user.username }}</span>
-        <a href="/logout">Sign out</a>
-    </div>
-</header>
-<nav>
-    <a href="/" class="tab">Ratings</a>
-    <a href="/screener" class="tab">Screener</a>
-    <a href="/earnings" class="tab">Earnings</a>
-    <a href="/dividends" class="tab">Dividends</a>
-    <a href="/events" class="tab active">Events</a>
-        <a href="/markets">Markets</a>
-    <a href="/watchlist" class="tab">My Watchlist</a>
-    <a href="/ratings" class="tab">Rating Tiers</a>
-    <a href="/backtest" class="tab">Backtest</a>
-</nav>
+{% include '_nav.html' %}
 <main>
     <div class="page-header">
         <h1>Economic Events Calendar</h1>
@@ -197,5 +179,6 @@ async function refreshData() {
 
 loadEvents();
 </script>
+{% include '_footer.html' %}
 </body>
 </html>

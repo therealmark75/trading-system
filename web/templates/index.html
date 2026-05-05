@@ -19,17 +19,6 @@
         header{position:sticky;top:0;z-index:100;background:rgba(8,12,20,0.95);backdrop-filter:blur(12px);
             border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;
             justify-content:space-between;height:56px;}
-        .logo{font-family:var(--mono);font-size:15px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;text-decoration:none;}
-        .logo span{color:var(--accent2);}
-        .header-right{display:flex;align-items:center;gap:16px;}
-        .live-dot{display:flex;align-items:center;gap:6px;font-family:var(--mono);font-size:11px;color:var(--muted2);}
-        .live-dot::before{content:'';width:7px;height:7px;border-radius:50%;background:var(--accent2);
-            box-shadow:0 0 8px var(--accent2);animation:pulse 2s infinite;}
-        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-        .user-menu{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted2);}
-        .user-menu a{color:var(--accent);text-decoration:none;font-family:var(--mono);font-size:11px;
-            padding:4px 10px;border:1px solid rgba(0,212,255,0.3);border-radius:4px;}
-        .user-menu a:hover{background:rgba(0,212,255,0.08);}
         nav{display:flex;gap:4px;padding:12px 24px;border-bottom:1px solid var(--border);}
         .tab{padding:6px 16px;border-radius:4px;font-size:12px;font-weight:500;letter-spacing:0.5px;
             cursor:pointer;border:1px solid transparent;color:var(--muted2);transition:all 0.15s;
@@ -159,51 +148,10 @@
 .theme-desc{font-size:11px;color:var(--muted);line-height:1.5;}
 .theme-count{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:10px;}
 
-/* Ratings Guide Modal */
-.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;
-    align-items:center;justify-content:center;}
-.modal-overlay.open{display:flex;}
-.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:8px;
-    padding:28px;max-width:540px;width:90%;max-height:80vh;overflow-y:auto;}
-.modal-title{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--accent);
-    letter-spacing:1px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;}
-.modal-close{cursor:pointer;color:var(--muted);font-size:18px;line-height:1;}
-.modal-close:hover{color:var(--text);}
-.modal-section{margin-bottom:20px;}
-.modal-section-title{font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;
-    margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--border);}
-.modal-row{display:flex;gap:10px;align-items:flex-start;margin-bottom:8px;}
-.modal-badge{font-family:var(--mono);font-size:10px;font-weight:700;padding:2px 8px;
-    border-radius:3px;white-space:nowrap;min-width:90px;text-align:center;}
-.modal-desc{font-size:12px;color:var(--muted2);line-height:1.5;}
-.modal-score-row{display:flex;gap:10px;margin-bottom:8px;align-items:flex-start;}
-.modal-score-name{font-family:var(--mono);font-size:11px;color:var(--accent);min-width:80px;}
-.modal-score-desc{font-size:12px;color:var(--muted2);line-height:1.5;}
 </style>
 </head>
 <body>
-<header>
-    <a href="/" class="logo">Signal<span>Intel</span></a>
-    {% include '_search.html' %}
-    <div class="header-right">
-        <div class="live-dot">LIVE</div>
-        <span id="last-updated" style="font-family:var(--mono);font-size:11px;color:var(--muted2)"></span>
-        <div class="user-menu">
-            <span>{{ user.username if user else '' }}</span>
-            <a href="/" style="font-family:var(--mono);font-size:11px;color:var(--accent);text-decoration:none;padding:6px 12px;border:1px solid rgba(0,212,255,0.3);border-radius:4px;background:rgba(0,212,255,0.05);">Ratings</a>
-            <a href="/ratings" style="font-family:var(--mono);font-size:11px;color:var(--muted2);text-decoration:none;padding:6px 12px;border:1px solid var(--border);border-radius:4px;">Rating Tiers</a>
-                <button onclick="document.getElementById('ratingsModal').classList.add('open')" style="font-family:var(--mono);font-size:11px;color:var(--muted2);text-decoration:none;padding:6px 12px;border:1px solid var(--muted);border-radius:4px;background:transparent;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='var(--muted)';this.style.color='var(--muted2)'">Ratings Guide</button>
-            <a href="/screener">Screener</a>
-            <a href="/earnings">Earnings</a>
-            <a href="/dividends">Dividends</a>
-            <a href="/events">Events</a>
-            <a href="/markets">Markets</a>
-            <a href="/watchlist">Watchlist</a>
-            <a href="/backtest" style="font-family:var(--mono);font-size:11px;color:var(--muted2);text-decoration:none;padding:6px 12px;border:1px solid var(--border);border-radius:4px;">Backtest</a>
-            <a href="/logout">Sign out</a>
-        </div>
-    </div>
-</header>
+{% include '_nav.html' %}
 <nav>
     <button class="tab active" onclick="showPanel('today',this)">Today's Top 10</button>
     <button class="tab" onclick="showPanel('signals',this)">All Signals</button>
@@ -878,107 +826,6 @@ loadThemeCounts();
 })();
 </script>
 
-<footer style="margin-top:60px;padding:24px;border-top:1px solid var(--border);text-align:center;">
-    <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:1px;margin-bottom:8px;">
-        © 2026 Mark Nicholson Consulting Limited. All rights reserved.
-    </div>
-    <div style="font-size:11px;color:var(--muted);max-width:700px;margin:0 auto;line-height:1.6;">
-        SignalIntel is a proprietary data analysis platform. All signals, ratings and scores are generated algorithmically 
-        for informational and research purposes only. Nothing on this platform constitutes financial advice or a 
-        recommendation to buy or sell any security. Past performance is not indicative of future results. 
-        Capital is at risk. Always consult a qualified financial adviser before making investment decisions.
-    </div>
-</footer>
-
-<!-- Ratings Guide Modal -->
-<div class="modal-overlay" id="ratingsModal" onclick="if(event.target===this)this.classList.remove('open')">
-    <div class="modal-box">
-        <div class="modal-title">
-            RATINGS GUIDE
-            <span class="modal-close" onclick="document.getElementById('ratingsModal').classList.remove('open')">✕</span>
-        </div>
-
-        <div class="modal-section">
-            <div class="modal-section-title">SIGNAL RATINGS</div>
-            <div class="modal-row">
-                <span class="modal-badge" style="background:rgba(0,255,136,0.15);color:#00ff88">STRONG BUY</span>
-                <span class="modal-desc">Highest conviction long. Strong signals across momentum, fundamentals and insider activity.</span>
-            </div>
-            <div class="modal-row">
-                <span class="modal-badge" style="background:rgba(0,212,255,0.15);color:#00d4ff">BUY</span>
-                <span class="modal-desc">Positive signal. Good entry point or existing position worth holding.</span>
-            </div>
-            <div class="modal-row">
-                <span class="modal-badge" style="background:rgba(148,163,184,0.15);color:#94a3b8">STRONG HOLD</span>
-                <span class="modal-desc">Good fundamentals but no new entry signal. Hold existing positions.</span>
-            </div>
-            <div class="modal-row">
-                <span class="modal-badge" style="background:rgba(100,116,139,0.15);color:#64748b">HOLD</span>
-                <span class="modal-desc">Neutral. Watch closely for direction. No action recommended.</span>
-            </div>
-            <div class="modal-row">
-                <span class="modal-badge" style="background:rgba(255,149,0,0.15);color:#ff9500">WEAK HOLD</span>
-                <span class="modal-desc">Deteriorating signals. Consider reducing exposure. Not a full exit yet.</span>
-            </div>
-            <div class="modal-row">
-                <span class="modal-badge" style="background:rgba(255,59,92,0.15);color:#ff3b5c">SELL</span>
-                <span class="modal-desc">Exit signal. Negative momentum and/or deteriorating fundamentals.</span>
-            </div>
-            <div class="modal-row">
-                <span class="modal-badge" style="background:rgba(255,59,92,0.25);color:#ff3b5c">STRONG SELL</span>
-                <span class="modal-desc">Highest conviction short. Multiple negative signals converging. Exit immediately.</span>
-            </div>
-        </div>
-
-        <div class="modal-section">
-            <div class="modal-section-title">COMPOSITE SCORE (0–100)</div>
-            <div class="modal-desc" style="margin-bottom:8px">Weighted average of all four sub-scores. Above 70 = strong signal. Below 30 = weak or negative.</div>
-            <div class="modal-score-row">
-                <span class="modal-score-name">Momentum</span>
-                <span class="modal-desc">Price trend strength based on RSI, moving average crossovers and recent price performance. High = strong upward trend.</span>
-            </div>
-            <div class="modal-score-row">
-                <span class="modal-score-name">Quality</span>
-                <span class="modal-desc">Fundamental strength — P/E ratio, profit margins, ROE, EPS growth and debt levels. High = strong business.</span>
-            </div>
-            <div class="modal-score-row">
-                <span class="modal-score-name">Insider</span>
-                <span class="modal-desc">Recent insider buying activity. 100 = significant cluster buying by company insiders — the strongest conviction signal available.</span>
-            </div>
-            <div class="modal-score-row">
-                <span class="modal-score-name">Reversion</span>
-                <span class="modal-desc">Mean reversion opportunity. High = stock has deviated far from historical mean and may snap back. 0 = no reversion signal.</span>
-            </div>
-        </div>
-
-        <div class="modal-section">
-            <div class="modal-section-title">TECHNICAL INDICATORS</div>
-            <div class="modal-score-row">
-                <span class="modal-score-name">RSI(14)</span>
-                <span class="modal-desc">Relative Strength Index. Below 30 = oversold (potential buy). Above 70 = overbought (potential sell). 50 = neutral.</span>
-            </div>
-            <div class="modal-score-row">
-                <span class="modal-score-name">SMA 50</span>
-                <span class="modal-desc">% above/below 50-day moving average. Positive = price above trend (bullish). Negative = price below trend (bearish).</span>
-            </div>
-            <div class="modal-score-row">
-                <span class="modal-score-name">SMA 200</span>
-                <span class="modal-desc">% above/below 200-day moving average. The long-term trend indicator. Positive = long-term bullish.</span>
-            </div>
-            <div class="modal-score-row">
-                <span class="modal-score-name">52W High</span>
-                <span class="modal-desc">% below the 52-week high price. Near 0% = at or near peak. -20% = 20% off its high.</span>
-            </div>
-            <div class="modal-score-row">
-                <span class="modal-score-name">52W Low</span>
-                <span class="modal-desc">% above the 52-week low price. +50% = trading 50% above its yearly floor, showing strong recovery.</span>
-            </div>
-            <div class="modal-score-row">
-                <span class="modal-score-name">Analyst Rec</span>
-                <span class="modal-desc">Consensus analyst recommendation. Scale: 1 = Strong Buy, 2 = Buy, 3 = Hold, 4 = Sell, 5 = Strong Sell.</span>
-            </div>
-        </div>
-    </div>
-</div>
+{% include '_footer.html' %}
 </body>
 </html>

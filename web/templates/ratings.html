@@ -75,22 +75,7 @@
 </style>
 </head>
 <body>
-<header>
-    <a href="/" class="logo">Signal<span>Intel</span></a>
-    {% include '_search.html' %}
-    <div class="header-right">
-        <a href="/">Ratings</a>
-        <a href="/screener">Screener</a>
-        <a href="/earnings">Earnings</a>
-        <a href="/dividends">Dividends</a>
-        <a href="/events">Events</a>
-        <a href="/markets">Markets</a>
-        <a href="/watchlist">Watchlist</a>
-        <a href="/ratings" class="active">Rating Tiers</a>
-        <a href="/backtest">Backtest</a>
-        <a href="/logout">Sign out</a>
-    </div>
-</header>
+{% include '_nav.html' %}
 
 <main>
 <h1>RATING TIERS</h1>
@@ -238,5 +223,6 @@
 {% endif %}
 
 </main>
+{% include '_footer.html' %}
 </body>
 </html>

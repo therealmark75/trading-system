@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Service — The Signal Vault</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#080c14;--surface:#0d1520;--surface2:#111d2e;--border:#1a2d45;
+    --accent:#00d4ff;--accent2:#00ff88;--warning:#ff9500;--danger:#ff3b5c;
+    --text:#f0f6ff;--muted:#8aa4bf;--muted2:#c2d4e8;
+    --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14px;min-height:100vh;
+    background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
+    background-size:40px 40px;}
+main{max-width:800px;margin:0 auto;padding:60px 24px;}
+h1{font-family:var(--mono);font-size:18px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.meta{font-size:12px;color:var(--muted);margin-bottom:40px;font-family:var(--mono);}
+.section{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:24px 28px;margin-bottom:16px;}
+.section h2{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent2);margin-bottom:14px;}
+.section p,.section ul{font-size:13px;color:var(--muted2);line-height:1.8;margin-bottom:10px;}
+.section ul{padding-left:20px;}
+.section ul li{margin-bottom:6px;}
+.section a{color:var(--accent);text-decoration:none;}
+.section a:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+{% include '_nav.html' %}
+<main>
+    <h1>Terms of Service</h1>
+    <div class="meta">Last updated: May 2026 &nbsp;|&nbsp; The Signal Vault, operated by Mark Nicholson Consulting Limited</div>
+
+    <div class="section">
+        <h2>1. Acceptance of Terms</h2>
+        <p>By creating an account or using the SignalIntel platform ("the Platform"), you agree to be bound by these Terms of Service. If you do not agree, you must not use the Platform.</p>
+    </div>
+
+    <div class="section">
+        <h2>2. Platform Access and Accounts</h2>
+        <ul>
+            <li>You must be at least 18 years old to create an account</li>
+            <li>You are responsible for maintaining the confidentiality of your account credentials</li>
+            <li>You must not share your account with any other person</li>
+            <li>We reserve the right to suspend or terminate accounts that violate these Terms</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>3. Subscription Terms</h2>
+        <p>Subscription tiers, pricing, and billing terms are detailed at sign-up and may be updated with 30 days' notice. All prices are quoted in GBP unless otherwise stated. Subscriptions auto-renew unless cancelled before the renewal date. Refunds are considered on a case-by-case basis.</p>
+    </div>
+
+    <div class="section">
+        <h2>4. Acceptable Use</h2>
+        <p>You agree not to:</p>
+        <ul>
+            <li>Scrape, copy, or redistribute any platform data without written permission</li>
+            <li>Use the Platform for any unlawful purpose</li>
+            <li>Attempt to circumvent any security or access controls</li>
+            <li>Share or resell Platform access or data to third parties</li>
+            <li>Use automated tools to access the Platform at excessive rates</li>
+        </ul>
+    </div>
+
+    <div class="section">
+        <h2>5. Intellectual Property</h2>
+        <p>All content, algorithms, signal models, data presentations, and software on the Platform are the intellectual property of Mark Nicholson Consulting Limited. You may not copy, modify, distribute, or create derivative works without our prior written consent.</p>
+    </div>
+
+    <div class="section">
+        <h2>6. Limitation of Liability</h2>
+        <p>The Platform is provided "as is" without warranties of any kind. We are not liable for any financial losses, trading losses, or indirect damages arising from your use of the Platform or reliance on any signal, score, or data provided.</p>
+        <p>Nothing on this Platform constitutes financial advice. See our <a href="/disclaimer">Risk Disclaimer</a> for full details.</p>
+    </div>
+
+    <div class="section">
+        <h2>7. Governing Law</h2>
+        <p>These Terms are governed by the laws of England and Wales. Any disputes shall be subject to the exclusive jurisdiction of the courts of England and Wales.</p>
+    </div>
+
+    <div class="section">
+        <h2>8. Changes to Terms</h2>
+        <p>We may update these Terms at any time. Continued use of the Platform after changes are posted constitutes acceptance of the updated Terms. For questions, contact <a href="mailto:hello@thesignalvault.io">hello@thesignalvault.io</a>.</p>
+    </div>
+</main>
+{% include '_footer.html' %}
+</body>
+</html>
