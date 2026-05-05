@@ -659,9 +659,10 @@ async function loadPage() {
     `;
 
     // Init chart after DOM is ready
+    // Detect fund/ETF/REIT — these don't have P/E-based fair value or analyst consensus
+    const isFund = sc.industry && /Fund|ETF|Trust|REIT/i.test(sc.industry);
+
     // Fair Value
-    console.log("DEBUG fair_value:", JSON.stringify(data.fair_value));
-    console.log("DEBUG screener:", JSON.stringify(data.screener));
     const fv = data.fair_value;
     if (fv && fv.estimated) {
         document.getElementById('fv-price').textContent = '$' + fv.estimated.toFixed(2);
@@ -677,6 +678,12 @@ async function loadPage() {
         } else {
             badge.style.background='rgba(0,212,255,0.15)'; badge.style.color='#00d4ff';
         }
+    } else if (isFund) {
+        const badge = document.getElementById('fv-badge');
+        badge.textContent = 'FUND/ETF';
+        badge.style.background='rgba(148,163,184,0.1)'; badge.style.color='#94a3b8';
+        document.getElementById('fv-price').textContent = 'N/A';
+        document.getElementById('fv-discount').textContent = 'P/E-based valuation not applicable';
     } else {
         document.getElementById('fv-price').textContent = 'N/A';
         document.getElementById('fv-discount').textContent = 'Insufficient P/E data';
@@ -693,6 +700,10 @@ async function loadPage() {
         alabel.textContent = labels[idx] || 'Hold';
         const colors = ['','#00ff88','#00d4ff','#94a3b8','#ff9500','#ff3b5c'];
         gauge.style.borderColor = colors[idx]; gauge.style.color = colors[idx];
+    } else if (isFund) {
+        gauge.textContent = '—';
+        gauge.style.borderColor = '#94a3b8'; gauge.style.color = '#94a3b8';
+        alabel.textContent = 'Fund/ETF — no analyst consensus';
     } else {
         gauge.textContent = 'N/A';
         alabel.textContent = 'No analyst data available';
