@@ -56,10 +56,10 @@
         <input type="text" name="username" required>
         <label>Email</label>
         <input type="email" name="email" required>
-        <label>Password</label>
-        <input type="password" name="password" required>
+        <label>Password <span style="font-family:var(--sans);text-transform:none;letter-spacing:0;font-size:10px;color:var(--muted)">(min 8 characters)</span></label>
+        <input type="password" name="password" required minlength="8">
         <label>Confirm Password</label>
-        <input type="password" name="confirm" required>
+        <input type="password" name="confirm" required minlength="8">
         <button type="submit" class="btn">Create Account</button>
     </form>
 

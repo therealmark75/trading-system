@@ -572,6 +572,15 @@ def create_user(db_path: str, username: str, email: str, password_hash: str) -> 
     return user_id
 
 
+def get_user_by_email(db_path: str, email: str):
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute("SELECT * FROM users WHERE email = ? AND is_active = 1", (email,))
+    row = cur.fetchone()
+    conn.close()
+    return dict(row) if row else None
+
+
 def get_user_by_username(db_path: str, username: str):
     conn = get_connection(db_path)
     cur  = conn.cursor()

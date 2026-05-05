@@ -16,7 +16,7 @@ from database.db import (
     get_connection, get_latest_screener, get_recent_insiders,
     get_cluster_signals, get_top_signals, get_signal_summary,
     get_ticker_sentiment, initialise_user_schema,
-    create_user, get_user_by_username, get_user_by_id,
+    create_user, get_user_by_username, get_user_by_email, get_user_by_id,
     get_watchlist, add_to_watchlist, remove_from_watchlist,
     get_top_signals_of_day, generate_top_signals_of_day,
 )
@@ -108,12 +108,14 @@ def register():
             flash("All fields required")
         elif password != confirm:
             flash("Passwords do not match")
-        elif len(password) < 6:
-            flash("Password must be at least 6 characters")
+        elif len(password) < 8:
+            flash("Password must be at least 8 characters")
         elif get_user_by_username(DATABASE_PATH, username):
             flash("Username already taken")
+        elif get_user_by_email(DATABASE_PATH, email):
+            flash("An account with that email already exists")
         else:
-            pw_hash = pw_hash = generate_password_hash(password, method='pbkdf2:sha256')
+            pw_hash = generate_password_hash(password, method='pbkdf2:sha256')
             user_id = create_user(DATABASE_PATH, username, email, pw_hash)
             session["user_id"]  = user_id
             session["username"] = username
