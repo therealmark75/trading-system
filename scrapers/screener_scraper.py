@@ -60,7 +60,7 @@ def _normalise_financial(df):
             "sales_growth_5yr":   _pct_field(row.get("Sales past 5Y")),
             "insider_own_pct":    _pct_field(row.get("Insider Own")),
             "insider_transactions": str(row.get("Insider Trans","") or ""),
-            "short_interest_pct": _pct_field(row.get("Short Float")),
+            "short_interest_pct": _pct_field(row.get("Float Short")),
             "analyst_recom":      _to_float(row.get("Recom")),
         }
     return result
@@ -114,15 +114,21 @@ def scrape_sector(sector, delay=2.5):
     technical = _normalise_technical(tech_df) if tech_df is not None and not tech_df.empty else {}
     time.sleep(delay + random.uniform(0,1))
 
-    # Fetch analyst recom via custom view (column 62)
+    # Fetch analyst recom + insider/short data via custom view
+    # Columns: 0=Ticker, 26=Insider Own, 27=Insider Trans, 30=Float Short, 62=Recom
     from finvizfinance.screener.custom import Custom
-    recom_df = _fetch_with_retry(Custom(), filters, columns=[0, 62])
-    recom_data = {}
-    if recom_df is not None and not recom_df.empty:
-        for _, row in recom_df.iterrows():
+    custom_df = _fetch_with_retry(Custom(), filters, columns=[0, 26, 27, 30, 62])
+    custom_data = {}
+    if custom_df is not None and not custom_df.empty:
+        for _, row in custom_df.iterrows():
             t = str(row.get("Ticker","")).strip()
             if t:
-                recom_data[t] = _to_float(row.get("Recom"))
+                custom_data[t] = {
+                    "analyst_recom":       _to_float(row.get("Recom")),
+                    "insider_own_pct":     _pct_field(row.get("Insider Own")),
+                    "insider_transactions": str(row.get("Insider Trans") or ""),
+                    "short_interest_pct":  _pct_field(row.get("Float Short")),
+                }
     time.sleep(delay + random.uniform(0,1))
 
     rows = []
@@ -137,8 +143,8 @@ def scrape_sector(sector, delay=2.5):
         row = {**base}
         row.update(financial.get(ticker, {}))
         row.update(technical.get(ticker, {}))
-        if ticker in recom_data:
-            row['analyst_recom'] = recom_data[ticker]
+        if ticker in custom_data:
+            row.update(custom_data[ticker])
         for k, v in defaults.items():
             row.setdefault(k, v)
         rows.append(row)
