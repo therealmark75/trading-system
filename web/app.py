@@ -478,6 +478,10 @@ def api_ticker(ticker):
                       (user["id"], ticker))
         in_watchlist = len(wl) > 0
 
+    legal = get_legal_risk(ticker)
+    if legal is None:
+        legal = {"risk_level": "NONE", "risk_label": "No data", "risk_color": "#6b7280", "penalty": 0}
+
     return jsonify({
         "ticker":       ticker,
         "screener":     sc,
@@ -488,6 +492,7 @@ def api_ticker(ticker):
         "in_watchlist": in_watchlist,
         "fair_value":   {"estimated": fair_value, "discount_pct": fv_discount, "label": fv_label} if fair_value else None,
         "technical":    tech,
+        "legal_risk":   legal,
     })
 
 

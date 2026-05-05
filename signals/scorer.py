@@ -256,6 +256,8 @@ class TickerSignal:
     quality_score:    float = 0.0
     insider_score:    float = 0.0
     reversion_score:  float = 0.0
+    legal_penalty:    int   = 0
+    legal_risk_level: str   = "NONE"
     composite_score:  float = 0.0
 
     rating:           str   = "STRONG_HOLD"
@@ -365,11 +367,14 @@ def score_all_tickers(
     screener_rows: list[dict],
     insider_trades: list[dict],
     weights: dict = None,
+    legal_risk_map: dict = None,
 ) :
     """
     Main entry point. Takes screener rows + insider trades,
     returns sorted list of TickerSignal objects.
     """
+    legal_risk_map = legal_risk_map or {}
+    missing_legal  = []
     results = []
 
     for row in screener_rows:
@@ -387,31 +392,51 @@ def score_all_tickers(
         q_score = score_quality(row)
         i_score = score_insider(ticker, insider_trades)
         r_score = score_mean_reversion(row)
-        c_score = compute_composite(m_score, q_score, i_score, r_score, weights)
-        rating  = assign_rating(c_score, r_score, i_score)
-        flags   = build_flags(row, i_score, r_score)
+
+        legal_data = legal_risk_map.get(ticker)
+        if legal_data is None:
+            missing_legal.append(ticker)
+            legal_penalty    = 0
+            legal_risk_level = "NONE"
+        else:
+            legal_penalty    = legal_data.get("penalty", 0)
+            legal_risk_level = legal_data.get("risk_level", "NONE")
+
+        raw_composite = compute_composite(m_score, q_score, i_score, r_score, weights)
+        c_score       = _clamp(raw_composite + legal_penalty)
+        rating        = assign_rating(c_score, r_score, i_score)
+        flags         = build_flags(row, i_score, r_score)
 
         sig = TickerSignal(
-            ticker          = ticker,
-            company         = row.get("company", ""),
-            sector          = row.get("sector", ""),
-            price           = row.get("price"),
-            change_pct      = row.get("change_pct"),
-            momentum_score  = round(m_score, 1),
-            quality_score   = round(q_score, 1),
-            insider_score   = round(i_score, 1),
-            reversion_score = round(r_score, 1),
-            composite_score = round(c_score, 1),
-            rating          = rating,
-            flags           = flags,
-            rsi_14          = row.get("rsi_14"),
-            sma_50_pct      = row.get("sma_50_pct"),
-            sma_200_pct     = row.get("sma_200_pct"),
-            analyst_recom   = row.get("analyst_recom"),
-            short_interest  = row.get("short_interest_pct"),
-            insider_count   = len(ticker_insiders),
+            ticker           = ticker,
+            company          = row.get("company", ""),
+            sector           = row.get("sector", ""),
+            price            = row.get("price"),
+            change_pct       = row.get("change_pct"),
+            momentum_score   = round(m_score, 1),
+            quality_score    = round(q_score, 1),
+            insider_score    = round(i_score, 1),
+            reversion_score  = round(r_score, 1),
+            legal_penalty    = legal_penalty,
+            legal_risk_level = legal_risk_level,
+            composite_score  = round(c_score, 1),
+            rating           = rating,
+            flags            = flags,
+            rsi_14           = row.get("rsi_14"),
+            sma_50_pct       = row.get("sma_50_pct"),
+            sma_200_pct      = row.get("sma_200_pct"),
+            analyst_recom    = row.get("analyst_recom"),
+            short_interest   = row.get("short_interest_pct"),
+            insider_count    = len(ticker_insiders),
         )
         results.append(sig)
+
+    if missing_legal:
+        sample = missing_legal[:5]
+        logger.warning(
+            f"  Legal risk missing for {len(missing_legal)} tickers "
+            f"({', '.join(sample)}{'...' if len(missing_legal) > 5 else ''}) — flagged for scraping"
+        )
 
     # Sort by composite score descending
     results.sort(key=lambda x: x.composite_score, reverse=True)

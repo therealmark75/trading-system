@@ -322,8 +322,9 @@ async function toggleWatchlist() {
 
 async function loadPage() {
     const data = await fetch(`/api/ticker/${TICKER}`).then(r=>r.json());
-    const s  = data.signal   || {};
-    const sc = data.screener || {};
+    const s  = data.signal     || {};
+    const sc = data.screener   || {};
+    const lr = data.legal_risk || {risk_label:'No data', risk_color:'#6b7280', penalty:0, risk_level:'NONE'};
     inWatchlist = data.in_watchlist || false;
 
     const wlBtn = document.getElementById('wl-btn');
@@ -335,6 +336,7 @@ async function loadPage() {
     const chg = sc.change_pct || 0;
     const priceC = chg >= 0 ? 'var(--accent2)' : 'var(--danger)';
 
+    const lrSign = (lr.penalty||0) > 0 ? '+' : '';
     const scoreBars = [
         {label:'Momentum',  val:s.momentum_score},
         {label:'Quality',   val:s.quality_score},
@@ -349,7 +351,17 @@ async function loadPage() {
             <div class="bar-track">
                 <div class="bar-fill" style="width:${Math.min(100,b.val||0)}%;background:${barC(b.val||0)}"></div>
             </div>
-        </div>`).join('');
+        </div>`).join('') + `
+        <div class="score-bar-row">
+            <div class="score-bar-header">
+                <span class="score-bar-label">Legal</span>
+                <span style="font-family:var(--mono);font-size:11px;font-weight:700;color:${lr.risk_color}">${lr.risk_label}</span>
+            </div>
+            <div style="margin-top:5px;display:flex;align-items:center;gap:8px">
+                <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:3px;background:${lr.risk_color}22;color:${lr.risk_color};border:1px solid ${lr.risk_color}44">${lrSign}${lr.penalty||0} pts</span>
+                ${(lr.risk_level||'NONE') !== 'NONE' ? `<span style="font-size:10px;color:var(--muted2)">applied to composite</span>` : ''}
+            </div>
+        </div>`;
 
     const insiderRows = (data.insiders||[]).map(i => {
         const buy = i.transaction_type === 'Buy';
@@ -440,6 +452,7 @@ async function loadPage() {
                 <div class="score-item" title="Quality: Fundamental strength — P/E ratio, margins, ROE, EPS growth and debt levels. Higher = stronger business."><div class="score-item-label">Quality <span class="score-q">?</span></div><div class="score-item-value ${scoreC(s.quality_score)}">${fmt(s.quality_score,1)}</div></div>
                 <div class="score-item" title="Insider: Recent insider buying activity. 100 = significant cluster buying by company insiders — the strongest conviction signal."><div class="score-item-label">Insider <span class="score-q">?</span></div><div class="score-item-value ${scoreC(s.insider_score)}">${fmt(s.insider_score,1)}</div></div>
                 <div class="score-item" title="Reversion: Mean reversion opportunity. High score = stock has deviated far from its mean and may snap back. 0 = no reversion signal."><div class="score-item-label">Reversion <span class="score-q">?</span></div><div class="score-item-value ${scoreC(s.reversion_score)}">${fmt(s.reversion_score,1)}</div></div>
+                <div class="score-item" title="Legal: SEC EDGAR risk classification applied as a score adjustment. From +2 (no risk) to -60 (criminal proceedings). Source: SEC 10-K / 8-K filings."><div class="score-item-label">Legal <span class="score-q">?</span></div><div class="score-item-value" style="color:${lr.risk_color}">${lr.risk_label}</div></div>
             </div>
         </div>
 

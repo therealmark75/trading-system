@@ -863,3 +863,18 @@ def detect_rating_changes(db_path: str) -> list:
     finally:
         conn.close()
     return changes
+
+
+def get_legal_risk_map(db_path: str) -> dict:
+    """Return {ticker: {penalty, risk_level, risk_label, risk_color}} for all rows in legal_risk."""
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute("SELECT ticker, penalty, risk_level, risk_label, risk_color FROM legal_risk")
+    rows = cur.fetchall()
+    conn.close()
+    return {r["ticker"]: {
+        "penalty":    r["penalty"],
+        "risk_level": r["risk_level"],
+        "risk_label": r["risk_label"],
+        "risk_color": r["risk_color"],
+    } for r in rows}

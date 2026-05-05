@@ -15,7 +15,7 @@ from database.db import (get_connection, initialise_schema, insert_screener_rows
     insert_insider_trades, insert_insider_signal, insert_signal_scores, detect_rating_changes, update_analyst_recom,
     insert_news_articles, insert_ticker_sentiment, insert_calendar_events,
     log_run, get_latest_screener, get_recent_insiders, get_cluster_signals,
-    get_top_signals, get_ticker_sentiment)
+    get_top_signals, get_ticker_sentiment, get_legal_risk_map)
 from scrapers.quote_scraper import scrape_recom_for_tickers
 from scrapers.legal_risk_scraper import scrape_priority_tickers
 from scrapers.screener_scraper import scrape_all_sectors
@@ -87,11 +87,12 @@ def job_generate_signals(sector=None):
         screener_rows   = get_latest_screener(DATABASE_PATH, sector=None)
         insider_trades  = get_recent_insiders(DATABASE_PATH, days=30)
         cluster_signals = get_cluster_signals(DATABASE_PATH, days=14)
+        legal_risk_map  = get_legal_risk_map(DATABASE_PATH)
         if not screener_rows:
             logger.warning("No screener data. Run scrape first.")
             return [], {}
-        logger.info(f"  Scoring {len(screener_rows)} tickers...")
-        signals = score_all_tickers(screener_rows, insider_trades)
+        logger.info(f"  Scoring {len(screener_rows)} tickers... ({len(legal_risk_map)} with legal risk data)")
+        signals = score_all_tickers(screener_rows, insider_trades, legal_risk_map=legal_risk_map)
         batch_ts = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         score_rows = [{
             "scored_at": batch_ts, "ticker": s.ticker,
@@ -284,13 +285,14 @@ def job_news_and_calendar(top_n: int = 30):
         screener_rows   = get_latest_screener(DATABASE_PATH, sector=None)
         insider_trades  = get_recent_insiders(DATABASE_PATH, days=30)
         cluster_signals = get_cluster_signals(DATABASE_PATH, days=14)
+        legal_risk_map  = get_legal_risk_map(DATABASE_PATH)
 
         if not screener_rows:
             logger.warning("No screener data. Run scrape first.")
             return [], {}
 
-        logger.info(f"  Scoring {len(screener_rows)} tickers...")
-        signals = score_all_tickers(screener_rows, insider_trades)
+        logger.info(f"  Scoring {len(screener_rows)} tickers... ({len(legal_risk_map)} with legal risk data)")
+        signals = score_all_tickers(screener_rows, insider_trades, legal_risk_map=legal_risk_map)
 
         # Single shared timestamp for entire batch so dashboard queries work correctly
         batch_ts = datetime.now(timezone.utc).replace(tzinfo=None).isoformat()

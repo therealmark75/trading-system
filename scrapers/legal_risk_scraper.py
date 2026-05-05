@@ -74,7 +74,7 @@ def _escalate(current, candidate):
     return RISK_ORDER[max(ci, ca)]
 
 
-def _classify(text):
+def _classify(text, ticker=None):
     t = text.lower()
 
     # Skip hypothetical/forward-looking risk language
@@ -117,9 +117,12 @@ def _classify(text):
             return RISK_SEC_INVESTIGATION
 
     # Class action - filed cases
-    for kw in ["class action lawsuit", "class action complaint", "putative class action",
-               "securities class action", "class action has been filed", "class action was filed",
-               "class action captioned", "v. " + t[:10].strip()]:
+    class_action_kws = ["class action lawsuit", "class action complaint", "putative class action",
+                        "securities class action", "class action has been filed", "class action was filed",
+                        "class action captioned"]
+    if ticker:
+        class_action_kws.append(f"v. {ticker.lower()}")
+    for kw in class_action_kws:
         if kw in t:
             return RISK_CLASS_ACTION
 
@@ -257,7 +260,7 @@ def fetch_legal_risk(ticker):
         logger.info(f"[LegalRisk] {ticker} 10-K fetched ({len(doc_r.text):,} chars)")
 
         # Classify full document text for high-confidence signals
-        full_risk = _classify(doc_r.text)
+        full_risk = _classify(doc_r.text, ticker)
         logger.info(f"[LegalRisk] {ticker} 10-K full doc risk: {RISK_LABELS[full_risk]}")
 
         if full_risk != RISK_NONE:
@@ -292,7 +295,7 @@ def fetch_legal_risk(ticker):
             continue
         if not any(k in index_text for k in legal_keywords):
             continue
-        risk = _classify(index_text)
+        risk = _classify(index_text, ticker)
         if risk not in (RISK_NONE, RISK_MINOR):
             highest_risk = _escalate(highest_risk, risk)
             findings.append({
