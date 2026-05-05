@@ -661,14 +661,12 @@ def api_high_impact_banner():
 @app.route("/api/theme-counts")
 @login_required
 def api_theme_counts():
-    """Return stock counts for all 7 discovery theme cards."""
-    today_sig = """
-        SELECT ticker, rating, composite_score, insider_score
-        FROM signal_scores
-        WHERE DATE(scored_at) = (SELECT DATE(MAX(scored_at)) FROM signal_scores)
+    """Return stock counts for all 7 discovery theme cards.
+    Queries here are canonical — identical logic to /api/screener?theme=<id>.
     """
-    latest_ss = """
-        SELECT s.ticker, s.rsi_14, s.high_52w_pct
+    from datetime import date as _date, timedelta as _td
+    latest_ss_cte = """
+        SELECT s.*
         FROM screener_snapshots s
         INNER JOIN (
             SELECT ticker, MAX(scraped_at) AS max_ts
@@ -677,60 +675,89 @@ def api_theme_counts():
             GROUP BY ticker
         ) lts ON s.ticker = lts.ticker AND s.scraped_at = lts.max_ts
     """
+    latest_sig_cte = """
+        SELECT ticker, rating, composite_score, momentum_score, insider_score
+        FROM signal_scores
+        WHERE DATE(scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
+    """
+
     conn = get_connection(DATABASE_PATH)
     cur  = conn.cursor()
 
-    def q(sql):
-        cur.execute(sql)
-        return cur.fetchone()[0] or 0
+    def q(sql, params=()):
+        cur.execute(sql, params)
+        row = cur.fetchone()
+        return (row[0] or 0) if row else 0
 
-    strong_buys = q(f"""
-        SELECT COUNT(*) FROM ({today_sig}) sig
-        WHERE sig.rating IN ('STRONG_BUY','BUY') AND sig.composite_score >= 60
+    # strong_buy_momentum: STRONG_BUY, score≥70, momentum≥70, price≥5
+    strong_buy_momentum = q(f"""
+        SELECT COUNT(*) FROM ({latest_ss_cte}) ss
+        JOIN ({latest_sig_cte}) sig ON ss.ticker = sig.ticker
+        WHERE sig.rating = 'STRONG_BUY'
+          AND sig.composite_score >= 70
+          AND sig.momentum_score >= 70
+          AND ss.price >= 5
     """)
-    dividends = q("""
-        SELECT COUNT(DISTINCT d.ticker) FROM dividends d
-        JOIN signal_scores sig ON d.ticker = sig.ticker
-        WHERE d.dividend_yield >= 4
+
+    # dividend_powerhouses: yield≥3, good rating, joined with screener data
+    dividend_powerhouses = q(f"""
+        SELECT COUNT(DISTINCT ss.ticker) FROM ({latest_ss_cte}) ss
+        JOIN ({latest_sig_cte}) sig ON ss.ticker = sig.ticker
+        JOIN dividends dv ON ss.ticker = dv.ticker
+        WHERE dv.dividend_yield >= 3
           AND sig.rating IN ('STRONG_BUY','BUY','STRONG_HOLD')
-          AND DATE(sig.scored_at) = (SELECT DATE(MAX(scored_at)) FROM signal_scores)
     """)
-    oversold = q(f"""
-        SELECT COUNT(*) FROM ({latest_ss}) ss
+
+    # buy_the_dip: rsi≤35, STRONG_BUY/BUY/STRONG_HOLD
+    buy_the_dip = q(f"""
+        SELECT COUNT(*) FROM ({latest_ss_cte}) ss
+        JOIN ({latest_sig_cte}) sig ON ss.ticker = sig.ticker
         WHERE ss.rsi_14 <= 35
+          AND sig.rating IN ('STRONG_BUY','BUY','STRONG_HOLD')
     """)
-    earnings_week = q("""
-        SELECT COUNT(DISTINCT e.ticker) FROM earnings_calendar e
-        WHERE e.earnings_date BETWEEN DATE('now') AND DATE('now', '+7 days')
-    """)
-    legally_clean = q("""
-        SELECT COUNT(DISTINCT lr.ticker) FROM legal_risk lr
-        JOIN signal_scores sig ON lr.ticker = sig.ticker
+
+    # earnings_this_week: upcoming earnings, must also be in screener data
+    future_date = (_date.today() + _td(days=7)).isoformat()
+    earnings_this_week = q(f"""
+        SELECT COUNT(DISTINCT ec.ticker)
+        FROM earnings_calendar ec
+        JOIN ({latest_ss_cte}) ss ON ec.ticker = ss.ticker
+        WHERE ec.earnings_date BETWEEN DATE('now') AND ?
+    """, (future_date,))
+
+    # legally_clean: risk_label None/Minor, good rating
+    legally_clean = q(f"""
+        SELECT COUNT(DISTINCT ss.ticker) FROM ({latest_ss_cte}) ss
+        JOIN ({latest_sig_cte}) sig ON ss.ticker = sig.ticker
+        JOIN legal_risk lr ON ss.ticker = lr.ticker
         WHERE lr.risk_label IN ('None','Minor')
           AND sig.rating IN ('STRONG_BUY','BUY','STRONG_HOLD')
-          AND DATE(sig.scored_at) = (SELECT DATE(MAX(scored_at)) FROM signal_scores)
     """)
-    insider_buying = q(f"""
-        SELECT COUNT(*) FROM ({today_sig}) sig
+
+    # insider_buying_surge: insider_score≥70, good rating
+    insider_buying_surge = q(f"""
+        SELECT COUNT(*) FROM ({latest_sig_cte}) sig
         WHERE sig.insider_score >= 70
           AND sig.rating IN ('STRONG_BUY','BUY','STRONG_HOLD')
     """)
+
+    # undervalued: 20%+ below 52w high, good rating
     undervalued = q(f"""
-        SELECT COUNT(*) FROM ({today_sig}) sig
-        JOIN ({latest_ss}) ss ON sig.ticker = ss.ticker
-        WHERE ss.high_52w_pct < -20
+        SELECT COUNT(*) FROM ({latest_ss_cte}) ss
+        JOIN ({latest_sig_cte}) sig ON ss.ticker = sig.ticker
+        WHERE ss.high_52w_pct <= -20
           AND sig.rating IN ('STRONG_BUY','BUY','STRONG_HOLD')
     """)
 
     conn.close()
     return jsonify({
-        "strong_buys":   strong_buys,
-        "dividends":     dividends,
-        "oversold":      oversold,
-        "earnings_week": earnings_week,
-        "legally_clean": legally_clean,
-        "insider_buying":insider_buying,
-        "undervalued":   undervalued,
+        "strong_buy_momentum":  strong_buy_momentum,
+        "dividend_powerhouses": dividend_powerhouses,
+        "buy_the_dip":          buy_the_dip,
+        "earnings_this_week":   earnings_this_week,
+        "legally_clean":        legally_clean,
+        "insider_buying_surge": insider_buying_surge,
+        "undervalued":          undervalued,
     })
 
 
@@ -746,135 +773,26 @@ def api_economic_calendar_refresh():
 
 
 # ── Markets ─────────────────────────────────────────────────────────────────
-import threading as _threading, time as _time
-
-_MARKET_SYMS = {
-    "indices": [
-        ("^GSPC","S&P 500"), ("^IXIC","NASDAQ"), ("^DJI","Dow Jones"),
-        ("^RUT","Russell 2000"), ("^VIX","VIX"),
-    ],
-    "commodities": [
-        ("GC=F","Gold"), ("CL=F","WTI Oil"), ("SI=F","Silver"), ("NG=F","Nat Gas"),
-    ],
-    "forex": [
-        ("EURUSD=X","EUR/USD"), ("GBPUSD=X","GBP/USD"),
-        ("JPY=X","USD/JPY"), ("AUDUSD=X","AUD/USD"),
-    ],
-    "crypto": [
-        ("BTC-USD","Bitcoin"), ("ETH-USD","Ethereum"), ("SOL-USD","Solana"),
-    ],
-    "sectors": sorted([
-        ("XLB","Materials"), ("XLC","Comm Services"), ("XLE","Energy"),
-        ("XLF","Financials"), ("XLI","Industrials"), ("XLK","Technology"),
-        ("XLP","Consumer Staples"), ("XLRE","Real Estate"), ("XLU","Utilities"),
-        ("XLV","Health Care"), ("XLY","Consumer Disc"),
-    ], key=lambda x: x[1]),
-}
-_TAPE_SYMS = ["^GSPC","^IXIC","^DJI","^VIX","GC=F","CL=F","BTC-USD","ETH-USD"]
-_markets_cache = {"data": None, "ts": 0}
-_markets_lock  = _threading.Lock()
-
-
-def _fetch_markets_data(force=False):
-    with _markets_lock:
-        if not force and _markets_cache["data"] and (_time.time() - _markets_cache["ts"]) < 60:
-            return _markets_cache["data"]
-
-    try:
-        import yfinance as yf, pandas as pd
-        all_syms = [s for cat in _MARKET_SYMS.values() for s, _ in cat]
-        raw = yf.download(all_syms, period="5d", interval="1d",
-                          auto_adjust=True, progress=False)
-        closes = raw["Close"] if "Close" in raw.columns else raw.xs("Close", axis=1, level=0)
-        prices = {}
-        for sym in all_syms:
-            try:
-                col = closes[sym] if sym in closes.columns else None
-                if col is None:
-                    continue
-                valid = col.dropna()
-                if len(valid) >= 2:
-                    p = float(valid.iloc[-1])
-                    pc = float(valid.iloc[-2])
-                    if pc != 0:
-                        prices[sym] = {
-                            "price": round(p, 4),
-                            "change": round(p - pc, 4),
-                            "change_pct": round((p - pc) / pc * 100, 2),
-                        }
-            except Exception:
-                pass
-    except Exception:
-        prices = {}
-
-    def build(cat_key):
-        out = []
-        for sym, label in _MARKET_SYMS[cat_key]:
-            p = prices.get(sym)
-            if p:
-                out.append({"sym": sym, "label": label, **p})
-            else:
-                out.append({"sym": sym, "label": label, "price": None, "change": None, "change_pct": None})
-        return out
-
-    # Market status (US Eastern)
-    from datetime import datetime
-    from zoneinfo import ZoneInfo
-    try:
-        et = datetime.now(ZoneInfo("America/New_York"))
-        wd = et.weekday()
-        hr = et.hour + et.minute / 60
-        is_open = (wd < 5) and (9.5 <= hr < 16)
-        market_status = "OPEN" if is_open else "CLOSED"
-        market_time = et.strftime("%I:%M %p ET")
-    except Exception:
-        market_status = "UNKNOWN"
-        market_time = "-"
-
-    result = {
-        "indices":     build("indices"),
-        "commodities": build("commodities"),
-        "forex":       build("forex"),
-        "crypto":      build("crypto"),
-        "sectors":     build("sectors"),
-        "market_status": market_status,
-        "market_time":   market_time,
-        "as_of": datetime.now().strftime("%H:%M:%S"),
-    }
-    with _markets_lock:
-        _markets_cache["data"] = result
-        _markets_cache["ts"] = _time.time()
-    return result
-
 
 @app.route("/markets")
 @login_required
 def markets_page():
-    return render_template("markets.html", user=current_user())
+    from config.markets import MAJOR_INDICES, SP_SECTORS, CURRENCIES, CRYPTO_TOP_10
+    return render_template(
+        "markets.html",
+        user=current_user(),
+        indices=MAJOR_INDICES,
+        sectors=SP_SECTORS,
+        currencies=CURRENCIES,
+        crypto=CRYPTO_TOP_10,
+    )
 
 
-@app.route("/api/markets")
+@app.route("/api/market-sessions")
 @login_required
-def api_markets():
-    force = request.args.get("refresh") == "1"
-    return jsonify(_fetch_markets_data(force=force))
-
-
-@app.route("/api/markets/tape")
-@login_required
-def api_markets_tape():
-    data = _fetch_markets_data()
-    label_map = {s: l for cat in _MARKET_SYMS.values() for s, l in cat}
-    items = []
-    for sym in _TAPE_SYMS:
-        src = next((i for cat in data.values() if isinstance(cat, list)
-                    for i in cat if isinstance(i, dict) and i.get("sym") == sym), None)
-        if src:
-            items.append(src)
-        else:
-            items.append({"sym": sym, "label": label_map.get(sym, sym),
-                          "price": None, "change": None, "change_pct": None})
-    return jsonify({"items": items, "as_of": data.get("as_of")})
+def api_market_sessions():
+    from utils.market_sessions import get_all_sessions
+    return jsonify(get_all_sessions())
 
 
 @app.route("/screener")
@@ -897,6 +815,8 @@ def api_screener():
     sector, rating (comma-sep), score_min, score_max,
     mcap (any/micro/small/mid/large), pe_min, pe_max,
     rsi_min, rsi_max, upside_min,
+    momentum_score_min, insider_score_min, volume_min,
+    high_52w_pct_max, dividend_yield_min, earnings_days, legally_clean,
     sort (column), dir (asc/desc), page, per_page
     """
     sector    = request.args.get("sector", "")
@@ -913,6 +833,14 @@ def api_screener():
     price_max  = request.args.get("price_max", type=float)
     price_min  = request.args.get("price_min", type=float)
     relvol_min = request.args.get("relvol_min", type=float)
+    # Theme-specific params
+    momentum_score_min  = request.args.get("momentum_score_min", type=float)
+    insider_score_min   = request.args.get("insider_score_min", type=float)
+    volume_min          = request.args.get("volume_min", type=float)
+    high_52w_pct_max    = request.args.get("high_52w_pct_max", type=float)
+    dividend_yield_min  = request.args.get("dividend_yield_min", type=float)
+    earnings_days       = request.args.get("earnings_days", type=int)
+    legally_clean_param = request.args.get("legally_clean", "").lower() in ("1", "true", "yes")
     sort_col  = request.args.get("sort", "composite_score")
     sort_dir  = request.args.get("dir", "desc").lower()
     page      = max(1, request.args.get("page", type=int, default=1))
@@ -996,8 +924,39 @@ def api_screener():
     if relvol_min is not None:
         where.append("ss.rel_volume >= ?")
         params.append(relvol_min)
+    # Theme-specific conditions
+    if momentum_score_min is not None:
+        where.append("sig.momentum_score >= ?")
+        params.append(momentum_score_min)
+    if insider_score_min is not None:
+        where.append("sig.insider_score >= ?")
+        params.append(insider_score_min)
+    if volume_min is not None:
+        where.append("ss.volume >= ?")
+        params.append(volume_min)
+    if high_52w_pct_max is not None:
+        where.append("ss.high_52w_pct <= ?")
+        params.append(high_52w_pct_max)
 
+    # Optional JOINs (dividend, earnings, legal)
+    extra_joins = []
+    if dividend_yield_min is not None:
+        extra_joins.append("JOIN dividends dv ON ss.ticker = dv.ticker")
+        where.append("dv.dividend_yield >= ?")
+        params.append(dividend_yield_min)
+    if earnings_days is not None:
+        from datetime import date as _date, timedelta as _td
+        future = (_date.today() + _td(days=earnings_days)).isoformat()
+        extra_joins.append("JOIN earnings_calendar ec ON ss.ticker = ec.ticker")
+        where.append("ec.earnings_date BETWEEN DATE('now') AND ?")
+        params.append(future)
+    if legally_clean_param:
+        extra_joins.append("JOIN legal_risk lr ON ss.ticker = lr.ticker")
+        where.append("lr.risk_label IN ('None','Minor')")
+
+    extra_joins_sql = "\n        ".join(extra_joins)
     where_sql = " AND ".join(where)
+
     # Map sort column to correct table prefix
     _ss_cols = {"ticker","company","sector","market_cap","price","change_pct","volume",
                 "pe_ratio","rsi_14","high_52w_pct","low_52w_pct",
@@ -1005,7 +964,7 @@ def api_screener():
                 "eps_growth_this_yr","eps_growth_next_yr",
                 "rel_volume","avg_volume","exchange"}
     _sig_cols = {"rating","composite_score","target_price","target_upside",
-                 "momentum_score","quality_score","insider_score"}
+                 "momentum_score","quality_score","insider_score","reversion_score"}
     if sort_col in _ss_cols:
         order_sql = f"ss.{sort_col} {sort_dir.upper()} NULLS LAST"
     elif sort_col in _sig_cols:
@@ -1027,6 +986,7 @@ def api_screener():
         SELECT COUNT(*) as total
         FROM ({latest_ss}) ss
         LEFT JOIN ({sig_subq}) sig ON ss.ticker = sig.ticker
+        {extra_joins_sql}
         WHERE {where_sql}
     """, params)
     total = count_rows[0]["total"] if count_rows else 0
@@ -1044,6 +1004,7 @@ def api_screener():
                sig.reversion_score, sig.target_price, sig.target_upside
         FROM ({latest_ss}) ss
         LEFT JOIN ({sig_subq}) sig ON ss.ticker = sig.ticker
+        {extra_joins_sql}
         WHERE {where_sql}
         ORDER BY {order_sql}
         LIMIT ? OFFSET ?

@@ -97,7 +97,9 @@ tr:hover td{background:rgba(0,212,255,0.03);cursor:pointer;}
 .preset-btn{padding:5px 12px;border-radius:4px;border:1px solid var(--border);background:transparent;
     color:var(--muted);font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:0.5px;
     cursor:pointer;transition:all 0.15s;}
-.preset-btn:hover{border-color:var(--accent);color:var(--accent);}
+.preset-btn:hover,.preset-btn.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,0.08);}
+.preset-all{font-weight:700;}
+.preset-all.active{border-color:var(--accent);color:var(--accent);background:rgba(0,212,255,0.12);box-shadow:0 0 0 1px rgba(0,212,255,0.2);}
 
 /* Watchlist toggle button */
 .wl-btn{padding:3px 8px;border-radius:3px;border:1px solid;font-family:var(--mono);font-size:10px;
@@ -193,18 +195,22 @@ tr:hover td{background:rgba(0,212,255,0.03);cursor:pointer;}
 <!-- ── Main table ─────────────────────────────────── -->
 <div class="main">
     <div class="presets">
-        <button class="preset-btn" onclick="applyPreset('strong_buys')"
-            data-tip="Shows only Strong Buy and Buy rated tickers with composite score above 68. Highest conviction signals.">🔥 Strong Buys</button>
-        <button class="preset-btn" onclick="applyPreset('momentum')"
-            data-tip="Tickers with the highest momentum scores. Strong price trends and moving average signals.">📊 Top Momentum</button>
-        <button class="preset-btn" onclick="applyPreset('oversold')"
-            data-tip="Tickers with RSI below 30, indicating potentially oversold conditions that may be due for a reversal.">📉 Oversold</button>
-        <button class="preset-btn" onclick="applyPreset('high_short')"
-            data-tip="Tickers with short interest above 20% of float. High short interest can signal bearish sentiment or potential short squeeze opportunity.">🔴 High Short Interest</button>
-        <button class="preset-btn" onclick="window.location='/dividends'"
-            data-tip="Dividend paying stocks with yield above 4%. Redirects to the Dividend Centre filtered by high yield.">💰 High Yield</button>
-        <button class="preset-btn" onclick="window.location='/earnings'"
-            data-tip="Companies reporting earnings within the next 7 days. Redirects to the Earnings Calendar.">⚡ Earnings Soon</button>
+        <button class="preset-btn preset-all active" id="btn-all-signals" onclick="resetToAll()"
+            data-tip="Show all signals with no theme filter applied. Use the sidebar to further refine.">📊 All Signals</button>
+        <button class="preset-btn" data-theme="strong_buy_momentum" onclick="applyTheme('strong_buy_momentum')"
+            data-tip="STRONG_BUY rating, composite score ≥70, momentum score ≥70, price above $5. Highest conviction signals.">🚀 Strong Buy Momentum</button>
+        <button class="preset-btn" data-theme="dividend_powerhouses" onclick="applyTheme('dividend_powerhouses')"
+            data-tip="Stocks with dividend yield ≥3% and Buy+ ratings. Income stocks with strong signal backing.">💰 Dividend Powerhouses</button>
+        <button class="preset-btn" data-theme="buy_the_dip" onclick="applyTheme('buy_the_dip')"
+            data-tip="RSI ≤35 (oversold) with Strong Hold or better rating. Technically stretched, positive signal.">📉 Buy the Dip</button>
+        <button class="preset-btn" data-theme="earnings_this_week" onclick="applyTheme('earnings_this_week')"
+            data-tip="Stocks reporting earnings within the next 7 days. High volatility event risk and opportunity.">📅 Earnings This Week</button>
+        <button class="preset-btn" data-theme="legally_clean" onclick="applyTheme('legally_clean')"
+            data-tip="Risk label None or Minor in SEC EDGAR. No active enforcement actions, investigations or class actions.">⚖️ Legally Clean</button>
+        <button class="preset-btn" data-theme="insider_buying_surge" onclick="applyTheme('insider_buying_surge')"
+            data-tip="Insider score ≥70 with Buy+ rating. Directors and officers are net buyers — follow the smart money.">👤 Insider Buying</button>
+        <button class="preset-btn" data-theme="undervalued" onclick="applyTheme('undervalued')"
+            data-tip="Trading 20%+ below 52-week high with Buy+ rating. Potential recovery candidates.">💎 Undervalued</button>
     </div>
     <div class="toolbar">
         <div class="toolbar-left">
@@ -262,6 +268,10 @@ let state = {
     sector: '', ratings: [], score_min: 0, score_max: 100,
     mcap: 'any', pe_min: '', pe_max: '', rsi_min: '', rsi_max: '',
     upside_min: '', short_min: '',
+    // theme-specific
+    momentum_score_min: 0, insider_score_min: 0, volume_min: 0,
+    price_min: '', high_52w_pct_max: '', dividend_yield_min: 0,
+    earnings_days: 0, legally_clean: false,
 };
 let totalPages = 1;
 let watchlistSet = new Set();
@@ -324,6 +334,15 @@ function buildParams() {
     if(state.rsi_max !== '') p.set('rsi_max', state.rsi_max);
     if(state.upside_min !== '') p.set('upside_min', state.upside_min);
     if(state.short_min !== '') p.set('short_min', state.short_min);
+    // theme-specific
+    if(state.momentum_score_min) p.set('momentum_score_min', state.momentum_score_min);
+    if(state.insider_score_min)  p.set('insider_score_min', state.insider_score_min);
+    if(state.volume_min)         p.set('volume_min', state.volume_min);
+    if(state.price_min !== '')   p.set('price_min', state.price_min);
+    if(state.high_52w_pct_max !== '') p.set('high_52w_pct_max', state.high_52w_pct_max);
+    if(state.dividend_yield_min) p.set('dividend_yield_min', state.dividend_yield_min);
+    if(state.earnings_days)      p.set('earnings_days', state.earnings_days);
+    if(state.legally_clean)      p.set('legally_clean', '1');
     p.set('sort', state.sort);
     p.set('dir', state.dir);
     p.set('page', state.page);
@@ -470,6 +489,9 @@ function resetState() {
     Object.assign(state, {
         sector:'', ratings:[], score_min:0, score_max:100, mcap:'any',
         pe_min:'', pe_max:'', rsi_min:'', rsi_max:'', upside_min:'', short_min:'',
+        momentum_score_min:0, insider_score_min:0, volume_min:0,
+        price_min:'', high_52w_pct_max:'', dividend_yield_min:0,
+        earnings_days:0, legally_clean:false,
         sort:'composite_score', dir:'desc', page:1,
     });
 }
@@ -484,42 +506,99 @@ function resetFilters() {
 
 const ALL_RATINGS = ['STRONG_BUY','BUY','STRONG_HOLD','HOLD','WEAK_HOLD','SELL','STRONG_SELL'];
 
-function applyPreset(name) {
-    // Reset state cleanly without triggering a fetch
+// Canonical theme definitions — must match config/themes.py
+const THEMES = {
+    strong_buy_momentum: {
+        ratings: ['STRONG_BUY'],
+        score_min: 70, momentum_score_min: 70,
+        price_min: 5,
+        sort: 'composite_score', dir: 'desc',
+    },
+    dividend_powerhouses: {
+        ratings: ['STRONG_BUY','BUY','STRONG_HOLD'],
+        dividend_yield_min: 3,
+        sort: 'composite_score', dir: 'desc',
+    },
+    buy_the_dip: {
+        ratings: ['STRONG_BUY','BUY','STRONG_HOLD'],
+        rsi_max: 35,
+        sort: 'rsi_14', dir: 'asc',
+    },
+    earnings_this_week: {
+        ratings: [...ALL_RATINGS],
+        earnings_days: 7,
+        sort: 'composite_score', dir: 'desc',
+    },
+    legally_clean: {
+        ratings: ['STRONG_BUY','BUY','STRONG_HOLD'],
+        legally_clean: true,
+        sort: 'composite_score', dir: 'desc',
+    },
+    insider_buying_surge: {
+        ratings: ['STRONG_BUY','BUY','STRONG_HOLD'],
+        insider_score_min: 70,
+        sort: 'insider_score', dir: 'desc',
+    },
+    undervalued: {
+        ratings: ['STRONG_BUY','BUY','STRONG_HOLD'],
+        high_52w_pct_max: -20,
+        sort: 'high_52w_pct', dir: 'asc',
+    },
+};
+
+function applyTheme(id) {
     resetState();
-
-    if (name === 'strong_buys') {
-        // Only Strong Buy + Buy, score ≥ 68
-        state.ratings = ['STRONG_BUY','BUY'];
-        state.score_min = 68;
-        document.getElementById('f-score-min').value = 68;
-    } else if (name === 'momentum') {
-        // All ratings except Strong Sell, sort by momentum_score, score ≥ 60
-        state.ratings = ALL_RATINGS.filter(r => r !== 'STRONG_SELL');
-        state.sort    = 'momentum_score';
-        state.dir     = 'desc';
-        state.score_min = 60;
-        document.getElementById('f-score-min').value = 60;
-    } else if (name === 'oversold') {
-        // All ratings, RSI ≤ 30
-        state.ratings = [...ALL_RATINGS];
-        state.rsi_max = 30;
-        document.getElementById('f-rsi-max').value = 30;
-    } else if (name === 'high_short') {
-        // All ratings, short interest ≥ 20%, sort by short% desc
-        state.ratings  = [...ALL_RATINGS];
-        state.short_min = 20;
-        state.sort      = 'short_interest_pct';
-        state.dir       = 'desc';
+    const t = THEMES[id];
+    if (t) {
+        if (t.ratings)            { state.ratings = [...t.ratings]; }
+        if (t.score_min)          { state.score_min = t.score_min; document.getElementById('f-score-min').value = t.score_min; }
+        if (t.rsi_max)            { state.rsi_max = t.rsi_max; document.getElementById('f-rsi-max').value = t.rsi_max; }
+        if (t.momentum_score_min) { state.momentum_score_min = t.momentum_score_min; }
+        if (t.insider_score_min)  { state.insider_score_min = t.insider_score_min; }
+        if (t.volume_min)         { state.volume_min = t.volume_min; }
+        if (t.price_min)          { state.price_min = t.price_min; }
+        if (t.high_52w_pct_max !== undefined) { state.high_52w_pct_max = t.high_52w_pct_max; }
+        if (t.dividend_yield_min) { state.dividend_yield_min = t.dividend_yield_min; }
+        if (t.earnings_days)      { state.earnings_days = t.earnings_days; }
+        if (t.legally_clean)      { state.legally_clean = true; }
+        if (t.sort)               { state.sort = t.sort; state.dir = t.dir || 'desc'; }
     }
-
     // Sync checkbox DOM state
     document.querySelectorAll('#f-ratings input').forEach(i => {
         i.checked = state.ratings.includes(i.value);
     });
-
+    // Mark active preset button, deactivate ALL SIGNALS
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('btn-all-signals').classList.remove('active');
+    const activeBtn = document.querySelector(`.preset-btn[data-theme="${id}"]`);
+    if (activeBtn) activeBtn.classList.add('active');
     state.page = 1;
     load();
+}
+
+function resetToAll() {
+    resetState();
+    state.ratings = [...ALL_RATINGS];
+    document.querySelectorAll('#f-ratings input').forEach(i => i.checked = true);
+    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('btn-all-signals').classList.add('active');
+    state.page = 1;
+    load();
+}
+
+// Legacy preset alias — redirects old ?preset= params to the matching theme
+function applyPreset(name) {
+    const alias = {
+        strong_buys: 'strong_buy_momentum',
+        momentum:    'strong_buy_momentum',
+        oversold:    'buy_the_dip',
+        high_short:  null,
+        legally_clean: 'legally_clean',
+        high_insider:  'insider_buying_surge',
+        undervalued:   'undervalued',
+    };
+    const mapped = alias[name] || name;
+    if (THEMES[mapped]) { applyTheme(mapped); } else { resetState(); state.ratings = [...ALL_RATINGS]; document.querySelectorAll('#f-ratings input').forEach(i => i.checked = true); state.page = 1; load(); }
 }
 
 // Market cap button toggle
@@ -584,18 +663,21 @@ function exportCSV() {
     });
 }
 
-// Initial load — all ratings selected by default
-document.querySelectorAll('#f-ratings input').forEach(i => i.checked = true);
-state.ratings = [...document.querySelectorAll('#f-ratings input')].map(i => i.value);
-
+// Boot: check for ?theme= or legacy ?preset= in URL
+const _urlTheme  = new URLSearchParams(window.location.search).get('theme');
 const _urlPreset = new URLSearchParams(window.location.search).get('preset');
-if (_urlPreset) {
+
+if (_urlTheme) {
+    loadWatchlist();
+    setTimeout(() => applyTheme(_urlTheme), 0);
+} else if (_urlPreset) {
+    loadWatchlist();
     setTimeout(() => applyPreset(_urlPreset), 0);
 } else {
+    document.querySelectorAll('#f-ratings input').forEach(i => i.checked = true);
+    state.ratings = [...document.querySelectorAll('#f-ratings input')].map(i => i.value);
+    document.getElementById('btn-all-signals').classList.add('active');
     loadWatchlist().then(() => load());
-}
-if (_urlPreset) {
-    loadWatchlist().then(() => {}); // still load watchlist for WL toggle buttons
 }
 </script>
 {% include '_footer.html' %}

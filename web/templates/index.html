@@ -234,25 +234,25 @@
     <div class="themes-section" style="margin-top:12px;">
         <div class="themes-header">Discovery Themes</div>
         <div class="themes-scroll" id="themes-row">
-            <div class="theme-card" style="border-top-color:#00ff88" onclick="applyTheme('strong_buys')">
+            <div class="theme-card" style="border-top-color:#00ff88" onclick="applyTheme('strong_buy_momentum')">
                 <div class="theme-icon">🚀</div>
                 <div class="theme-name">Strong Buy Momentum</div>
                 <div class="theme-desc">Highest conviction signals with strong composite scores</div>
                 <div class="theme-count" id="theme-count-0">Loading...</div>
             </div>
-            <div class="theme-card" style="border-top-color:#facc15" onclick="applyTheme('dividends')">
+            <div class="theme-card" style="border-top-color:#facc15" onclick="applyTheme('dividend_powerhouses')">
                 <div class="theme-icon">💰</div>
                 <div class="theme-name">Dividend Powerhouses</div>
-                <div class="theme-desc">High-yield stocks with consecutive dividend growth</div>
-                <div class="theme-count" id="theme-count-1">—</div>
+                <div class="theme-desc">High-yield stocks with consistent dividend growth</div>
+                <div class="theme-count" id="theme-count-1">Loading...</div>
             </div>
-            <div class="theme-card" style="border-top-color:#00d4ff" onclick="applyTheme('oversold')">
+            <div class="theme-card" style="border-top-color:#00d4ff" onclick="applyTheme('buy_the_dip')">
                 <div class="theme-icon">📉</div>
                 <div class="theme-name">Buy the Dip</div>
                 <div class="theme-desc">RSI oversold stocks with positive signal ratings</div>
                 <div class="theme-count" id="theme-count-2">Loading...</div>
             </div>
-            <div class="theme-card" style="border-top-color:#ff9500" onclick="applyTheme('earnings_week')">
+            <div class="theme-card" style="border-top-color:#ff9500" onclick="applyTheme('earnings_this_week')">
                 <div class="theme-icon">📅</div>
                 <div class="theme-name">Earnings This Week</div>
                 <div class="theme-desc">Stocks reporting earnings in the next 7 days</div>
@@ -264,8 +264,8 @@
                 <div class="theme-desc">No SEC enforcement, investigations or class actions</div>
                 <div class="theme-count" id="theme-count-4">Loading...</div>
             </div>
-            <div class="theme-card" style="border-top-color:#af52de" onclick="applyTheme('insider_buying')">
-                <div class="theme-icon">🏦</div>
+            <div class="theme-card" style="border-top-color:#af52de" onclick="applyTheme('insider_buying_surge')">
+                <div class="theme-icon">👤</div>
                 <div class="theme-name">Insider Buying Surge</div>
                 <div class="theme-desc">High insider score — directors and officers are buying</div>
                 <div class="theme-count" id="theme-count-5">Loading...</div>
@@ -273,7 +273,7 @@
             <div class="theme-card" style="border-top-color:#ff6b35" onclick="applyTheme('undervalued')">
                 <div class="theme-icon">💎</div>
                 <div class="theme-name">Undervalued</div>
-                <div class="theme-desc">Positive upside to target price with Buy+ rating</div>
+                <div class="theme-desc">Stocks trading well below 52-week high with positive signals</div>
                 <div class="theme-count" id="theme-count-6">Loading...</div>
             </div>
         </div>
@@ -432,16 +432,7 @@ function applyRatingFilter(rating) {
 }
 
 function applyTheme(theme) {
-    const routes = {
-        strong_buys:   '/screener?preset=strong_buys',
-        dividends:     '/dividends',
-        oversold:      '/screener?preset=oversold',
-        earnings_week: '/earnings',
-        legally_clean: '/screener?preset=legally_clean',
-        insider_buying:'/screener?preset=high_insider',
-        undervalued:   '/screener?preset=undervalued',
-    };
-    window.location.href = routes[theme] || '/screener';
+    window.location.href = '/screener?theme=' + theme;
 }
 
 async function loadThemeCounts() {
@@ -463,12 +454,12 @@ async function loadThemeCounts() {
     }
 
     const fmt = v => (v != null ? Number(v).toLocaleString() : '0') + ' stocks';
-    document.getElementById('theme-count-0').textContent = fmt(counts.strong_buys);
-    document.getElementById('theme-count-1').textContent = fmt(counts.dividends);
-    document.getElementById('theme-count-2').textContent = fmt(counts.oversold);
-    document.getElementById('theme-count-3').textContent = fmt(counts.earnings_week);
+    document.getElementById('theme-count-0').textContent = fmt(counts.strong_buy_momentum);
+    document.getElementById('theme-count-1').textContent = fmt(counts.dividend_powerhouses);
+    document.getElementById('theme-count-2').textContent = fmt(counts.buy_the_dip);
+    document.getElementById('theme-count-3').textContent = fmt(counts.earnings_this_week);
     document.getElementById('theme-count-4').textContent = fmt(counts.legally_clean);
-    document.getElementById('theme-count-5').textContent = fmt(counts.insider_buying);
+    document.getElementById('theme-count-5').textContent = fmt(counts.insider_buying_surge);
     document.getElementById('theme-count-6').textContent = fmt(counts.undervalued);
 }
 
