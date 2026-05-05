@@ -77,61 +77,141 @@ def _escalate(current, candidate):
 def _classify(text, ticker=None):
     t = text.lower()
 
-    # Skip hypothetical/forward-looking risk language
-    hypothetical = ["may be subject to", "could be subject to", "might be subject to",
-                    "could face", "may face", "risk of", "risks include", "could result in",
-                    "there can be no assurance", "we cannot predict", "if we are subject",
-                    "if the commission", "if a court", "if we are found", "if such",
-                    "it can issue", "it could issue", "may impose", "could impose",
-                    "potential liability", "could be required", "may be required",
-                    "an outcome could", "such an outcome", "could materially",
-                    "civil penalties of up to", "disgorgement of profits", "could issue a cease",
-                    "might result in", "may result in", "could be ordered to pay",
-                    "in the event that", "if the sec", "if regulators", "were to impose",
-                    "failure to comply", "noncompliance could", "subject to sanctions",
-                    "exposure to penalties", "potential civil penalty", "potential disgorgement"]
+    # ── Policy/compliance document detection ─────────────────────────────────
+    # Insider trading compliance policies and codes of conduct legitimately contain
+    # penalty language in an educational/prescriptive context — not enforcement.
+    # If 2+ policy signals are present, skip the enforcement checks entirely.
+    policy_signals = [
+        "insider trading policy", "insider trading compliance policy",
+        "insider trading compliance program", "trading compliance policy",
+        "securities trading policy", "blackout period", "pre-clearance",
+        "trading window", "quiet period", "covered persons are prohibited",
+        "employees are prohibited from trading", "our trading policy",
+        "under our policy", "compliance with insider trading",
+        "our insider trading", "this policy prohibits", "policy prohibits trading",
+        "covered persons must", "covered employees must", "pre-approval",
+        "company personnel are prohibited", "executive officers and directors are prohibited",
+        "company has adopted", "adopted a policy", "our policies prohibit",
+        "code of ethics", "code of conduct", "compliance program",
+        "trading restrictions", "restricted trading",
+    ]
+    policy_score = sum(1 for p in policy_signals if p in t)
+    is_policy_doc = policy_score >= 2
+
+    # ── Hypothetical/forward-looking language ────────────────────────────────
+    hypothetical = [
+        "may be subject to", "could be subject to", "might be subject to",
+        "could face", "may face", "risk of", "risks include", "could result in",
+        "there can be no assurance", "we cannot predict", "if we are subject",
+        "if the commission", "if a court", "if we are found", "if such",
+        "it can issue", "it could issue", "may impose", "could impose",
+        "potential liability", "could be required", "may be required",
+        "an outcome could", "such an outcome", "could materially",
+        "civil penalties of up to", "disgorgement of profits", "could issue a cease",
+        "might result in", "may result in", "could be ordered to pay",
+        "in the event that", "if the sec", "if regulators", "were to impose",
+        "failure to comply", "noncompliance could", "subject to sanctions",
+        "exposure to penalties", "potential civil penalty", "potential disgorgement",
+        "penalties can include", "penalties may include", "penalties include",
+        "consequences include", "subject to civil penalties", "including civil penalties",
+        "subject to disgorgement", "including disgorgement",
+        "violations may result", "violations could result", "violations can result",
+    ]
 
     def is_hypothetical(snippet):
         return any(h in snippet for h in hypothetical)
 
-    # Criminal - only if active/concrete, not hypothetical
+    # ── Criminal ─────────────────────────────────────────────────────────────
     for kw in ["grand jury", "indictment", "doj has filed", "department of justice has",
                "criminal charges filed", "criminal complaint filed", "pleaded guilty",
                "criminal conviction"]:
         if kw in t:
             idx = t.find(kw)
-            ctx = t[max(0,idx-100):idx+100]
+            ctx = t[max(0, idx-100):idx+100]
             if not is_hypothetical(ctx):
                 return RISK_CRIMINAL
 
-    # SEC Enforcement - active actions only, not hypothetical risk language
-    for kw in ["sec has filed", "commission has filed", "cease and desist order",
-               "administrative proceeding has", "civil penalty of", "disgorgement of",
-               "administrative law judge ruled", "sec obtained"]:
-        if kw in t:
-            idx = t.find(kw)
-            # Wide context window - hypothetical markers can be sentences before/after
-            ctx = t[max(0,idx-600):idx+600]
-            if not is_hypothetical(ctx):
-                return RISK_SEC_ENFORCEMENT
+    # ── SEC Enforcement ──────────────────────────────────────────────────────
+    # Never classify a policy/compliance document as enforcement.
+    # Tier 1: single match sufficient — language that only appears in actual enforcement orders
+    # Tier 2: moderate signals — require 2+ non-hypothetical hits to reduce false positives
+    if not is_policy_doc:
+        # Tier 1 — extremely specific to actual enforcement; one match is conclusive
+        enforcement_definite = [
+            "without admitting or denying",           # SEC settlement boilerplate
+            "accepted and consented to the entry of", # SEC administrative order
+            "consent order was entered",
+            "consent decree was entered",
+            "administrative law judge ruled",
+            "civil penalty of $",         # actual dollar amount (not "of up to $X")
+            "paid a civil penalty",
+            "paid civil penalties of",
+            "ordered to pay disgorgement",
+            "agreed to pay disgorgement of $",
+            "we settled charges with the sec",
+            "settled sec charges",
+            "settled with the sec for $",
+            "judgment was entered against us",
+            "judgment was entered against the company",
+            "cease and desist order was issued to us",
+            "was issued a cease and desist order",
+            "we were charged by the sec",
+            "company was charged by the sec",
+            "the commission charged us",
+            "sec charged us",
+        ]
+        if ticker:
+            enforcement_definite.append(f"sec v. {ticker.lower()}")
 
-    # SEC Investigation - active
-    for kw in ["wells notice", "formal order of investigation", "we received a subpoena from the sec",
-               "sec staff has informed", "sec has opened", "under formal investigation"]:
+        for kw in enforcement_definite:
+            if kw in t:
+                idx = t.find(kw)
+                ctx = t[max(0, idx-400):idx+400]
+                if not is_hypothetical(ctx):
+                    return RISK_SEC_ENFORCEMENT
+
+        # Tier 2 — weaker signals; only classify if 2+ non-hypothetical hits co-occur
+        enforcement_moderate = [
+            "sec has filed",
+            "commission has filed",
+            "cease and desist order",
+            "administrative proceeding has been",
+            "disgorgement of",
+            "civil penalty of",
+            "sec obtained a judgment",
+            "sec obtained",
+        ]
+        moderate_hits = 0
+        for kw in enforcement_moderate:
+            if kw in t:
+                idx = t.find(kw)
+                ctx = t[max(0, idx-600):idx+600]
+                if not is_hypothetical(ctx):
+                    moderate_hits += 1
+        if moderate_hits >= 2:
+            return RISK_SEC_ENFORCEMENT
+
+    # ── SEC Investigation ────────────────────────────────────────────────────
+    for kw in ["wells notice", "formal order of investigation",
+               "we received a subpoena from the sec",
+               "sec staff has informed", "sec has opened",
+               "under formal investigation"]:
         if kw in t:
             return RISK_SEC_INVESTIGATION
 
-    # Class action - filed cases
-    class_action_kws = ["class action lawsuit", "class action complaint", "putative class action",
-                        "securities class action", "class action has been filed", "class action was filed",
-                        "class action captioned"]
+    # ── Class action ─────────────────────────────────────────────────────────
+    class_action_kws = [
+        "class action lawsuit", "class action complaint", "putative class action",
+        "securities class action", "class action has been filed", "class action was filed",
+        "class action captioned",
+    ]
     if ticker:
         class_action_kws.append(f"v. {ticker.lower()}")
     for kw in class_action_kws:
         if kw in t:
             return RISK_CLASS_ACTION
 
-    # Minor - general litigation language in legal proceedings section
+    # ── Minor ────────────────────────────────────────────────────────────────
     for kw in ["we are party to", "we are a defendant", "plaintiff alleges",
                "complaint alleges", "we have been named", "pending litigation",
                "settled for", "we settled"]:
@@ -280,6 +360,7 @@ def fetch_legal_risk(ticker):
                 "source_url":  doc_url,
                 "risk_level":  full_risk,
                 "confidence":  "HIGH",
+                "filing_type": "10-K",
             })
 
     # ── 8-K analysis ─────────────────────────────────────────────────────────
@@ -311,6 +392,7 @@ def fetch_legal_risk(ticker):
                 "source_url":  f"https://www.sec.gov/Archives/edgar/data/{cik_int}/{acc_nodash}/index.json",
                 "risk_level":  risk,
                 "confidence":  "MEDIUM",
+                "filing_type": "8-K",
             })
 
     # De-dupe by month
@@ -326,14 +408,21 @@ def fetch_legal_risk(ticker):
 
 
 def _build(ticker, risk_level, findings):
+    # Derive primary filing type from the most severe finding
+    filing_type = None
+    for f in findings:
+        if f.get("risk_level") == risk_level:
+            filing_type = f.get("filing_type")
+            break
     return {
-        "ticker": ticker,
-        "risk_level": risk_level,
-        "risk_label": RISK_LABELS[risk_level],
-        "risk_color": RISK_COLORS[risk_level],
-        "penalty": RISK_PENALTIES[risk_level],
-        "findings": findings,
-        "scraped_at": datetime.now().isoformat(),
+        "ticker":      ticker,
+        "risk_level":  risk_level,
+        "risk_label":  RISK_LABELS[risk_level],
+        "risk_color":  RISK_COLORS[risk_level],
+        "penalty":     RISK_PENALTIES[risk_level],
+        "findings":    findings,
+        "filing_type": filing_type,
+        "scraped_at":  datetime.now().isoformat(),
     }
 
 
@@ -341,12 +430,19 @@ def save_legal_risk(ticker, result):
     import json
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
+    # Ensure filing_type column exists (idempotent)
+    try:
+        c.execute("ALTER TABLE legal_risk ADD COLUMN filing_type TEXT")
+        conn.commit()
+    except sqlite3.OperationalError:
+        pass  # column already exists
     c.execute("""
         INSERT OR REPLACE INTO legal_risk
-            (ticker, risk_level, risk_label, risk_color, penalty, findings_json, scraped_at)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+            (ticker, risk_level, risk_label, risk_color, penalty, findings_json, filing_type, scraped_at)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """, (ticker, result["risk_level"], result["risk_label"], result["risk_color"],
-          result["penalty"], json.dumps(result["findings"]), result["scraped_at"]))
+          result["penalty"], json.dumps(result["findings"]),
+          result.get("filing_type"), result["scraped_at"]))
     conn.commit()
     conn.close()
 
@@ -354,16 +450,15 @@ def save_legal_risk(ticker, result):
 def get_legal_risk(ticker):
     import json
     conn = sqlite3.connect(DB_PATH)
+    conn.row_factory = sqlite3.Row
     c = conn.cursor()
     c.execute("SELECT * FROM legal_risk WHERE ticker = ?", (ticker,))
     row = c.fetchone()
     conn.close()
     if not row:
         return None
-    cols = ["id", "ticker", "risk_level", "risk_label", "risk_color",
-            "penalty", "findings_json", "scraped_at"]
-    d = dict(zip(cols, row))
-    d["findings"] = json.loads(d["findings_json"] or "[]")
+    d = dict(row)
+    d["findings"] = json.loads(d.get("findings_json") or "[]")
     return d
 
 
