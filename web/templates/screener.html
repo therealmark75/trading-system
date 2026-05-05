@@ -229,8 +229,8 @@ tr:hover td{background:rgba(0,212,255,0.03);cursor:pointer;}
                     <th data-tip="Total market capitalisation. Micro <$300M, Small $300M-$2B, Mid $2-10B, Large >$10B" onclick="setSort('market_cap')">MKT CAP<span class="sort-arrow" id="sa-market_cap"></span></th>
                     <th data-tip="SignalIntel 7-tier signal rating" onclick="setSort('rating')">RATING<span class="sort-arrow" id="sa-rating"></span></th>
                     <th data-tip="Composite score 0–100 combining Momentum, Quality, Insider, Reversion and Legal signals" onclick="setSort('composite_score')">SCORE<span class="sort-arrow" id="sa-composite_score"></span></th>
-                    <th data-tip="SignalIntel proprietary target price (DCF + technical + analyst consensus)" onclick="setSort('target_price')">TARGET<span class="sort-arrow" id="sa-target_price"></span></th>
-                    <th data-tip="% difference between current price and target. Positive = upside, negative = downside" onclick="setSort('target_upside')">UPSIDE<span class="sort-arrow" id="sa-target_upside"></span></th>
+                    <th data-tip="12-month price target: DCF (40%) + analyst consensus (35%) + technical projection (15%) + quality/legal (10%). Re-calculated daily." onclick="setSort('target_price')">12M TARGET<span class="sort-arrow" id="sa-target_price"></span></th>
+                    <th data-tip="% upside/downside to 12-month target. Positive = upside, negative = downside." onclick="setSort('target_upside')">UPSIDE<span class="sort-arrow" id="sa-target_upside"></span></th>
                     <th data-tip="Current market price" onclick="setSort('price')">PRICE<span class="sort-arrow" id="sa-price"></span></th>
                     <th data-tip="Today's price change as a percentage" onclick="setSort('change_pct')">CHG%<span class="sort-arrow" id="sa-change_pct"></span></th>
                     <th data-tip="Trading volume today" onclick="setSort('volume')">VOLUME<span class="sort-arrow" id="sa-volume"></span></th>

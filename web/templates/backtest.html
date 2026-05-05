@@ -66,8 +66,9 @@
 {% include '_nav.html' %}
 <main>
     <h1>SIGNAL BACKTESTING</h1>
-    <p class="subtitle">Historical accuracy of each rating tier from first signal to next rating change</p>
-    <div class="note">⚡ Data grows daily. Win rates and sample sizes will strengthen significantly after 30+ days of signal history.</div>
+    <p class="subtitle">Historical accuracy of each rating tier — measured over the <strong>12-month target horizon</strong></p>
+    <div class="note" style="margin-bottom:8px">⚡ Data grows daily. Win rates and sample sizes will strengthen significantly after 30+ days of signal history.</div>
+    <div class="note" title="SignalIntel targets a 12-month price horizon matching industry standard (Bloomberg, Morningstar, sell-side research). Ratings held for less than 12 months are marked INTERIM — stats update as positions mature to the full horizon. Return measures price change from rating change date to 12 months later (or current price for open positions).">📅 Backtest measures return from rating-change date to 12 months forward, aligning with the SignalIntel 12-month price target. Ratings under 12 months old are marked <strong>INTERIM</strong>. <span style="cursor:help;color:var(--accent)" title="Backtest measures price change from rating change to 12 months later, matching the SignalIntel 12-month target horizon. For open positions (no exit yet), current price is used. Past performance does not guarantee future returns.">(?) more</span></div>
     <div class="section-title">Performance by Rating</div>
     <div id="stats-grid" class="stats-grid"><div class="loading">Loading stats...</div></div>
     <div class="section-title" style="margin-top:40px">Recent Rating Changes</div>
@@ -97,11 +98,13 @@ async function load() {
                     <td>${t.days_held}d</td>
                 </tr>`;
             }).join('');
+            const isInterim = s.avg_days_held < 365;
             return `
             <div class="stat-card" onclick="toggleBreakdown(${i})">
                 <div class="stat-card-header">
                     <span class="rating-badge badge-${s.rating}">${s.rating.replace(/_/g,' ')}</span>
                     <span class="samples">${s.samples} samples</span>
+                    ${isInterim ? `<span style="font-size:9px;font-family:var(--mono);color:var(--muted2);border:1px solid var(--border);padding:1px 5px;border-radius:3px;letter-spacing:1px" title="Average holding period is under 12 months. Stats will mature as positions reach the full target horizon.">INTERIM</span>` : ''}
                 </div>
                 <div class="stat-row">
                     <span class="stat-label">Avg Return</span>

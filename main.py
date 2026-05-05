@@ -15,7 +15,8 @@ from database.db import (get_connection, initialise_schema, insert_screener_rows
     insert_insider_trades, insert_insider_signal, insert_signal_scores, detect_rating_changes, update_analyst_recom,
     insert_news_articles, insert_ticker_sentiment, insert_calendar_events,
     log_run, get_latest_screener, get_recent_insiders, get_cluster_signals,
-    get_top_signals, get_ticker_sentiment, get_legal_risk_map, update_target_prices)
+    get_top_signals, get_ticker_sentiment, get_legal_risk_map, update_target_prices,
+    get_price_history_map)
 from scrapers.quote_scraper import scrape_recom_for_tickers
 from scrapers.legal_risk_scraper import scrape_priority_tickers
 from scrapers.screener_scraper import scrape_all_sectors
@@ -103,15 +104,16 @@ def job_generate_signals(sector=None):
         } for s in signals]
         insert_signal_scores(DATABASE_PATH, score_rows)
 
-        # Compute target prices immediately after scoring
+        # Compute 12-month target prices immediately after scoring
         try:
             from signals.target_price import compute_targets_batch
             from scrapers.fmp_scraper import get_price_targets_map
-            fmp_targets = get_price_targets_map(DATABASE_PATH)
-            tp_rows = compute_targets_batch(screener_rows, legal_risk_map, fmp_targets)
+            fmp_targets    = get_price_targets_map(DATABASE_PATH)
+            price_hist_map = get_price_history_map(DATABASE_PATH)
+            tp_rows = compute_targets_batch(screener_rows, legal_risk_map, fmp_targets, price_hist_map)
             update_target_prices(DATABASE_PATH, tp_rows)
             tp_count = sum(1 for r in tp_rows if r.get("target_price"))
-            logger.info(f"  Target prices computed for {tp_count}/{len(tp_rows)} tickers")
+            logger.info(f"  12-month target prices computed for {tp_count}/{len(tp_rows)} tickers")
         except Exception as e:
             logger.warning(f"  Target price computation failed (non-fatal): {e}")
 
@@ -407,11 +409,12 @@ def job_compute_target_prices():
         from signals.target_price import compute_targets_batch
         from scrapers.fmp_scraper import get_price_targets_map
 
-        screener_rows  = get_latest_screener(DATABASE_PATH)
-        legal_risk_map = get_legal_risk_map(DATABASE_PATH)
-        fmp_targets    = get_price_targets_map(DATABASE_PATH)
+        screener_rows   = get_latest_screener(DATABASE_PATH)
+        legal_risk_map  = get_legal_risk_map(DATABASE_PATH)
+        fmp_targets     = get_price_targets_map(DATABASE_PATH)
+        price_hist_map  = get_price_history_map(DATABASE_PATH)
 
-        rows = compute_targets_batch(screener_rows, legal_risk_map, fmp_targets)
+        rows = compute_targets_batch(screener_rows, legal_risk_map, fmp_targets, price_hist_map)
         updated = update_target_prices(DATABASE_PATH, rows)
         logger.info(f"JOB DONE: Target prices | {updated} rows updated | {time.time()-start:.1f}s")
     except Exception as e:

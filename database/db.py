@@ -896,27 +896,64 @@ def detect_rating_changes(db_path: str) -> list:
 
 def update_target_prices(db_path: str, rows: list[dict]) -> int:
     """
-    Update target_price and target_upside on today's signal_scores rows.
+    Update target_price, target_upside, and target_calculated_at on today's
+    signal_scores rows.
     rows: list of {ticker, target_price, target_upside}
     """
     if not rows:
         return 0
     conn = get_connection(db_path)
     cur  = conn.cursor()
+    # Ensure column exists (idempotent migration)
+    try:
+        cur.execute("ALTER TABLE signal_scores ADD COLUMN target_calculated_at TEXT")
+        conn.commit()
+    except Exception:
+        pass
+    now = datetime.utcnow().isoformat()
     updated = 0
     for r in rows:
         if r.get("target_price") is None:
             continue
         cur.execute("""
             UPDATE signal_scores
-            SET target_price = ?, target_upside = ?
+            SET target_price = ?, target_upside = ?, target_calculated_at = ?
             WHERE ticker = ?
               AND DATE(scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
-        """, (r["target_price"], r.get("target_upside"), r["ticker"]))
+        """, (r["target_price"], r.get("target_upside"), now, r["ticker"]))
         updated += cur.rowcount
     conn.commit()
     conn.close()
     return updated
+
+
+def get_price_history_map(db_path: str, days: int = 180) -> dict:
+    """
+    Return {ticker: [(days_ago, price), ...]} from screener_snapshots.
+    Used for 12-month target price linear regression (technical component).
+    One price point per ticker per calendar day (most recent intraday snapshot).
+    """
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute(f"""
+        SELECT ticker,
+               CAST(julianday('now') - julianday(MAX(scraped_at)) AS INTEGER) AS days_ago,
+               price
+        FROM screener_snapshots
+        WHERE scraped_at >= datetime('now', '-{days} days')
+          AND price > 0
+        GROUP BY ticker, DATE(scraped_at)
+        ORDER BY ticker, scraped_at ASC
+    """)
+    rows = cur.fetchall()
+    conn.close()
+    result = {}
+    for r in rows:
+        ticker = r["ticker"]
+        if ticker not in result:
+            result[ticker] = []
+        result[ticker].append((r["days_ago"], r["price"]))
+    return result
 
 
 def get_legal_risk_map(db_path: str) -> dict:
