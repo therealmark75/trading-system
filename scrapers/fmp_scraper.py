@@ -3,6 +3,8 @@ Financial Modeling Prep (FMP) data scraper.
 Covers: earnings calendar, dividends, analyst price targets.
 Free tier: 250 calls/day, no real-time data.
 """
+from __future__ import annotations
+
 import sqlite3
 import time
 import logging

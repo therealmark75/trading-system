@@ -11,6 +11,7 @@ Components:
 The model only uses data already in the DB — no live API calls.
 FMP analyst price targets (when available) are incorporated in component 3.
 """
+from __future__ import annotations
 
 import logging
 import math

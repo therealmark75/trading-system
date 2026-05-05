@@ -8,6 +8,7 @@
 #
 # Uses yfinance for historical price data.
 # Produces win rate, avg return, Sharpe-like ratio.
+from __future__ import annotations
 # ─────────────────────────────────────────────────
 
 import logging
