@@ -678,6 +678,7 @@ def api_screener():
                ss.pe_ratio, ss.rsi_14,
                ss.high_52w_pct, ss.low_52w_pct,
                ss.eps_growth_this_yr, ss.eps_growth_next_yr,
+               ss.short_interest_pct, ss.insider_transactions, ss.beta,
                sig.rating, sig.composite_score,
                sig.momentum_score, sig.quality_score, sig.insider_score,
                sig.target_price, sig.target_upside

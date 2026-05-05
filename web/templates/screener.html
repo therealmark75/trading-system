@@ -91,6 +91,26 @@ tr:hover td{background:rgba(0,212,255,0.03);cursor:pointer;}
 .page-info{font-family:var(--mono);font-size:10px;color:var(--muted);}
 
 .loading-row td{text-align:center;padding:40px;color:var(--muted);font-family:var(--mono);}
+
+/* Preset filter buttons */
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+.preset-btn{padding:5px 12px;border-radius:4px;border:1px solid var(--border);background:transparent;
+    color:var(--muted);font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:0.5px;
+    cursor:pointer;transition:all 0.15s;}
+.preset-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* Watchlist toggle button */
+.wl-btn{padding:3px 8px;border-radius:3px;border:1px solid;font-family:var(--mono);font-size:10px;
+    font-weight:700;cursor:pointer;transition:all 0.15s;line-height:1;background:transparent;}
+.wl-btn-add{border-color:var(--border);color:var(--muted);}
+.wl-btn-add:hover{border-color:var(--accent2);color:var(--accent2);}
+.wl-btn-in{border-color:rgba(0,255,136,0.4);color:var(--accent2);background:rgba(0,255,136,0.08);}
+
+/* Floating column tooltip */
+#tip-box{position:fixed;display:none;background:#0a1628;border:1px solid var(--border);
+    color:var(--text);padding:7px 11px;border-radius:5px;font-family:var(--sans);
+    font-size:11px;line-height:1.45;max-width:230px;z-index:9999;pointer-events:none;
+    word-wrap:break-word;box-shadow:0 4px 16px rgba(0,0,0,0.4);}
 </style>
 </head>
 <body>
@@ -185,6 +205,12 @@ tr:hover td{background:rgba(0,212,255,0.03);cursor:pointer;}
 
 <!-- ── Main table ─────────────────────────────────── -->
 <div class="main">
+    <div class="presets">
+        <button class="preset-btn" onclick="applyPreset('strong_buys')">Strong Buys</button>
+        <button class="preset-btn" onclick="applyPreset('momentum')">Top Momentum</button>
+        <button class="preset-btn" onclick="applyPreset('oversold')">Oversold</button>
+        <button class="preset-btn" onclick="applyPreset('high_short')">High Short Interest</button>
+    </div>
     <div class="toolbar">
         <div class="toolbar-left">
             <span class="result-count" id="result-count">Loading...</span>
@@ -196,31 +222,39 @@ tr:hover td{background:rgba(0,212,255,0.03);cursor:pointer;}
         <table id="screener-table">
             <thead>
                 <tr>
-                    <th onclick="setSort('ticker')">TICKER<span class="sort-arrow" id="sa-ticker"></span></th>
-                    <th onclick="setSort('company')">COMPANY<span class="sort-arrow" id="sa-company"></span></th>
-                    <th onclick="setSort('sector')">SECTOR<span class="sort-arrow" id="sa-sector"></span></th>
-                    <th onclick="setSort('market_cap')">MKT CAP<span class="sort-arrow" id="sa-market_cap"></span></th>
-                    <th onclick="setSort('rating')">RATING<span class="sort-arrow" id="sa-rating"></span></th>
-                    <th onclick="setSort('composite_score')">SCORE<span class="sort-arrow" id="sa-composite_score"></span></th>
-                    <th onclick="setSort('target_price')">TARGET<span class="sort-arrow" id="sa-target_price"></span></th>
-                    <th onclick="setSort('target_upside')">UPSIDE<span class="sort-arrow" id="sa-target_upside"></span></th>
-                    <th onclick="setSort('price')">PRICE<span class="sort-arrow" id="sa-price"></span></th>
-                    <th onclick="setSort('change_pct')">CHG%<span class="sort-arrow" id="sa-change_pct"></span></th>
-                    <th onclick="setSort('volume')">VOLUME<span class="sort-arrow" id="sa-volume"></span></th>
-                    <th onclick="setSort('pe_ratio')">P/E<span class="sort-arrow" id="sa-pe_ratio"></span></th>
-                    <th onclick="setSort('rsi_14')">RSI<span class="sort-arrow" id="sa-rsi_14"></span></th>
-                    <th onclick="setSort('high_52w_pct')">52W HIGH<span class="sort-arrow" id="sa-high_52w_pct"></span></th>
-                    <th onclick="setSort('low_52w_pct')">52W LOW<span class="sort-arrow" id="sa-low_52w_pct"></span></th>
+                    <th data-tip="Stock ticker symbol">TICKER<span class="sort-arrow" id="sa-ticker"></span></th>
+                    <th data-tip="Company name" onclick="setSort('company')">COMPANY<span class="sort-arrow" id="sa-company"></span></th>
+                    <th data-tip="Market sector classification" onclick="setSort('sector')">SECTOR<span class="sort-arrow" id="sa-sector"></span></th>
+                    <th data-tip="Total market capitalisation. Micro <$300M, Small $300M-$2B, Mid $2-10B, Large >$10B" onclick="setSort('market_cap')">MKT CAP<span class="sort-arrow" id="sa-market_cap"></span></th>
+                    <th data-tip="SignalIntel 7-tier signal rating" onclick="setSort('rating')">RATING<span class="sort-arrow" id="sa-rating"></span></th>
+                    <th data-tip="Composite score 0–100 combining Momentum, Quality, Insider, Reversion and Legal signals" onclick="setSort('composite_score')">SCORE<span class="sort-arrow" id="sa-composite_score"></span></th>
+                    <th data-tip="SignalIntel proprietary target price (DCF + technical + analyst consensus)" onclick="setSort('target_price')">TARGET<span class="sort-arrow" id="sa-target_price"></span></th>
+                    <th data-tip="% difference between current price and target. Positive = upside, negative = downside" onclick="setSort('target_upside')">UPSIDE<span class="sort-arrow" id="sa-target_upside"></span></th>
+                    <th data-tip="Current market price" onclick="setSort('price')">PRICE<span class="sort-arrow" id="sa-price"></span></th>
+                    <th data-tip="Today's price change as a percentage" onclick="setSort('change_pct')">CHG%<span class="sort-arrow" id="sa-change_pct"></span></th>
+                    <th data-tip="Trading volume today" onclick="setSort('volume')">VOLUME<span class="sort-arrow" id="sa-volume"></span></th>
+                    <th data-tip="Price-to-Earnings ratio. Lower = cheaper. Negative = not yet profitable." onclick="setSort('pe_ratio')">P/E<span class="sort-arrow" id="sa-pe_ratio"></span></th>
+                    <th data-tip="EPS growth this year vs last year. Positive = growing profits." onclick="setSort('eps_growth_this_yr')">EPS TY<span class="sort-arrow" id="sa-eps_growth_this_yr"></span></th>
+                    <th data-tip="Analyst forecast for EPS growth next year. Forward-looking indicator." onclick="setSort('eps_growth_next_yr')">EPS NY<span class="sort-arrow" id="sa-eps_growth_next_yr"></span></th>
+                    <th data-tip="Short Interest % of float. Above 20% = heavily shorted, potential short squeeze risk." onclick="setSort('short_interest_pct')">SHORT%<span class="sort-arrow" id="sa-short_interest_pct"></span></th>
+                    <th data-tip="Net insider transaction activity (% of shares). Positive = net buying, negative = net selling." onclick="setSort('insider_transactions')">INSID%<span class="sort-arrow" id="sa-insider_transactions"></span></th>
+                    <th data-tip="Beta measures volatility vs the market. >1 = more volatile. <1 = more stable. Negative = inverse." onclick="setSort('beta')">BETA<span class="sort-arrow" id="sa-beta"></span></th>
+                    <th data-tip="RSI (14-day). Above 70 = overbought. Below 30 = oversold." onclick="setSort('rsi_14')">RSI<span class="sort-arrow" id="sa-rsi_14"></span></th>
+                    <th data-tip="% below the 52-week high. Near 0% = trading near its yearly peak." onclick="setSort('high_52w_pct')">52W HIGH<span class="sort-arrow" id="sa-high_52w_pct"></span></th>
+                    <th data-tip="% above the 52-week low. Higher = stronger recovery from yearly floor." onclick="setSort('low_52w_pct')">52W LOW<span class="sort-arrow" id="sa-low_52w_pct"></span></th>
+                    <th data-tip="Add or remove from your watchlist">WL</th>
                 </tr>
             </thead>
             <tbody id="screener-tbody">
-                <tr class="loading-row"><td colspan="15">Loading screener data...</td></tr>
+                <tr class="loading-row"><td colspan="20">Loading screener data...</td></tr>
             </tbody>
         </table>
     </div>
     <div class="pagination" id="pagination"></div>
 </div>
 </div>
+
+<div id="tip-box"></div>
 
 <script>
 const RATING_COLORS = {
@@ -235,8 +269,10 @@ let state = {
     upside_min: '',
 };
 let totalPages = 1;
+let watchlistSet = new Set();
 
 function fmt(v, d=1){ return v == null ? '-' : parseFloat(v).toFixed(d); }
+function fmtP(v){ return v == null ? '-' : (v >= 0 ? '+' : '') + parseFloat(v).toFixed(1) + '%'; }
 function fmtMC(v){
     if(!v) return '-';
     if(v>=1e12) return '$'+(v/1e12).toFixed(1)+'T';
@@ -249,6 +285,28 @@ function fmtVol(v){
     if(v>=1e6) return (v/1e6).toFixed(1)+'M';
     if(v>=1e3) return (v/1e3).toFixed(0)+'K';
     return v;
+}
+
+async function loadWatchlist() {
+    try {
+        const data = await fetch('/api/watchlist').then(r => r.json());
+        watchlistSet = new Set((data || []).map(i => i.ticker));
+    } catch(e) { watchlistSet = new Set(); }
+}
+
+async function toggleWatchlist(ticker, btn, e) {
+    e.stopPropagation();
+    const inWl = watchlistSet.has(ticker);
+    const endpoint = inWl ? '/api/watchlist/remove' : '/api/watchlist/add';
+    const res = await fetch(endpoint, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ticker})
+    });
+    const data = await res.json();
+    if (data.ok) {
+        if (inWl) { watchlistSet.delete(ticker); btn.textContent = '+'; btn.className = 'wl-btn wl-btn-add'; }
+        else      { watchlistSet.add(ticker);    btn.textContent = '✓'; btn.className = 'wl-btn wl-btn-in';  }
+    }
 }
 
 function buildParams() {
@@ -272,12 +330,12 @@ function buildParams() {
 
 async function load() {
     const tbody = document.getElementById('screener-tbody');
-    tbody.innerHTML = '<tr class="loading-row"><td colspan="15">Loading...</td></tr>';
+    tbody.innerHTML = '<tr class="loading-row"><td colspan="20">Loading...</td></tr>';
     updateSortIndicators();
 
     const data = await fetch('/api/screener?' + buildParams()).then(r => r.json()).catch(() => null);
     if (!data) {
-        tbody.innerHTML = '<tr class="loading-row"><td colspan="15">Error loading data.</td></tr>';
+        tbody.innerHTML = '<tr class="loading-row"><td colspan="20">Error loading data.</td></tr>';
         return;
     }
 
@@ -286,7 +344,7 @@ async function load() {
         `${data.total.toLocaleString()} results · page ${data.page} of ${totalPages}`;
 
     if (!data.rows.length) {
-        tbody.innerHTML = '<tr class="loading-row"><td colspan="15">No results match the current filters.</td></tr>';
+        tbody.innerHTML = '<tr class="loading-row"><td colspan="20">No results match the current filters.</td></tr>';
         renderPagination();
         return;
     }
@@ -298,6 +356,11 @@ async function load() {
         const upside = r.target_upside;
         const uCls  = upside > 0 ? 'up' : upside < 0 ? 'down' : 'neu';
         const scoreColor = r.composite_score >= 70 ? '#00ff88' : r.composite_score >= 50 ? '#00d4ff' : '#8aa4bf';
+        const inWl = watchlistSet.has(r.ticker);
+        const epsTY = r.eps_growth_this_yr;
+        const epsNY = r.eps_growth_next_yr;
+        const si = r.short_interest_pct;
+        const siColor = si > 20 ? 'var(--danger)' : si > 10 ? 'var(--warning)' : 'inherit';
         return `<tr onclick="window.location='/ticker/${r.ticker}'">
             <td class="ticker-cell">${r.ticker}</td>
             <td class="company-cell">${r.company || '-'}</td>
@@ -311,9 +374,15 @@ async function load() {
             <td class="mono ${chgCls}">${chg >= 0 ? '+' : ''}${fmt(chg,2)}%</td>
             <td class="mono" style="color:var(--muted)">${fmtVol(r.volume)}</td>
             <td class="mono">${fmt(r.pe_ratio,1)}</td>
+            <td class="mono" style="color:${epsTY >= 0 ? 'var(--accent2)' : 'var(--danger)'}">${fmtP(epsTY)}</td>
+            <td class="mono" style="color:${epsNY >= 0 ? 'var(--accent2)' : 'var(--danger)'}">${fmtP(epsNY)}</td>
+            <td class="mono" style="color:${siColor}">${si != null ? fmt(si,1)+'%' : '-'}</td>
+            <td class="mono" style="color:var(--muted2)">${r.insider_transactions || '-'}</td>
+            <td class="mono" style="color:var(--muted2)">${fmt(r.beta,2)}</td>
             <td class="mono" style="color:${r.rsi_14 > 70 ? 'var(--danger)' : r.rsi_14 < 30 ? 'var(--accent2)' : 'inherit'}">${fmt(r.rsi_14,1)}</td>
             <td class="mono" style="color:var(--muted)">${r.high_52w_pct != null ? (r.high_52w_pct > 0 ? '+' : '') + fmt(r.high_52w_pct,1) + '%' : '-'}</td>
             <td class="mono" style="color:var(--muted2)">${r.low_52w_pct != null ? '+' + fmt(r.low_52w_pct,1) + '%' : '-'}</td>
+            <td onclick="event.stopPropagation()"><button class="wl-btn ${inWl?'wl-btn-in':'wl-btn-add'}" onclick="toggleWatchlist('${r.ticker}',this,event)">${inWl?'✓':'+'}</button></td>
         </tr>`;
     }).join('');
 
@@ -390,6 +459,30 @@ function resetFilters() {
     load();
 }
 
+function applyPreset(name) {
+    resetFilters();
+    if (name === 'strong_buys') {
+        state.ratings = ['STRONG_BUY','BUY'];
+        state.score_min = 60;
+        document.querySelectorAll('#f-ratings input').forEach(i => { i.checked = state.ratings.includes(i.value); });
+        document.getElementById('f-score-min').value = 60;
+    } else if (name === 'momentum') {
+        state.sort = 'composite_score'; state.dir = 'desc';
+        state.score_min = 55;
+        state.rsi_min = 50; state.rsi_max = 70;
+        document.getElementById('f-score-min').value = 55;
+        document.getElementById('f-rsi-min').value = 50;
+        document.getElementById('f-rsi-max').value = 70;
+    } else if (name === 'oversold') {
+        state.rsi_max = 35;
+        document.getElementById('f-rsi-max').value = 35;
+    } else if (name === 'high_short') {
+        state.sort = 'short_interest_pct'; state.dir = 'desc';
+    }
+    state.page = 1;
+    load();
+}
+
 // Market cap button toggle
 document.querySelectorAll('.mcap-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -397,6 +490,19 @@ document.querySelectorAll('.mcap-btn').forEach(btn => {
         btn.classList.add('active');
     });
 });
+
+// Column header tooltips (floating div)
+(function() {
+    const box = document.getElementById('tip-box');
+    document.querySelectorAll('th[data-tip]').forEach(th => {
+        th.addEventListener('mouseenter', () => { box.textContent = th.dataset.tip; box.style.display = 'block'; });
+        th.addEventListener('mousemove', e => {
+            box.style.left = Math.min(e.clientX + 14, window.innerWidth - 246) + 'px';
+            box.style.top  = Math.max(e.clientY - 44, 4) + 'px';
+        });
+        th.addEventListener('mouseleave', () => { box.style.display = 'none'; });
+    });
+})();
 
 function exportCSV() {
     const params = buildParams();
@@ -406,7 +512,9 @@ function exportCSV() {
         if (!data.rows?.length) return alert('No data to export.');
         const cols = ['ticker','company','sector','market_cap','rating','composite_score',
                       'target_price','target_upside','price','change_pct','volume',
-                      'pe_ratio','rsi_14','high_52w_pct','low_52w_pct'];
+                      'pe_ratio','eps_growth_this_yr','eps_growth_next_yr',
+                      'short_interest_pct','insider_transactions','beta',
+                      'rsi_14','high_52w_pct','low_52w_pct'];
         const lines = [cols.join(',')];
         data.rows.forEach(r => {
             lines.push(cols.map(c => {
@@ -424,9 +532,9 @@ function exportCSV() {
     });
 }
 
-// Initial state: read all checked ratings
+// Initial load
 state.ratings = [...document.querySelectorAll('#f-ratings input:checked')].map(i => i.value);
-load();
+loadWatchlist().then(() => load());
 </script>
 </body>
 </html>
