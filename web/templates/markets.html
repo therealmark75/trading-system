@@ -11,7 +11,7 @@
     --text:#f0f6ff;--muted:#8aa4bf;--muted2:#c2d4e8;
     --mono:'Space Mono',monospace;--sans:'DM Sans',sans-serif;}
 *{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);padding-bottom:40px;
+body{background:var(--bg);color:var(--text);font-family:var(--sans);
     background-image:linear-gradient(rgba(0,212,255,0.03) 1px,transparent 1px),
     linear-gradient(90deg,rgba(0,212,255,0.03) 1px,transparent 1px);
     background-size:40px 40px;}
@@ -31,9 +31,9 @@ nav{display:flex;gap:4px;padding:10px 24px;border-bottom:1px solid var(--border)
 main{padding:24px;max-width:1500px;margin:0 auto;}
 
 /* Page header */
-.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;}
+.page-header-left{display:flex;align-items:center;gap:16px;}
 h1{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacing:2px;color:var(--muted);}
-.status-row{display:flex;align-items:center;gap:12px;}
 .market-status{font-family:var(--mono);font-size:11px;padding:4px 10px;border-radius:4px;font-weight:700;}
 .status-OPEN{background:rgba(0,255,136,0.1);color:#00ff88;border:1px solid rgba(0,255,136,0.3);}
 .status-CLOSED{background:rgba(255,59,92,0.08);color:#ff3b5c;border:1px solid rgba(255,59,92,0.2);}
@@ -44,43 +44,61 @@ h1{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacin
 .refresh-btn:hover{border-color:var(--accent2);color:var(--accent2);}
 
 /* Section */
-.section{margin-bottom:28px;}
-.section-title{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:2px;
-    color:var(--accent);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.section{margin-bottom:20px;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.section-hdr{display:flex;align-items:center;justify-content:space-between;
+    background:var(--surface2);padding:12px 16px;cursor:pointer;user-select:none;
+    border-bottom:1px solid var(--border);}
+.section-hdr:hover .sec-chevron{color:var(--accent);}
+.section-title{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--accent);}
+.sec-chevron{font-size:11px;color:var(--muted);transition:transform 0.2s;}
+.section.collapsed .sec-chevron{transform:rotate(-90deg);}
+.section-body{background:var(--surface);padding:16px;transition:max-height 0.3s ease,opacity 0.3s ease;max-height:2000px;opacity:1;}
+.section.collapsed .section-body{max-height:0;padding:0;opacity:0;pointer-events:none;overflow:hidden;}
 
 /* Instrument cards */
 .cards-grid{display:grid;gap:10px;}
-.cards-indices{grid-template-columns:repeat(5,1fr);}
-.cards-4{grid-template-columns:repeat(4,1fr);}
-.cards-3{grid-template-columns:repeat(3,1fr);}
-@media(max-width:900px){
-    .cards-indices,.cards-4,.cards-3{grid-template-columns:repeat(2,1fr);}
-}
-.mcard{background:var(--surface);border:1px solid var(--border);border-radius:8px;
-    padding:14px 16px;transition:border-color 0.15s;}
-.mcard:hover{border-color:rgba(0,212,255,0.25);}
-.mcard-sym{font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:2px;}
-.mcard-label{font-size:13px;color:var(--muted2);margin-bottom:8px;font-weight:500;}
-.mcard-price{font-family:var(--mono);font-size:18px;color:var(--text);font-weight:700;margin-bottom:4px;}
+.grid-4{grid-template-columns:repeat(4,1fr);}
+.grid-3{grid-template-columns:repeat(3,1fr);}
+.grid-2{grid-template-columns:repeat(2,1fr);}
+.grid-5{grid-template-columns:repeat(5,1fr);}
+@media(max-width:1000px){.grid-5,.grid-4{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:700px){.grid-5,.grid-4,.grid-3,.grid-2{grid-template-columns:1fr 1fr;}}
+.mcard{background:var(--surface2);border:1px solid var(--border);border-radius:8px;
+    padding:14px 16px;transition:all 0.15s;cursor:pointer;position:relative;}
+.mcard:hover{border-color:var(--accent);background:rgba(13,21,32,0.95);}
+.mcard-chart-icon{position:absolute;top:10px;right:10px;font-size:10px;color:var(--muted);opacity:0.6;}
+.mcard:hover .mcard-chart-icon{opacity:1;color:var(--accent);}
+.mcard-sym{font-family:var(--mono);font-size:9px;color:var(--muted);margin-bottom:3px;text-transform:uppercase;letter-spacing:0.5px;}
+.mcard-label{font-size:13px;color:var(--muted2);margin-bottom:10px;font-weight:500;}
+.mcard-price{font-family:var(--mono);font-size:20px;color:var(--text);font-weight:700;margin-bottom:4px;}
 .mcard-change{font-family:var(--mono);font-size:11px;}
-.mcard-change.up{color:#00ff88;}
-.mcard-change.dn{color:#ff3b5c;}
-.mcard-change.neu{color:var(--muted);}
+.up{color:#00ff88;}.dn{color:#ff3b5c;}.neu{color:var(--muted);}
 .mcard-null{color:var(--muted);font-family:var(--mono);font-size:13px;}
 
-/* Sector bars */
-.sectors-grid{display:flex;flex-direction:column;gap:6px;}
-.sector-row{display:flex;align-items:center;gap:12px;background:var(--surface);
-    border:1px solid var(--border);border-radius:6px;padding:10px 14px;}
-.sector-label{font-size:13px;color:var(--muted2);width:150px;flex-shrink:0;font-weight:500;}
-.sector-bar-wrap{flex:1;background:var(--surface2);border-radius:3px;height:6px;overflow:hidden;}
-.sector-bar{height:100%;border-radius:3px;transition:width 0.4s ease;}
-.sector-pct{font-family:var(--mono);font-size:12px;width:62px;text-align:right;flex-shrink:0;}
-.sector-pct.up{color:#00ff88;}
-.sector-pct.dn{color:#ff3b5c;}
-.sector-pct.neu{color:var(--muted);}
+/* Sector 2-col bars */
+.sectors-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+@media(max-width:700px){.sectors-grid{grid-template-columns:1fr;}}
+.sector-row{display:flex;align-items:center;gap:12px;background:var(--surface2);
+    border-radius:5px;padding:9px 12px;}
+.sector-label{font-size:13px;color:var(--muted2);width:140px;flex-shrink:0;font-weight:500;}
+.sector-bar-wrap{flex:1;background:rgba(26,45,69,0.5);border-radius:3px;height:5px;overflow:hidden;}
+.sector-bar{height:100%;border-radius:3px;}
+.sector-pct{font-family:var(--mono);font-size:11px;width:58px;text-align:right;flex-shrink:0;}
 
-/* Loading */
+/* TradingView modal */
+.tv-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:9000;
+    align-items:center;justify-content:center;}
+.tv-modal-overlay.open{display:flex;}
+.tv-modal{background:var(--surface);border:1px solid var(--border);border-radius:10px;
+    width:min(900px,95vw);height:min(600px,90vh);display:flex;flex-direction:column;overflow:hidden;}
+.tv-modal-header{display:flex;align-items:center;justify-content:space-between;
+    padding:14px 20px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.tv-modal-title{font-family:var(--mono);font-size:13px;color:var(--text);}
+.tv-modal-price{font-family:var(--mono);font-size:13px;}
+.tv-modal-close{background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer;padding:0 4px;line-height:1;}
+.tv-modal-close:hover{color:var(--text);}
+.tv-modal-body{flex:1;overflow:hidden;}
+.tv-modal-body iframe{width:100%;height:100%;border:none;}
 .loading{text-align:center;padding:40px;color:var(--muted);font-family:var(--mono);font-size:12px;}
 </style>
 </head>
@@ -106,93 +124,154 @@ h1{font-family:var(--mono);font-size:14px;text-transform:uppercase;letter-spacin
 </nav>
 <main>
     <div class="page-header">
-        <h1>Market Overview</h1>
-        <div class="status-row">
+        <div class="page-header-left">
+            <h1>Market Overview</h1>
             <span class="market-status status-UNKNOWN" id="market-status">—</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
             <span class="as-of" id="as-of">—</span>
             <button class="refresh-btn" onclick="loadData(true)">↻ Refresh</button>
         </div>
     </div>
-
     <div id="content"><div class="loading">Loading market data…</div></div>
 </main>
 
+<!-- TradingView Modal -->
+<div class="tv-modal-overlay" id="tv-modal" onclick="if(event.target===this)closeModal()">
+    <div class="tv-modal">
+        <div class="tv-modal-header">
+            <div>
+                <div class="tv-modal-title" id="tv-modal-title">—</div>
+                <div class="tv-modal-price" id="tv-modal-price"></div>
+            </div>
+            <button class="tv-modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="tv-modal-body" id="tv-modal-body"></div>
+    </div>
+</div>
+
 <script>
-function fmt(v, d) {
-    if (v == null) return '-';
-    const n = Number(v);
-    if (d == null) {
-        if (Math.abs(n) >= 10000) return n.toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2});
-        if (Math.abs(n) >= 1000)  return n.toLocaleString('en-US', {minimumFractionDigits:2,maximumFractionDigits:2});
-        return n.toFixed(4);
-    }
-    return n.toFixed(d);
-}
+// TradingView symbol map
+const TV_SYMS = {
+    '^GSPC':'SP:SPX', '^IXIC':'NASDAQ:NDX', '^DJI':'DJ:DJI',
+    '^RUT':'TVC:RUT', '^VIX':'TVC:VIX',
+    'GC=F':'TVC:GOLD', 'CL=F':'TVC:USOIL', 'SI=F':'TVC:SILVER', 'NG=F':'TVC:NATURALGAS',
+    'EURUSD=X':'FX:EURUSD', 'GBPUSD=X':'FX:GBPUSD', 'JPY=X':'FX:USDJPY', 'AUDUSD=X':'FX:AUDUSD',
+    'BTC-USD':'BINANCE:BTCUSDT', 'ETH-USD':'BINANCE:ETHUSDT', 'SOL-USD':'BINANCE:SOLUSDT',
+};
+
+let _lastTs = 0;
+let _tsTimer = null;
 
 function fmtPrice(v, sym) {
     if (v == null) return '-';
     const n = Number(v);
-    // Forex: show 4 dp; large numbers: show 2 dp with commas; otherwise 2 dp
-    if (sym && (sym.includes('=X') || sym === 'JPY=X')) return n.toFixed(4);
-    if (n >= 1000) return n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+    if (sym && sym.includes('=X')) return n.toFixed(4);
+    if (n >= 1000) return n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
     if (n >= 10)   return n.toFixed(2);
     return n.toFixed(4);
 }
 
-function fmtChange(item) {
-    if (item.change == null || item.change_pct == null) return {html:'<span class="mcard-change neu">—</span>', cls:'neu'};
-    const pct = Number(item.change_pct);
+function fmtChg(item) {
+    const pct = item.change_pct, chg = item.change;
+    if (pct == null) return {html:'<span class="neu">—</span>', cls:'neu', pct:0};
     const cls = pct > 0 ? 'up' : pct < 0 ? 'dn' : 'neu';
     const sign = pct >= 0 ? '+' : '';
-    const chg = Number(item.change);
-    const chgStr = Math.abs(chg) >= 100 ? chg.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}) : chg.toFixed(2);
-    return {html:`<span class="mcard-change ${cls}">${sign}${pct.toFixed(2)}%  ${sign}${chgStr}</span>`, cls};
+    const chgStr = Math.abs(chg) >= 100
+        ? Number(chg).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})
+        : Number(chg).toFixed(2);
+    return {html:`<span class="mcard-change ${cls}">${sign}${Number(pct).toFixed(2)}%  ${sign}${chgStr}</span>`, cls, pct};
 }
 
 function buildCard(item) {
-    const {html: chgHtml} = fmtChange(item);
-    return `<div class="mcard">
+    const priceStr = item.price != null ? fmtPrice(item.price, item.sym) : null;
+    const {html: chgHtml} = fmtChg(item);
+    const hasTV = !!TV_SYMS[item.sym];
+    const onclick = hasTV ? `onclick="openModal('${item.sym}','${item.label.replace(/'/g,"\\'")}',${JSON.stringify(item.price)},${JSON.stringify(item.change_pct)})"` : '';
+    return `<div class="mcard" ${onclick}>
+        ${hasTV ? '<span class="mcard-chart-icon">📈</span>' : ''}
         <div class="mcard-sym">${item.sym}</div>
         <div class="mcard-label">${item.label}</div>
-        ${item.price != null
-            ? `<div class="mcard-price">${fmtPrice(item.price, item.sym)}</div>${chgHtml}`
+        ${priceStr
+            ? `<div class="mcard-price">${priceStr}</div>${chgHtml}`
             : '<div class="mcard-null">—</div>'}
     </div>`;
 }
 
-function buildSection(title, items, gridClass) {
-    return `<div class="section">
-        <div class="section-title">${title}</div>
-        <div class="cards-grid ${gridClass}">${items.map(buildCard).join('')}</div>
+function buildSection(id, title, items, gridClass) {
+    const collapseKey = 'mkt_section_' + id;
+    const collapsed   = localStorage.getItem(collapseKey) === 'collapsed';
+    return `<div class="section${collapsed?' collapsed':''}" id="sec-${id}">
+        <div class="section-hdr" onclick="toggleSection('${id}','${collapseKey}')">
+            <span class="section-title">${title}</span>
+            <span class="sec-chevron">▾</span>
+        </div>
+        <div class="section-body">
+            <div class="cards-grid ${gridClass}">${items.map(buildCard).join('')}</div>
+        </div>
     </div>`;
 }
 
 function buildSectors(items) {
-    // Find max abs pct for bar scaling
-    const maxPct = Math.max(...items.map(i => Math.abs(i.change_pct || 0)), 3);
+    const collapseKey = 'mkt_section_sectors';
+    const collapsed   = localStorage.getItem(collapseKey) === 'collapsed';
+    const maxPct = Math.max(...items.map(i => Math.abs(i.change_pct || 0)), 2);
     const rows = items.map(item => {
         const pct = item.change_pct;
-        if (pct == null) {
-            return `<div class="sector-row">
-                <div class="sector-label">${item.label}</div>
-                <div class="sector-bar-wrap"><div class="sector-bar" style="width:0"></div></div>
-                <div class="sector-pct neu">—</div>
-            </div>`;
-        }
+        if (pct == null) return `<div class="sector-row"><div class="sector-label">${item.label}</div><div class="sector-bar-wrap"></div><div class="sector-pct neu">—</div></div>`;
         const cls = pct > 0 ? 'up' : pct < 0 ? 'dn' : 'neu';
         const barColor = pct > 0 ? '#00ff88' : pct < 0 ? '#ff3b5c' : '#4a6380';
         const barW = Math.min(100, Math.abs(pct) / maxPct * 100).toFixed(1);
-        const sign = pct >= 0 ? '+' : '';
         return `<div class="sector-row">
             <div class="sector-label">${item.label}</div>
             <div class="sector-bar-wrap"><div class="sector-bar" style="width:${barW}%;background:${barColor}"></div></div>
-            <div class="sector-pct ${cls}">${sign}${Number(pct).toFixed(2)}%</div>
+            <div class="sector-pct ${cls}">${pct >= 0 ? '+' : ''}${Number(pct).toFixed(2)}%</div>
         </div>`;
-    });
-    return `<div class="section">
-        <div class="section-title">Sector Performance</div>
-        <div class="sectors-grid">${rows.join('')}</div>
+    }).join('');
+    return `<div class="section${collapsed?' collapsed':''}" id="sec-sectors">
+        <div class="section-hdr" onclick="toggleSection('sectors','${collapseKey}')">
+            <span class="section-title">Sector Performance</span>
+            <span class="sec-chevron">▾</span>
+        </div>
+        <div class="section-body">
+            <div class="sectors-grid">${rows}</div>
+        </div>
     </div>`;
+}
+
+function toggleSection(id, key) {
+    const sec = document.getElementById('sec-' + id);
+    if (!sec) return;
+    sec.classList.toggle('collapsed');
+    localStorage.setItem(key, sec.classList.contains('collapsed') ? 'collapsed' : 'expanded');
+}
+
+function openModal(sym, label, price, changePct) {
+    const tvSym = TV_SYMS[sym];
+    if (!tvSym) return;
+    document.getElementById('tv-modal-title').textContent = label;
+    const priceStr = price != null ? fmtPrice(price, sym) : '-';
+    const pctStr   = changePct != null ? ((changePct >= 0 ? '+' : '') + Number(changePct).toFixed(2) + '%') : '';
+    const pctColor = changePct > 0 ? '#00ff88' : changePct < 0 ? '#ff3b5c' : '#8aa4bf';
+    document.getElementById('tv-modal-price').innerHTML = `<span style="color:var(--muted2)">${priceStr}</span> <span style="color:${pctColor}">${pctStr}</span>`;
+    document.getElementById('tv-modal-body').innerHTML = `<iframe src="https://s.tradingview.com/widgetembed/?frameElementId=tv_modal&symbol=${encodeURIComponent(tvSym)}&interval=60&theme=dark&style=1&locale=en&toolbar_bg=%230d1520&hide_side_toolbar=0&allow_symbol_change=0&save_image=0&studies=[]&hideideas=1&utm_source=signalintel" allowtransparency="true" allow="autoplay; clipboard-write;" allowfullscreen=""></iframe>`;
+    document.getElementById('tv-modal').classList.add('open');
+}
+
+function closeModal() {
+    document.getElementById('tv-modal').classList.remove('open');
+    document.getElementById('tv-modal-body').innerHTML = '';
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+function startSecondCounter() {
+    clearInterval(_tsTimer);
+    _tsTimer = setInterval(() => {
+        const secs = Math.round((Date.now() - _lastTs) / 1000);
+        const el = document.getElementById('as-of');
+        if (el) el.textContent = `Updated ${secs}s ago`;
+    }, 1000);
 }
 
 async function loadData(force) {
@@ -201,29 +280,28 @@ async function loadData(force) {
     if (btn) { btn.textContent = '↻ Loading…'; btn.disabled = true; }
 
     const data = await fetch(url).then(r => r.json()).catch(() => null);
-
     if (btn) { btn.textContent = '↻ Refresh'; btn.disabled = false; }
     if (!data) {
         document.getElementById('content').innerHTML = '<div class="loading">Failed to load market data.</div>';
         return;
     }
 
-    // Status badge
     const statusEl = document.getElementById('market-status');
     statusEl.textContent = data.market_status + '  ' + (data.market_time || '');
-    statusEl.className = 'market-status status-' + (data.market_status || 'UNKNOWN');
-    document.getElementById('as-of').textContent = data.as_of ? 'As of ' + data.as_of : '';
+    statusEl.className   = 'market-status status-' + (data.market_status || 'UNKNOWN');
+
+    _lastTs = Date.now();
+    startSecondCounter();
 
     document.getElementById('content').innerHTML =
-        buildSection('Major Indices', data.indices, 'cards-indices') +
-        buildSection('Commodities', data.commodities, 'cards-4') +
-        buildSection('Forex', data.forex, 'cards-4') +
-        buildSection('Cryptocurrency', data.crypto, 'cards-3') +
+        buildSection('indices',     'Major Indices',    data.indices,     'cards-grid grid-5') +
+        buildSection('commodities', 'Commodities',      data.commodities, 'cards-grid grid-4') +
+        buildSection('forex',       'Forex',            data.forex,       'cards-grid grid-4') +
+        buildSection('crypto',      'Cryptocurrency',   data.crypto,      'cards-grid grid-3') +
         buildSectors(data.sectors);
 }
 
 loadData();
-// Auto-refresh every 60s
 setInterval(() => loadData(false), 60000);
 </script>
 </body>

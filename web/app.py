@@ -637,12 +637,12 @@ _MARKET_SYMS = {
     "crypto": [
         ("BTC-USD","Bitcoin"), ("ETH-USD","Ethereum"), ("SOL-USD","Solana"),
     ],
-    "sectors": [
-        ("XLK","Technology"), ("XLF","Financials"), ("XLE","Energy"),
-        ("XLV","Health Care"), ("XLI","Industrials"), ("XLY","Consumer Disc"),
-        ("XLP","Consumer Staples"), ("XLU","Utilities"), ("XLB","Materials"),
-        ("XLRE","Real Estate"), ("XLC","Comm Services"),
-    ],
+    "sectors": sorted([
+        ("XLB","Materials"), ("XLC","Comm Services"), ("XLE","Energy"),
+        ("XLF","Financials"), ("XLI","Industrials"), ("XLK","Technology"),
+        ("XLP","Consumer Staples"), ("XLRE","Real Estate"), ("XLU","Utilities"),
+        ("XLV","Health Care"), ("XLY","Consumer Disc"),
+    ], key=lambda x: x[1]),
 }
 _TAPE_SYMS = ["^GSPC","^IXIC","^DJI","^VIX","GC=F","CL=F","BTC-USD","ETH-USD"]
 _markets_cache = {"data": None, "ts": 0}
