@@ -518,6 +518,14 @@ async function loadPage() {
                 <div class="score-item" data-tip="Insider activity score based on recent buying and selling by company directors, officers and major shareholders. 100 = strong cluster buying"><div class="score-item-label">Insider</div><div class="score-item-value ${scoreC(s.insider_score)}">${fmt(s.insider_score,1)}</div></div>
                 <div class="score-item" data-tip="Mean reversion signal. Low score = price has moved far from average and may revert. High = trending strongly"><div class="score-item-label">Reversion</div><div class="score-item-value ${scoreC(s.reversion_score)}">${fmt(s.reversion_score,1)}</div></div>
                 <div class="score-item" data-tip="SEC EDGAR legal risk assessment. Penalises composite score for active enforcement actions, investigations or class actions"><div class="score-item-label">Legal</div><div class="score-item-value" style="color:${lr.risk_color}">${lr.risk_label}</div></div>
+                ${(()=>{
+                    const ss = s.sector_strength_score;
+                    const mod = s.sector_modifier_applied;
+                    if (ss == null) return '';
+                    const modStr = mod != null ? (mod >= 0 ? '+' : '') + fmt(mod, 1) : '';
+                    const ssC = ss >= 70 ? 'hi' : ss >= 40 ? 'mid' : 'bad';
+                    return `<div class="score-item" data-tip="Sector relative strength based on 7-day performance of the sector ETF (XLK for Technology, XLF for Financial, etc). Top-performing sectors boost composite score; lagging sectors apply a drag. Weight: ±7.5% max."><div class="score-item-label">Sector <span style="font-size:9px;cursor:help" title="Sector relative strength based on 7-day ETF performance, scaled 0-100. Score 50 = neutral. Modifier applies ±7.5% max adjustment to composite score.">(?)​</span></div><div class="score-item-value ${ssC}">${fmt(ss,0)}${modStr ? ` <span style="font-size:10px;color:${mod>=0?'#00ff88':'#ff3b5c'}">(${modStr})</span>` : ''}</div></div>`;
+                })()}
             </div>
         </div>
 
@@ -558,6 +566,12 @@ async function loadPage() {
                     <div class="radar-dim-score hi" id="rd-value">-</div>
                 </div>
             </div>
+        </div>
+
+        <!-- Sector Performance Ranking -->
+        <div class="card" id="sector-perf-card" style="margin-bottom:16px;display:none">
+            <div class="card-title">SECTOR PERFORMANCE <span style="font-size:10px;color:var(--muted);font-weight:400">(7-day, sector ETF)</span></div>
+            <div id="sector-bars"></div>
         </div>
 
         <!-- Fair Value + Analyst + Technical Summary -->
@@ -835,6 +849,36 @@ async function loadPage() {
                 </span>
             </div>`
         ).join('');
+    }
+
+    // Sector performance ranking card
+    const sectorPerf = data.sector_performance || [];
+    if (sectorPerf.length > 0) {
+        const tickerSector = sc.sector || '';
+        const card = document.getElementById('sector-perf-card');
+        const barsEl = document.getElementById('sector-bars');
+        card.style.display = '';
+
+        const maxAbs = Math.max(...sectorPerf.map(r => Math.abs(r.return_7d || 0)), 1);
+        barsEl.innerHTML = sectorPerf.map(r => {
+            const ret7 = r.return_7d != null ? r.return_7d : 0;
+            const isThis = r.sector === tickerSector;
+            const pct = ret7 / maxAbs * 100;
+            const barColor = isThis ? '#00d4ff' : (ret7 >= 0 ? '#00ff88' : '#ff3b5c');
+            const retStr = (ret7 >= 0 ? '+' : '') + ret7.toFixed(2) + '%';
+            const rankBadge = `<span style="font-size:9px;color:var(--muted);width:22px;text-align:right;display:inline-block">#${r.rank_7d}</span>`;
+            return `<div style="margin-bottom:6px">
+                <div style="display:flex;align-items:center;gap:8px;margin-bottom:2px">
+                    ${rankBadge}
+                    <span style="font-size:11px;font-family:var(--mono);width:180px;color:${isThis ? '#00d4ff' : 'var(--text)'};font-weight:${isThis ? '700' : '400'}">${r.sector}${isThis ? ' ←' : ''}</span>
+                    <span style="font-size:11px;font-family:var(--mono);color:${ret7 >= 0 ? '#00ff88' : '#ff3b5c'};width:56px;text-align:right">${retStr}</span>
+                    <span style="font-size:9px;color:var(--muted);width:36px;text-align:right">${r.etf_symbol}</span>
+                </div>
+                <div style="margin-left:30px;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+                    <div style="height:100%;width:${Math.abs(pct)}%;background:${barColor};border-radius:2px;${ret7 < 0 ? 'margin-left:auto' : ''}"></div>
+                </div>
+            </div>`;
+        }).join('');
     }
 
     initRadarChart(s, lr);

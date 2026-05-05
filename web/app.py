@@ -405,6 +405,20 @@ def api_sectors():
     return jsonify(rows)
 
 
+@app.route("/api/sector-performance")
+@login_required
+def api_sector_performance():
+    """Latest sector relative strength ranking (all 11 sectors)."""
+    rows = db_query("""
+        SELECT sector, etf_symbol, return_7d, return_30d,
+               rank_7d, sector_strength_score, date
+        FROM sector_performance
+        WHERE date = (SELECT MAX(date) FROM sector_performance)
+        ORDER BY rank_7d ASC
+    """)
+    return jsonify([dict(r) for r in rows] if rows else [])
+
+
 @app.route("/api/insider_signals")
 @login_required
 def api_insider_signals():
@@ -1215,6 +1229,15 @@ def api_ticker(ticker):
     except Exception:
         pass
 
+    # Sector performance ranking for bar chart on ticker page
+    sector_perf = db_query("""
+        SELECT sector, etf_symbol, return_7d, return_30d, rank_7d, sector_strength_score
+        FROM sector_performance
+        WHERE date = (SELECT MAX(date) FROM sector_performance)
+        ORDER BY rank_7d ASC
+    """)
+    sector_perf_list = [dict(r) for r in sector_perf] if sector_perf else []
+
     return jsonify({
         "ticker":               ticker,
         "screener":             sc,
@@ -1228,6 +1251,7 @@ def api_ticker(ticker):
         "legal_risk":           legal,
         "analyst_updated_at":   analyst_updated_at,
         "next_earnings_date":   next_earnings_date,
+        "sector_performance":   sector_perf_list,
     })
 
 
@@ -1589,7 +1613,58 @@ def api_backtest_stats():
             'trades':       sorted(s['trades'], key=lambda x: x['return_pct'], reverse=True),
         })
 
-    return jsonify({'stats': result, 'recent': recent})
+    # Sector comparison: top-3 vs bottom-3 sector Strong Buys
+    # Uses current sector rankings as proxy (historical sector data accumulates over time)
+    sector_comparison = {"top_avg": None, "bottom_avg": None, "spread": None,
+                         "top_n": 0, "bottom_n": 0, "note": ""}
+    try:
+        cur2 = conn if not conn.in_transaction else get_connection(DATABASE_PATH).cursor()
+        # Get current sector rankings
+        sp_rows = db_query("""
+            SELECT sector, rank_7d FROM sector_performance
+            WHERE date = (SELECT MAX(date) FROM sector_performance)
+        """)
+        top_sectors    = {r["sector"] for r in sp_rows if r["rank_7d"] and r["rank_7d"] <= 3}
+        bottom_sectors = {r["sector"] for r in sp_rows if r["rank_7d"] and r["rank_7d"] >= 9}
+
+        # Strong Buy periods with sector info
+        sb_periods = db_query("""
+            SELECT rc1.ticker,
+                   ROUND(((rc2.price_at_change - rc1.price_at_change) / rc1.price_at_change) * 100, 2) as return_pct,
+                   CAST(julianday(rc2.change_date) - julianday(rc1.change_date) AS INTEGER) as days_held,
+                   (SELECT sector FROM screener_snapshots WHERE ticker = rc1.ticker ORDER BY scraped_at DESC LIMIT 1) as sector
+            FROM rating_changes rc1
+            JOIN rating_changes rc2
+                ON rc1.ticker = rc2.ticker
+                AND rc2.change_date > rc1.change_date
+                AND NOT EXISTS (
+                    SELECT 1 FROM rating_changes rc3
+                    WHERE rc3.ticker = rc1.ticker
+                    AND rc3.change_date > rc1.change_date
+                    AND rc3.change_date < rc2.change_date
+                )
+            WHERE rc1.new_rating = 'STRONG_BUY'
+              AND rc1.price_at_change IS NOT NULL AND rc1.price_at_change > 0
+              AND rc2.price_at_change IS NOT NULL
+              AND CAST(julianday(rc2.change_date) - julianday(rc1.change_date) AS INTEGER) >= 30
+        """)
+
+        top_returns    = [r["return_pct"] for r in sb_periods if r["sector"] in top_sectors and r["return_pct"] is not None]
+        bottom_returns = [r["return_pct"] for r in sb_periods if r["sector"] in bottom_sectors and r["return_pct"] is not None]
+        top_avg    = round(sum(top_returns) / len(top_returns), 2) if top_returns else None
+        bottom_avg = round(sum(bottom_returns) / len(bottom_returns), 2) if bottom_returns else None
+        spread     = round(top_avg - bottom_avg, 2) if top_avg is not None and bottom_avg is not None else None
+
+        sector_comparison = {
+            "top_avg": top_avg, "bottom_avg": bottom_avg, "spread": spread,
+            "top_n": len(top_returns), "bottom_n": len(bottom_returns),
+            "top_sectors": sorted(top_sectors), "bottom_sectors": sorted(bottom_sectors),
+            "note": "Uses current sector rankings as proxy. Historical accuracy improves as daily sector data accumulates." if sp_rows else "No sector data yet.",
+        }
+    except Exception as e:
+        sector_comparison["note"] = f"Sector comparison unavailable: {e}"
+
+    return jsonify({'stats': result, 'recent': recent, 'sector_comparison': sector_comparison})
 
 
 

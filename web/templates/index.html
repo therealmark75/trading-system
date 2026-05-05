@@ -345,6 +345,15 @@
 <div id="panel-sectors" class="panel">
     <div id="sector-overview">
         <div class="section-header"><div class="section-title">Sector Performance</div></div>
+        <!-- 7-day relative strength leaderboard -->
+        <div style="margin-bottom:20px">
+            <div style="font-family:var(--mono);font-size:10px;color:var(--muted2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">
+                7-Day Relative Strength (ETF)
+                <span style="font-size:9px;font-weight:400;color:var(--muted)"> — score 0-100 used as composite modifier</span>
+            </div>
+            <div id="sector-leaderboard" style="font-size:12px"><span style="color:var(--muted)">Loading…</span></div>
+        </div>
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted2);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">Today's Signals by Sector</div>
         <div id="sector-grid" class="sector-grid"></div>
     </div>
     <div id="sector-drilldown" style="display:none">
@@ -674,7 +683,34 @@ function renderSignalTable(signals, page) {
 
 // ── Sectors ────────────────────────────────────────
 async function loadSectors() {
-    const sectors = await fetch('/api/sectors').then(r=>r.json());
+    const [sectors, sectorRs] = await Promise.all([
+        fetch('/api/sectors').then(r=>r.json()),
+        fetch('/api/sector-performance').then(r=>r.json()).catch(()=>[]),
+    ]);
+
+    // Sector Relative Strength leaderboard
+    const lbEl = document.getElementById('sector-leaderboard');
+    if (lbEl && sectorRs.length) {
+        const maxAbs = Math.max(...sectorRs.map(r=>Math.abs(r.return_7d||0)), 0.1);
+        lbEl.innerHTML = sectorRs.map(r => {
+            const ret = r.return_7d != null ? r.return_7d : 0;
+            const c = ret >= 0 ? 'var(--accent2)' : 'var(--danger)';
+            const barPct = Math.abs(ret) / maxAbs * 100;
+            const ss = r.sector_strength_score;
+            const ssC = ss >= 70 ? '#00ff88' : ss >= 40 ? '#94a3b8' : '#ff3b5c';
+            return `<div style="display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid var(--border)" onclick="openSectorDrilldown('${r.sector.replace(/'/g,"\\'")}')" style="cursor:pointer">
+                <span style="font-size:10px;color:var(--muted);width:16px;text-align:right">${r.rank_7d}</span>
+                <span style="font-size:12px;font-family:var(--mono);flex:1;cursor:pointer;color:var(--accent)" onclick="openSectorDrilldown('${r.sector.replace(/'/g,"\\'")}')">${r.sector}</span>
+                <span style="font-size:10px;font-family:var(--mono);width:40px;text-align:right;color:var(--muted)">${r.etf_symbol}</span>
+                <div style="width:80px;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+                    <div style="height:100%;width:${barPct}%;background:${c};border-radius:2px"></div>
+                </div>
+                <span style="font-size:11px;font-family:var(--mono);width:54px;text-align:right;color:${c}">${ret>=0?'+':''}${ret.toFixed(2)}%</span>
+                <span style="font-size:9px;font-family:var(--mono);width:28px;text-align:right;color:${ssC}">${ss.toFixed(0)}</span>
+            </div>`;
+        }).join('');
+    }
+
     if(!sectors.length){
         document.getElementById('sector-grid').innerHTML='<div class="loading">No sector data</div>';return;
     }
