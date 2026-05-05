@@ -486,6 +486,15 @@ function applyPreset(name) {
         document.getElementById('f-rsi-max').value = 35;
     } else if (name === 'high_short') {
         state.sort = 'short_interest_pct'; state.dir = 'desc';
+    } else if (name === 'high_insider') {
+        state.sort = 'insider_score'; state.dir = 'desc';
+        state.score_min = 55;
+        document.getElementById('f-score-min').value = 55;
+    } else if (name === 'undervalued' || name === 'legally_clean') {
+        state.ratings = ['STRONG_BUY','BUY'];
+        state.upside_min = name === 'undervalued' ? 15 : '';
+        document.querySelectorAll('#f-ratings input').forEach(i => { i.checked = state.ratings.includes(i.value); });
+        if (name === 'undervalued') document.getElementById('f-upside-min').value = 15;
     }
     state.page = 1;
     load();
@@ -540,8 +549,13 @@ function exportCSV() {
     });
 }
 
-// Initial load
+// Initial load — check for preset param in URL
 state.ratings = [...document.querySelectorAll('#f-ratings input:checked')].map(i => i.value);
+const _urlPreset = new URLSearchParams(window.location.search).get('preset');
+if (_urlPreset) {
+    // slight delay so DOM is ready
+    setTimeout(() => applyPreset(_urlPreset === 'high_insider' ? 'momentum' : _urlPreset), 0);
+}
 loadWatchlist().then(() => load());
 </script>
 </body>

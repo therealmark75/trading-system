@@ -140,6 +140,25 @@
     
 .sortable { cursor: pointer; user-select: none; }
 .sortable:hover { color: var(--accent); }
+
+/* Discovery Themes */
+.themes-section{margin-bottom:24px;}
+.themes-header{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:2px;
+    color:var(--muted);margin-bottom:12px;}
+.themes-scroll{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;scrollbar-width:thin;
+    scrollbar-color:var(--border) transparent;}
+.themes-scroll::-webkit-scrollbar{height:4px;}
+.themes-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
+.theme-card{flex-shrink:0;width:200px;background:var(--surface);border:1px solid var(--border);
+    border-radius:10px;padding:16px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+.theme-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.theme-card:hover{transform:translateY(-2px);border-color:rgba(0,212,255,0.4);}
+.theme-icon{font-size:22px;margin-bottom:8px;}
+.theme-name{font-family:var(--mono);font-size:11px;font-weight:700;color:var(--text);
+    text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;}
+.theme-desc{font-size:11px;color:var(--muted);line-height:1.4;}
+.theme-count{font-family:var(--mono);font-size:10px;color:var(--muted);margin-top:8px;}
+
 /* Ratings Guide Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;
     align-items:center;justify-content:center;}
@@ -200,6 +219,55 @@
 
 <!-- TODAY'S TOP 10 -->
 <div id="panel-today" class="panel active">
+    <!-- Discovery Themes -->
+    <div class="themes-section">
+        <div class="themes-header">Discovery Themes</div>
+        <div class="themes-scroll" id="themes-row">
+            <div class="theme-card" style="border-top-color:#00ff88" onclick="applyTheme('strong_buys')">
+                <div class="theme-icon">🚀</div>
+                <div class="theme-name">Strong Buy Momentum</div>
+                <div class="theme-desc">Highest conviction signals with strong composite scores</div>
+                <div class="theme-count" id="theme-count-0">Loading...</div>
+            </div>
+            <div class="theme-card" style="border-top-color:#facc15" onclick="applyTheme('dividends')">
+                <div class="theme-icon">💰</div>
+                <div class="theme-name">Dividend Powerhouses</div>
+                <div class="theme-desc">High-yield stocks with consecutive dividend growth</div>
+                <div class="theme-count" id="theme-count-1">—</div>
+            </div>
+            <div class="theme-card" style="border-top-color:#00d4ff" onclick="applyTheme('oversold')">
+                <div class="theme-icon">📉</div>
+                <div class="theme-name">Buy the Dip</div>
+                <div class="theme-desc">RSI oversold stocks with positive signal ratings</div>
+                <div class="theme-count" id="theme-count-2">Loading...</div>
+            </div>
+            <div class="theme-card" style="border-top-color:#ff9500" onclick="applyTheme('earnings_week')">
+                <div class="theme-icon">📅</div>
+                <div class="theme-name">Earnings This Week</div>
+                <div class="theme-desc">Stocks reporting earnings in the next 7 days</div>
+                <div class="theme-count" id="theme-count-3">Loading...</div>
+            </div>
+            <div class="theme-card" style="border-top-color:#00ff88" onclick="applyTheme('legally_clean')">
+                <div class="theme-icon">⚖️</div>
+                <div class="theme-name">Legally Clean</div>
+                <div class="theme-desc">No SEC enforcement, investigations or class actions</div>
+                <div class="theme-count" id="theme-count-4">Loading...</div>
+            </div>
+            <div class="theme-card" style="border-top-color:#af52de" onclick="applyTheme('insider_buying')">
+                <div class="theme-icon">🏦</div>
+                <div class="theme-name">Insider Buying Surge</div>
+                <div class="theme-desc">High insider score — directors and officers are buying</div>
+                <div class="theme-count" id="theme-count-5">Loading...</div>
+            </div>
+            <div class="theme-card" style="border-top-color:#ff6b35" onclick="applyTheme('undervalued')">
+                <div class="theme-icon">💎</div>
+                <div class="theme-name">Undervalued</div>
+                <div class="theme-desc">Positive upside to target price with Buy+ rating</div>
+                <div class="theme-count" id="theme-count-6">Loading...</div>
+            </div>
+        </div>
+    </div>
+
     <div class="section-header" style="margin-bottom:20px">
         <div class="section-title">Today's Top 10 Signals —</div>
     </div>
@@ -350,6 +418,38 @@ function applyRatingFilter(rating) {
         if(b.getAttribute('onclick') && b.getAttribute('onclick').includes(rating)) 
             b.classList.add('active');
     });
+}
+
+function applyTheme(theme) {
+    const routes = {
+        strong_buys:   '/screener?preset=strong_buys',
+        dividends:     '/dividends',
+        oversold:      '/screener?preset=oversold',
+        earnings_week: '/earnings',
+        legally_clean: '/screener?preset=legally_clean',
+        insider_buying:'/screener?preset=high_insider',
+        undervalued:   '/screener?preset=undervalued',
+    };
+    window.location.href = routes[theme] || '/screener';
+}
+
+async function loadThemeCounts() {
+    try {
+        const data = await fetch('/api/screener?per_page=1&sort=composite_score&dir=desc').then(r=>r.json());
+        // Just show total; individual theme counts would need extra API calls
+        // Use screener API for a few quick counts
+        const [strongBuys, oversold, insiderBuying, undervalued] = await Promise.all([
+            fetch('/api/screener?rating=STRONG_BUY,BUY&score_min=60&per_page=1').then(r=>r.json()).catch(()=>({total:0})),
+            fetch('/api/screener?rsi_max=35&per_page=1').then(r=>r.json()).catch(()=>({total:0})),
+            fetch('/api/screener?per_page=1&sort=composite_score&dir=desc').then(r=>r.json()).catch(()=>({total:0})),
+            fetch('/api/screener?upside_min=15&rating=STRONG_BUY,BUY&per_page=1').then(r=>r.json()).catch(()=>({total:0})),
+        ]);
+        const ec = await fetch('/api/economic-calendar?from=' + new Date().toISOString().slice(0,10)).then(r=>r.json()).catch(()=>[]);
+
+        document.getElementById('theme-count-0').textContent = `${strongBuys.total?.toLocaleString() || '—'} stocks`;
+        document.getElementById('theme-count-2').textContent = `${oversold.total?.toLocaleString() || '—'} stocks`;
+        document.getElementById('theme-count-6').textContent = `${undervalued.total?.toLocaleString() || '—'} stocks`;
+    } catch(e) {}
 }
 
 function filterByRating(rating) {
@@ -726,6 +826,9 @@ setInterval(()=>{
     const active=document.querySelector('.panel.active')?.id?.replace('panel-','');
     if(active&&active!=='today') showPanel(active, null);
 },5*60*1000);
+
+// Load theme counts on page load
+loadThemeCounts();
 </script>
 
 <script>
