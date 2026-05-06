@@ -1,4 +1,9 @@
 __pycache__/
 *.pyc
+*.pyo
 data/trading_system.db
 config/settings.py
+venv/
+.DS_Store
+logs/
+*.log
