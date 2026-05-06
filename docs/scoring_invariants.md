@@ -302,3 +302,49 @@ Theme IDs (e.g. `strong_buy_momentum`, `buy_the_dip`) are used as URL parameters
 Theme labels (e.g. "Top Signal Momentum", "Oversold Signals") are user-facing and may be updated in `config/themes.py`. The homepage and screener consume the canonical `THEMES` list — updating the label in one place is sufficient.
 
 **Applies to:** `config/themes.py`, `web/templates/index.html` theme card names, `web/templates/screener.html` preset button labels.
+
+---
+
+## P1.1 — Inventory Before Edit (The Migration Rule)
+
+Migration sessions, refactors, and any change touching more than one surface MUST begin with an inventory pass. Before any code change, produce and report the full list of files that render, reference, or depend on the affected data. The migration is then executed against that explicit list.
+
+The inventory is built by:
+- `grep` across `web/templates/`, `web/static/`, `scrapers/`, `notifications/`, `signals/`, `database/`, `docs/`
+- Listing every template, JS file, Python module, and doc that touches the affected concept
+- Flagging surfaces where the affected concept is referenced indirectly (e.g. CSS class names, URL parameters, column headers)
+
+The inventory is reported BEFORE making changes. The user reviews the inventory and confirms scope. Only then does the migration proceed.
+
+This prevents "reported complete but partial" migrations where Claude Code lists what was changed without auditing what should have been changed.
+
+---
+
+## P1.2 — Migration Completeness Is Verified by Absence, Not Presence
+
+A migration is complete when:
+- (a) All inventoried surfaces have been updated, AND
+- (b) A grep for the OLD pattern across user-facing files returns zero matches
+
+Reporting "all listed surfaces updated" is insufficient. The final step of any migration is the absence grep — confirming the old pattern has been eliminated, not just confirming the new pattern was added in the places we thought to look.
+
+For Signal Strength: the final grep was:
+```
+grep -rn "STRONG_BUY\|STRONG BUY\|Strong Buy" web/templates/ --include="*.html" | grep -v "value=\|== \|FinViz"
+```
+returning zero matches.
+
+For future migrations: define the equivalent grep in the migration prompt itself. The migration is not done until that grep is clean.
+
+---
+
+## P1.3 — Reports Must Be Audit Tables, Not Narrative Summaries
+
+When Claude Code completes a migration or multi-surface change, the final report MUST be structured as an audit table, not a narrative paragraph. Required columns:
+
+| Surface | Old state | New state | Verified by |
+|---|---|---|---|
+
+"Verified by" is the specific check performed (grep returned zero, browser hard-refresh confirmed, curl response inspected).
+
+Narrative summaries like "the templates were updated and the file was added" obscure what wasn't checked. Audit tables make gaps visible because empty rows are obvious.
