@@ -16,6 +16,11 @@ header{position:sticky;top:0;z-index:100;background:rgba(8,12,20,0.95);backdrop-
 .nav-link:hover,.nav-link.active{color:var(--accent);}
 .nav-btn{font-family:var(--mono);font-size:11px;color:var(--muted2);background:transparent;border:1px solid var(--border);border-radius:4px;padding:4px 10px;cursor:pointer;transition:all .15s;white-space:nowrap;}
 .nav-btn:hover{color:var(--accent);border-color:var(--accent);}
+.nav-tier{font-family:var(--mono);font-size:9px;font-weight:700;letter-spacing:.5px;padding:2px 6px;border-radius:3px;white-space:nowrap;}
+.nav-tier-free{color:#64748b;border:1px solid #64748b;}
+.nav-tier-starter{color:#3b82f6;border:1px solid #3b82f6;}
+.nav-tier-pro{color:#a855f7;border:1px solid #a855f7;}
+.nav-tier-elite{color:#00ff88;border:1px solid rgba(0,255,136,.45);}
 </style>
 <header>
     <a href="/" class="logo">SIGNAL<span>INTEL</span></a>
@@ -24,6 +29,7 @@ header{position:sticky;top:0;z-index:100;background:rgba(8,12,20,0.95);backdrop-
         <div class="live-dot">LIVE</div>
         <span class="nav-ts" id="last-updated"></span>
         <span class="nav-user">{{ user.username if user else '' }}</span>
+        {% if user %}<span class="nav-tier nav-tier-{{ user.tier or 'free' }}">{{ (user.tier or 'free')|upper }}</span>{% endif %}
         <div class="nav-sep"></div>
         <a href="/" class="nav-link{{ ' active' if request.path == '/' else '' }}">Dashboard</a>
         <a href="/ratings" class="nav-link{{ ' active' if request.path == '/ratings' else '' }}">Signal Tiers</a>

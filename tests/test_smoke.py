@@ -217,3 +217,113 @@ def test_wl_picker_partial_included_on_screener(client):
     """
     resp = client.get("/screener")
     assert b'wl-picker-drop' in resp.data
+
+
+# ── BUG-001 + BUG-002 tests ──────────────────────────────────────────
+
+def test_nav_tier_badge_present_on_page(client):
+    """
+    Every authenticated page must expose the tier badge element so users
+    can see their subscription level in the nav bar. Spot-check: /screener.
+
+    Catches: tier badge removed from _nav.html or class renamed.
+    Ignores: specific tier value (test user is elite), badge styling.
+    """
+    resp = client.get("/screener")
+    assert resp.status_code == 200
+    assert b'nav-tier' in resp.data, "_nav.html missing .nav-tier badge element"
+
+
+def test_nav_tier_badge_present_on_watchlist(client):
+    """
+    /watchlist must include the tier badge — catches regressions where the
+    watchlist page accidentally uses a different base template.
+
+    Catches: watchlist page missing tier badge in nav.
+    Ignores: tier value, exact badge text.
+    """
+    resp = client.get("/watchlist")
+    assert resp.status_code == 200
+    assert b'nav-tier' in resp.data
+
+
+def test_api_watchlists_create_tier_limit_returns_structured_error(client):
+    """
+    When a user at their watchlist limit POSTs to /api/watchlists, the server
+    must return a machine-readable error object with error='tier_limit' and
+    numeric limit/current fields — not a plain string.
+
+    Catches: plain-string error response ('Watchlist limit reached...') that
+             the picker cannot render as a CTA.
+    Ignores: exact upgrade_to value, tier_name wording.
+    """
+    import json as _json
+    from database.db import get_connection
+    from config.settings import DATABASE_PATH as DB
+
+    # Use 'starter' (limit=5) so current_user()'s markn auto-upgrade doesn't
+    # trigger (it only fires for tier='free').
+    conn = get_connection(DB)
+    conn.execute("UPDATE users SET tier='starter' WHERE id=2")
+    conn.execute("DELETE FROM watchlists WHERE user_id=2")
+    conn.execute("DELETE FROM watchlists_meta WHERE user_id=2")
+    for i in range(5):
+        conn.execute(
+            "INSERT INTO watchlists_meta(user_id,name,sort_order) VALUES(2,?,?)",
+            (f'WL-{i}', i))
+    conn.commit()
+    conn.close()
+
+    try:
+        resp = client.post("/api/watchlists",
+                           data=_json.dumps({"name": "WL-overflow"}),
+                           content_type="application/json")
+        assert resp.status_code == 403
+        data = _json.loads(resp.data)
+        assert data.get("error") == "tier_limit", f"expected error='tier_limit', got {data}"
+        assert "limit" in data and isinstance(data["limit"], int)
+        assert "current" in data and isinstance(data["current"], int)
+        assert "feature" in data
+    finally:
+        conn = get_connection(DB)
+        conn.execute("DELETE FROM watchlists WHERE user_id=2")
+        conn.execute("DELETE FROM watchlists_meta WHERE user_id=2")
+        conn.execute("UPDATE users SET tier='elite' WHERE id=2")
+        conn.commit()
+        conn.close()
+
+
+def test_no_literal_unauthorized_in_user_facing_html(client):
+    """
+    The string 'unauthorized' must never appear in any rendered page body —
+    it is an internal API term and must not leak to users.
+
+    Catches: login_required returning raw 'unauthorized' that gets
+             re-rendered inside a page template.
+    Ignores: JS source comments inside _watchlist_picker.html that
+             are not visible to end-users (this test hits page routes,
+             not API routes, so login_required redirects for pages).
+    """
+    for path in PAGE_ROUTES:
+        resp = client.get(path)
+        assert resp.status_code == 200
+        assert b'unauthorized' not in resp.data.lower(), \
+            f"{path} contains literal 'unauthorized' in HTML body"
+
+
+def test_api_session_expired_returns_structured_error(flask_app):
+    """
+    An unauthenticated call to an API route must return
+    error='session_expired' (not 'unauthorized') with a login_url field.
+
+    Catches: login_required returning old raw 'unauthorized' string.
+    Ignores: exact HTTP status code beyond being 4xx.
+    """
+    import json as _json
+    with flask_app.test_client() as c:
+        resp = c.get("/api/signals")
+        assert resp.status_code == 401
+        data = _json.loads(resp.data)
+        assert data.get("error") == "session_expired", \
+            f"expected error='session_expired', got {data.get('error')!r}"
+        assert "login_url" in data
