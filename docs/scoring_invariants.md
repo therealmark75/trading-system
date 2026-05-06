@@ -348,3 +348,29 @@ When Claude Code completes a migration or multi-surface change, the final report
 "Verified by" is the specific check performed (grep returned zero, browser hard-refresh confirmed, curl response inspected).
 
 Narrative summaries like "the templates were updated and the file was added" obscure what wasn't checked. Audit tables make gaps visible because empty rows are obvious.
+
+---
+
+## P15 — Test Design Must Articulate Both Signal and Silence
+
+Every test must be designed and described so the author can answer two questions:
+
+1. **What specific regression would trip this test?** (One concrete example.)
+2. **What legitimate code or content would NOT trip it?** (One concrete example, especially for grep-based or pattern-matching tests.)
+
+A test that fires on everything creates noise, gets disabled, and protects nothing. A test that fires on nothing provides false confidence and protects nothing. The space between those failure modes is where useful tests live.
+
+**Examples drawn from this codebase:**
+
+Good — `test_no_directive_language_in_templates`:
+- **Catches:** `<span>Strong Buy</span>` rendered as display text
+- **Ignores:** `value="STRONG_BUY"`, `rating-STRONG_BUY` CSS class, `{'STRONG_BUY': 'Very Strong'}` JS map keys, `{% if rating == 'STRONG_BUY' %}` template logic
+- **Mechanism:** `allowed_substrings` list defines identifier contexts; anything not matching those contexts is treated as display text by elimination
+
+Bad pattern (avoid): `assert "STRONG_BUY" not in template`
+- Would fire on every form value, every CSS class, every map key, every comparison. False positive factory.
+
+Bad pattern (avoid): `assert "Strong Buy" not in template.lower()`
+- Lowercasing means "stronger buyout" or unrelated prose containing those words would also fire. Pattern is too broad.
+
+When writing or reviewing a test, the test docstring must include both a *Catches* example and an *Ignores* example for any pattern-matching or grep-based check. If the author cannot produce both, the test is not ready to commit.

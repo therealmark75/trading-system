@@ -89,7 +89,12 @@ def test_strong_buy_momentum_theme_count(db, latest_run_date):
 
 
 def test_theme_labels_use_descriptive_names():
-    """P13/P14: theme labels must not use old directive language."""
+    """
+    P13/P14/P15: theme labels must not use old directive language.
+
+    Catches: theme["label"] == "Strong Buy Momentum" — directive label still present.
+    Ignores: theme["id"] == "strong_buy_momentum" — stable URL/API key, never renamed (P14).
+    """
     banned = ["Strong Buy", "Buy the Dip", "Insider Buying Surge"]
     for theme in THEMES:
         for phrase in banned:

@@ -80,9 +80,15 @@ def test_tier_colour_all_tiers():
 
 def test_templates_contain_no_directive_buy_sell_labels():
     """
-    P1.2 absence test: templates must not contain old directive Buy/Sell display labels.
-    Excludes FinViz analyst scale labels (legitimate external references).
-    Excludes internal value= attributes and Python constants.
+    P1.2/P15 absence test: templates must not render old directive Buy/Sell display text.
+
+    Catches: <span>Strong Buy</span>, <div>Strong Buy: AAPL</div> — directive language
+             as rendered display text.
+    Ignores: value="STRONG_BUY" (form identifiers), rating-STRONG_BUY (CSS classes),
+             {'STRONG_BUY': 'Very Strong'} (JS map keys), 1=Strong Buy (FinViz analyst
+             scale legend), ['','Strong Buy',...] (FinViz analyst scale JS array).
+    Mechanism: allowed_substrings defines identifier contexts; any hit not matching
+               those contexts is treated as display text by elimination.
     """
     # Patterns that must not appear in user-facing display text
     banned_patterns = [
@@ -123,7 +129,12 @@ def test_templates_contain_no_directive_buy_sell_labels():
 
 
 def test_theme_labels_are_descriptive():
-    """P13/P14: theme labels must not use old directive language."""
+    """
+    P13/P14/P15: theme labels must not use old directive language.
+
+    Catches: theme label == "Strong Buy Momentum" or "Buy the Dip" — old directive names.
+    Ignores: theme id == "strong_buy_momentum" or "buy_the_dip" — stable IDs (P14).
+    """
     from config.themes import THEMES
     banned = ["Strong Buy", "Buy the Dip", "Insider Buying Surge"]
     for theme in THEMES:
