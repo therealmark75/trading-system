@@ -85,6 +85,7 @@ window.WlPicker = (function(){
         const data = await fetch('/api/watchlists?ticker=' + encodeURIComponent(ticker))
                            .then(r => r.json()).catch(() => null);
         if (!data) return;
+        if (data.error === 'session_expired') { window.location.href = data.login_url || '/login'; return; }
         _state = data;
         const wls = data.watchlists || [];
 
@@ -144,6 +145,7 @@ window.WlPicker = (function(){
         if (inIt) {
             const d = await fetch(`/api/watchlists/${wlId}/tickers/${_ticker}`, {method:'DELETE'})
                            .then(r => r.json()).catch(() => ({}));
+            if (d.error === 'session_expired') { window.location.href = d.login_url || '/login'; return; }
             if (d.ok) {
                 const wl = (_state.watchlists||[]).find(w=>w.id===wlId);
                 if (wl) { wl.contains_ticker=false; wl.ticker_count=Math.max(0,(wl.ticker_count||1)-1); }
@@ -155,6 +157,7 @@ window.WlPicker = (function(){
                 method:'POST', headers:{'Content-Type':'application/json'},
                 body: JSON.stringify({ticker:_ticker})
             }).then(r => r.json()).catch(() => ({}));
+            if (d.error === 'session_expired') { window.location.href = d.login_url || '/login'; return; }
             if (d.ok) {
                 const wl = (_state.watchlists||[]).find(w=>w.id===wlId);
                 if (wl) { wl.contains_ticker=true; wl.ticker_count=(wl.ticker_count||0)+1; }
@@ -193,9 +196,17 @@ window.WlPicker = (function(){
         }).then(r=>r.json()).catch(()=>({}));
 
         if (!cr.ok) {
-            const err = cr.error || 'Error creating watchlist';
+            if (cr.error === 'session_expired') {
+                window.location.href = cr.login_url || '/login'; return;
+            }
             if (isAuto) { if (window.showWlToast) showWlToast(_ticker, false, name); return; }
-            document.getElementById('wl-picker-err').textContent = err;
+            if (cr.error === 'tier_limit') {
+                const to = cr.upgrade_to ? ` Upgrade to ${cr.upgrade_to.charAt(0).toUpperCase()+cr.upgrade_to.slice(1)} for more.` : '';
+                document.getElementById('wl-picker-err').innerHTML =
+                    `Watchlist limit reached (${cr.current}/${cr.limit} · ${cr.tier_name}).${to} <a href="/pricing" style="color:#00d4ff;text-decoration:none">View plans →</a>`;
+            } else {
+                document.getElementById('wl-picker-err').textContent = cr.error || 'Error creating watchlist';
+            }
             return;
         }
         const wlId = cr.id;

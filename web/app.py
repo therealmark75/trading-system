@@ -22,7 +22,7 @@ from database.db import (
     add_to_watchlist, remove_from_watchlist,
     get_top_signals_of_day, generate_top_signals_of_day,
 )
-from config.tiers import can_create_watchlist, watchlist_limit, get_tier
+from config.tiers import can_create_watchlist, watchlist_limit, get_tier, next_tier
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = "signalintel-secret-change-in-production-2026"
@@ -107,7 +107,9 @@ def login_required(f):
         if "user_id" not in session:
             # Return JSON 401 for API routes, redirect for page routes
             if request.path.startswith('/api/'):
-                return jsonify({"error": "unauthorized"}), 401
+                return jsonify({"error": "session_expired",
+                                "message": "Your session has expired. Please log in again.",
+                                "login_url": "/login"}), 401
             return redirect(url_for("login"))
         return f(*args, **kwargs)
     return decorated
@@ -336,8 +338,18 @@ def api_watchlists_create():
     wls = get_watchlists_meta(DATABASE_PATH, user["id"])
     tier_key = user.get("tier", "free")
     if not can_create_watchlist(tier_key, len(wls)):
-        limit = watchlist_limit(tier_key)
-        return jsonify({"ok": False, "error": f"Watchlist limit reached ({limit}). Upgrade to create more."}), 403
+        limit    = watchlist_limit(tier_key)
+        tier_cfg = get_tier(tier_key)
+        return jsonify({
+            "ok":         False,
+            "error":      "tier_limit",
+            "feature":    "watchlists",
+            "tier":       tier_key,
+            "tier_name":  tier_cfg["display_name"],
+            "limit":      limit,
+            "current":    len(wls),
+            "upgrade_to": next_tier(tier_key),
+        }), 403
     try:
         result = create_watchlist(DATABASE_PATH, user["id"], name)
         return jsonify({"ok": True, **result})

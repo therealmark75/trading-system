@@ -49,3 +49,12 @@ def can_create_watchlist(tier_key: str, current_count: int) -> bool:
     if limit is None:
         return True
     return current_count < limit
+
+
+def next_tier(tier_key: str):
+    """Return the key of the next tier above this one, or None if already at max."""
+    current_order = get_tier(tier_key).get('order', 0)
+    for key, cfg in USER_TIERS.items():
+        if cfg['order'] == current_order + 1:
+            return key
+    return None
