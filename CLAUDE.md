@@ -1,3 +1,10 @@
+> **Session bootstrap.** At the start of any session, read these two files in order before doing anything else:
+>
+> 1. `PROJECT_CONTEXT.md` — stable project context (Athena's role, SignalIntel overview, 7-tier rating system, P1-P17 invariants, communication norms, roadmap). Rarely changes.
+> 2. `HANDOFF.md` — current session state (what's running, inflight, queued, recent session log). Updated every session.
+>
+> `HANDOFF.md` contains its own update instructions. When Mark says "update the handoff" or similar, follow those instructions exactly. Do not modify `PROJECT_CONTEXT.md` or this file unless explicitly told to.
+
 # SignalIntel — Project Context for Claude Code
 
 > **Before making changes, consult `docs/scoring_invariants.md`** for both data correctness rules (invariants 1–11) and development process rules (P1–P15). These rules apply to every change made in this project.
