@@ -209,6 +209,14 @@ def initialise_schema(db_path: str) -> None:
         )
     """)
 
+    # ── Scheduler meta (watermarks, idempotency guards) ──────────
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS scheduler_meta (
+            key    TEXT PRIMARY KEY,
+            value  TEXT
+        )
+    """)
+
     conn.commit()
     conn.close()
     logger.info(f"Database schema ready at: {db_path}")
@@ -1033,17 +1041,43 @@ def update_analyst_recom(db_path: str, recom_map: dict) -> int:
 def detect_rating_changes(db_path: str) -> list:
     """After each signal run, check for new rating changes and log them.
     Returns list of change dicts: ticker, old_rating, new_rating, price, composite_score.
+
+    Idempotency: a watermark in scheduler_meta tracks the last signal_scores batch
+    (by MAX scored_at) that was processed. Calling this function multiple times with
+    the same signal_scores data returns [] on every call after the first.
     """
     conn = get_connection(db_path)
     cur = conn.cursor()
     changes = []
     try:
-        # Get today's signals
+        # Watermark guard: skip if this signal_scores batch was already processed
+        cur.execute("SELECT MAX(scored_at) as max_ts FROM signal_scores")
+        row = cur.fetchone()
+        current_max_ts = row['max_ts'] if row else None
+        if not current_max_ts:
+            logger.info("detect_rating_changes: no signal_scores rows, skipping")
+            return []
+
+        cur.execute(
+            "SELECT value FROM scheduler_meta WHERE key = 'rating_changes_watermark'"
+        )
+        wm_row = cur.fetchone()
+        watermark = wm_row['value'] if wm_row else None
+
+        if watermark == current_max_ts:
+            logger.info(
+                "detect_rating_changes: no new signal_scores batch since %s, skipping",
+                watermark,
+            )
+            return []
+
+        # Get the latest signal for each ticker (one row per ticker after dedup)
         cur.execute("""
             SELECT ss.ticker, ss.rating, ss.composite_score, DATE(ss.scored_at) as day
             FROM signal_scores ss
-            WHERE DATE(ss.scored_at) = DATE((SELECT MAX(scored_at) FROM signal_scores))
-            GROUP BY ss.ticker
+            WHERE ss.scored_at = (
+                SELECT MAX(s2.scored_at) FROM signal_scores s2 WHERE s2.ticker = ss.ticker
+            )
         """)
         today_signals = cur.fetchall()
 
@@ -1083,6 +1117,12 @@ def detect_rating_changes(db_path: str) -> list:
                     "price": price,
                     "composite_score": sig['composite_score'],
                 })
+
+        # Advance watermark so re-runs of the same batch are no-ops
+        cur.execute("""
+            INSERT INTO scheduler_meta (key, value) VALUES ('rating_changes_watermark', ?)
+            ON CONFLICT(key) DO UPDATE SET value = excluded.value
+        """, (current_max_ts,))
 
         conn.commit()
     except Exception as e:
