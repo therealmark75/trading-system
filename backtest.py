@@ -16,7 +16,7 @@ from datetime import datetime
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from config.settings import DATABASE_PATH, LOG_DIR, LOG_LEVEL
+from config.constants import DATABASE_PATH, LOG_DIR, LOG_LEVEL
 from signals.backtester import run_full_backtest, save_backtest_results
 
 Path(LOG_DIR).mkdir(parents=True, exist_ok=True)

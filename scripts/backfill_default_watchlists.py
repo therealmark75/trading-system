@@ -31,7 +31,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from config.settings import DATABASE_PATH
+from config.constants import DATABASE_PATH
 from database.db import initialise_user_schema
 
 

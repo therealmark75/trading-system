@@ -4,7 +4,7 @@ import time
 import re
 import logging
 from datetime import datetime, timedelta
-from config.settings import DATABASE_PATH as DB_PATH
+from config.constants import DATABASE_PATH as DB_PATH
 
 logger = logging.getLogger(__name__)
 

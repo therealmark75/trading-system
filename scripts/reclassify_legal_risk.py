@@ -18,7 +18,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from scrapers.legal_risk_scraper import fetch_legal_risk, save_legal_risk, RISK_ORDER
-from config.settings import DATABASE_PATH
+from config.constants import DATABASE_PATH
 
 
 def get_all_tickers(db_path):

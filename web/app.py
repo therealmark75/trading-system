@@ -11,7 +11,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from config.settings import DATABASE_PATH, MIN_PRICE_FOR_SIGNAL, SCORING_ENGINE_VERSION
+from config.constants import DATABASE_PATH, MIN_PRICE_FOR_SIGNAL, SCORING_ENGINE_VERSION
 from database.db import (
     get_connection, get_latest_screener, get_recent_insiders,
     get_cluster_signals, get_top_signals, get_signal_summary,

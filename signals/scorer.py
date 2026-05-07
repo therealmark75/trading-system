@@ -17,7 +17,7 @@ import logging
 from datetime import datetime, timezone, timedelta
 from dataclasses import dataclass, field
 
-from config.settings import MIN_PRICE_FOR_SIGNAL
+from config.constants import MIN_PRICE_FOR_SIGNAL
 
 logger = logging.getLogger(__name__)
 

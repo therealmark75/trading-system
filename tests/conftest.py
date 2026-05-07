@@ -15,7 +15,7 @@ import pytest
 # Ensure project root is on path so web.app and config.settings are importable
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config.settings import DATABASE_PATH
+from config.constants import DATABASE_PATH
 
 
 @pytest.fixture(scope="session")

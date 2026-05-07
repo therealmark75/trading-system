@@ -25,7 +25,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from config.settings import MIN_PRICE_FOR_SIGNAL
+from config.constants import MIN_PRICE_FOR_SIGNAL
 
 logging.basicConfig(
     level=logging.INFO,

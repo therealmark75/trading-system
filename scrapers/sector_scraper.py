@@ -16,7 +16,7 @@ from datetime import datetime
 
 import yfinance as yf
 
-from config.settings import DATABASE_PATH
+from config.constants import DATABASE_PATH
 
 logger = logging.getLogger(__name__)
 

@@ -259,7 +259,7 @@ def test_api_watchlists_create_tier_limit_returns_structured_error(client):
     """
     import json as _json
     from database.db import get_connection
-    from config.settings import DATABASE_PATH as DB
+    from config.constants import DATABASE_PATH as DB
 
     # Set tier='starter' (watchlist_limit=5) so the limit check in
     # /api/watchlists fires when we attempt to create a 6th watchlist.
@@ -324,7 +324,7 @@ def test_no_literal_unauthorized_in_user_facing_html(client):
 
 def _set_user_tier(user_id, tier):
     from database.db import get_connection
-    from config.settings import DATABASE_PATH as DB
+    from config.constants import DATABASE_PATH as DB
     conn = get_connection(DB)
     conn.execute("UPDATE users SET tier=? WHERE id=?", (tier, user_id))
     conn.commit()
@@ -333,7 +333,7 @@ def _set_user_tier(user_id, tier):
 
 def _get_user_tier(user_id):
     from database.db import get_connection
-    from config.settings import DATABASE_PATH as DB
+    from config.constants import DATABASE_PATH as DB
     conn = get_connection(DB)
     row = conn.execute("SELECT tier FROM users WHERE id=?", (user_id,)).fetchone()
     conn.close()
