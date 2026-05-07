@@ -21,6 +21,7 @@ from database.db import (
     create_watchlist, rename_watchlist, delete_watchlist,
     add_to_watchlist, remove_from_watchlist,
     toggle_watchlist_alerts,
+    create_default_watchlist, is_default_watchlist,
     get_top_signals_of_day, generate_top_signals_of_day,
 )
 from config.tiers import can_create_watchlist, watchlist_limit, get_tier, next_tier
@@ -195,6 +196,8 @@ def register():
         else:
             pw_hash = generate_password_hash(password, method='pbkdf2:sha256')
             user_id = create_user(DATABASE_PATH, username, email, pw_hash)
+            # Every new user gets a default watchlist immediately on signup.
+            create_default_watchlist(DATABASE_PATH, user_id)
             session["user_id"]  = user_id
             session["username"] = username
             return redirect(url_for("index"))
@@ -404,6 +407,11 @@ def api_watchlists_delete(wl_id):
     confirm = request.args.get("confirm") == "true"
     if not confirm:
         return jsonify({"ok": False, "error": "Pass ?confirm=true to delete"}), 400
+    if is_default_watchlist(DATABASE_PATH, user["id"], wl_id):
+        return jsonify({
+            "ok": False,
+            "error": "The default watchlist cannot be deleted. You can rename it instead.",
+        }), 400
     wls = get_watchlists_meta(DATABASE_PATH, user["id"])
     if len(wls) <= 1:
         return jsonify({"ok": False, "error": "Cannot delete your only watchlist"}), 400

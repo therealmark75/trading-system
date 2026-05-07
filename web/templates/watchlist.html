@@ -40,6 +40,7 @@
             color:var(--muted);transition:color .15s;flex-shrink:0;}
         .bell-btn.on{color:var(--accent);}
         .bell-btn:hover{opacity:0.8;}
+        .wl-default-lock{font-size:9px;opacity:0.55;margin-left:2px;cursor:help;}
 
         /* ── Add ticker bar ── */
         .add-bar{display:flex;gap:10px;margin-bottom:20px;}
@@ -114,7 +115,7 @@
             {% for wl in watchlists %}
             <button class="wl-tab{% if wl.id == active_watchlist_id %} active{% endif %}"
                     data-id="{{ wl.id }}" onclick="switchWatchlist({{ wl.id }})">
-                {{ wl.name }}{% if wl.ticker_count %} <span style="color:var(--muted);font-size:9px">({{ wl.ticker_count }})</span>{% endif %}
+                {{ wl.name }}{% if wl.is_default %} <span class="wl-default-lock" data-tip="Default watchlist — cannot be deleted, but can be renamed.">🔒</span>{% endif %}{% if wl.ticker_count %} <span style="color:var(--muted);font-size:9px">({{ wl.ticker_count }})</span>{% endif %}
                 <span class="bell-btn {% if wl.alerts_enabled %}on{% endif %}"
                       id="bell-{{ wl.id }}"
                       data-tip="{% if wl.alerts_enabled %}Alerts on: Telegram notifications fire for signal changes on tickers in this watchlist.{% else %}Alerts off: this watchlist is muted. Tickers remain tracked.{% endif %}"
@@ -126,7 +127,10 @@
         <button class="wl-action" onclick="openNewModal()">+ New</button>
         {% if watchlists %}
         <button class="wl-action" onclick="openRenameModal()">✎ Rename</button>
+        {% set active_wl = (watchlists | selectattr('id', 'equalto', active_watchlist_id) | list | first) %}
+        {% if not (active_wl and active_wl.is_default) %}
         <button class="wl-action danger" onclick="deleteWatchlist()">✕ Delete</button>
+        {% endif %}
         {% endif %}
         <span class="wl-tier">
             {% if watchlist_limit is none %}
@@ -276,7 +280,7 @@ const ACTIVE_WL_ID = {{ active_watchlist_id or 'null' }};
             box.style.display = 'none';
         });
     }
-    document.querySelectorAll('th[data-tip], .bell-btn[data-tip]').forEach(wire);
+    document.querySelectorAll('th[data-tip], .bell-btn[data-tip], .wl-default-lock[data-tip]').forEach(wire);
 })();
 
 function switchWatchlist(id) {

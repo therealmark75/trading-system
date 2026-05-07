@@ -633,6 +633,20 @@ def initialise_user_schema(db_path: str) -> None:
         cur.execute("ALTER TABLE watchlists_meta ADD COLUMN alerts_enabled INTEGER NOT NULL DEFAULT 1")
         conn.commit()
 
+    # Migration: add is_default column to watchlists_meta if missing
+    wm_cols = {r[1] for r in cur.execute("PRAGMA table_info(watchlists_meta)").fetchall()}
+    if 'is_default' not in wm_cols:
+        cur.execute("ALTER TABLE watchlists_meta ADD COLUMN is_default INTEGER NOT NULL DEFAULT 0")
+        conn.commit()
+
+    # Partial UNIQUE index: at most one is_default=1 per user.
+    # SQLite enforces this on INSERT/UPDATE; rows with is_default=0 are unrestricted.
+    cur.execute("""
+        CREATE UNIQUE INDEX IF NOT EXISTS idx_watchlists_meta_one_default_per_user
+        ON watchlists_meta(user_id) WHERE is_default = 1
+    """)
+    conn.commit()
+
     conn.close()
 
 
@@ -720,7 +734,7 @@ def get_watchlists_meta(db_path: str, user_id: int) -> list[dict]:
     conn = get_connection(db_path)
     rows = conn.execute("""
         SELECT wm.id, wm.name, wm.sort_order, wm.created_at,
-               wm.alerts_enabled,
+               wm.alerts_enabled, wm.is_default,
                COUNT(w.ticker) AS ticker_count
         FROM watchlists_meta wm
         LEFT JOIN watchlists w ON w.watchlist_id = wm.id
@@ -733,7 +747,9 @@ def get_watchlists_meta(db_path: str, user_id: int) -> list[dict]:
 
 
 def get_or_create_default_watchlist(db_path: str, user_id: int) -> int:
-    """Return the id of the user's first watchlist, creating 'My Watchlist' if none exists."""
+    """Return the id of the user's first watchlist, creating 'My Watchlist' if none exists.
+    A newly created watchlist via this helper is flagged is_default=1.
+    """
     conn = get_connection(db_path)
     row = conn.execute(
         "SELECT id FROM watchlists_meta WHERE user_id = ? ORDER BY sort_order, id LIMIT 1",
@@ -743,13 +759,48 @@ def get_or_create_default_watchlist(db_path: str, user_id: int) -> int:
         conn.close()
         return row[0]
     cur = conn.execute(
-        "INSERT INTO watchlists_meta (user_id, name, sort_order) VALUES (?, 'My Watchlist', 0)",
+        "INSERT INTO watchlists_meta (user_id, name, sort_order, alerts_enabled, is_default) "
+        "VALUES (?, 'My Watchlist', 0, 1, 1)",
         (user_id,)
     )
     conn.commit()
     wid = cur.lastrowid
     conn.close()
     return wid
+
+
+def create_default_watchlist(db_path: str, user_id: int) -> int:
+    """Create the user's default watchlist ('My Watchlist', alerts_enabled=1, is_default=1).
+    Intended for use immediately after create_user() during signup, or by the
+    backfill script for users with zero watchlists.
+
+    Raises sqlite3.IntegrityError if the user already has a watchlist with
+    is_default=1 (the partial UNIQUE index enforces at-most-one-default-per-user).
+    """
+    conn = get_connection(db_path)
+    try:
+        cur = conn.execute(
+            "INSERT INTO watchlists_meta (user_id, name, sort_order, alerts_enabled, is_default) "
+            "VALUES (?, 'My Watchlist', 0, 1, 1)",
+            (user_id,)
+        )
+        conn.commit()
+        return cur.lastrowid
+    finally:
+        conn.close()
+
+
+def is_default_watchlist(db_path: str, user_id: int, wl_id: int) -> bool:
+    """Return True if the given watchlist (owned by user_id) is flagged is_default=1."""
+    conn = get_connection(db_path)
+    try:
+        row = conn.execute(
+            "SELECT is_default FROM watchlists_meta WHERE id=? AND user_id=?",
+            (wl_id, user_id)
+        ).fetchone()
+        return bool(row and row[0])
+    finally:
+        conn.close()
 
 
 def create_watchlist(db_path: str, user_id: int, name: str) -> dict:
