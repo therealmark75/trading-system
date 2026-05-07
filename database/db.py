@@ -1228,6 +1228,17 @@ def get_legal_risk_map(db_path: str) -> dict:
     } for r in rows}
 
 
+def get_watchlist_tickers(db_path: str) -> set:
+    """Return set of all distinct tickers present in any watchlist (any user)."""
+    conn = get_connection(db_path)
+    try:
+        cur = conn.cursor()
+        cur.execute("SELECT DISTINCT ticker FROM watchlists")
+        return {row[0] for row in cur.fetchall()}
+    finally:
+        conn.close()
+
+
 def is_below_signal_threshold(current_price) -> bool:
     """Return True if current_price is below MIN_PRICE_FOR_SIGNAL.
     Used by templates and routes to flag mark-and-hold watchlist entries.

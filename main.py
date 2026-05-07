@@ -9,15 +9,16 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from config.settings import (DATABASE_PATH, SECTORS, SCREENER_SCRAPE_TIMES, NEWS_SCRAPE_TIMES,
     INSIDER_SCRAPE_TIMES, INSIDER_CLUSTER_BUY_COUNT, INSIDER_CLUSTER_DAYS,
-    LOG_DIR, LOG_LEVEL, REQUEST_DELAY_SECONDS, SCORING_ENGINE_VERSION)
+    LOG_DIR, LOG_LEVEL, REQUEST_DELAY_SECONDS, SCORING_ENGINE_VERSION,
+    TELEGRAM_ALERT_MAX_PER_RUN)
 from notifications.telegram import send_alert
-from signals.signal_labels import tier_label
+from signals.signal_labels import tier_label, tier_short
 from database.db import (get_connection, initialise_schema, insert_screener_rows, generate_top_signals_of_day, prune_old_snapshots,
     insert_insider_trades, insert_insider_signal, insert_signal_scores, detect_rating_changes, update_analyst_recom,
     insert_news_articles, insert_ticker_sentiment, insert_calendar_events,
     log_run, get_latest_screener, get_recent_insiders, get_cluster_signals,
     get_top_signals, get_ticker_sentiment, get_legal_risk_map, update_target_prices,
-    get_price_history_map)
+    get_price_history_map, get_watchlist_tickers)
 from scrapers.quote_scraper import scrape_recom_for_tickers
 from scrapers.legal_risk_scraper import scrape_priority_tickers
 from scrapers.screener_scraper import scrape_all_sectors
@@ -317,34 +318,54 @@ _RATING_EMOJI = {
 
 
 def _send_rating_alerts(changes: list):
-    """Send Telegram alerts for Strong Buy/Sell upgrades and rating downgrades."""
-    for c in changes:
+    """Send a single grouped Telegram message for watchlist rating changes this run."""
+    if not changes:
+        return
+
+    watchlist = get_watchlist_tickers(DATABASE_PATH)
+    relevant = [c for c in changes if c["ticker"] in watchlist]
+    if not relevant:
+        return
+
+    if len(relevant) > TELEGRAM_ALERT_MAX_PER_RUN:
+        upgrades   = sum(1 for c in relevant if c["old_rating"] and _RATING_ORDER.index(c["new_rating"]) < _RATING_ORDER.index(c["old_rating"]))
+        downgrades = len(relevant) - upgrades
+        send_alert(
+            f"📊 <b>SignalIntel — {len(relevant)} watchlist changes</b>\n"
+            f"⬆️ {upgrades} upgrades  |  ⬇️ {downgrades} downgrades\n"
+            f"(too many to list individually)"
+        )
+        logger.info("_send_rating_alerts: throttled — %d changes exceeded max %d", len(relevant), TELEGRAM_ALERT_MAX_PER_RUN)
+        return
+
+    lines = []
+    for c in relevant:
         old, new = c["old_rating"], c["new_rating"]
         ticker = c["ticker"]
         price  = f"${c['price']:.2f}" if c["price"] else "N/A"
-        score  = c["composite_score"]
 
-        if new == "STRONG_BUY" and old and old != "STRONG_BUY":
-            send_alert(
-                f"🟢 <b>VERY STRONG SIGNAL</b>\n"
-                f"<b>${ticker}</b>  |  Score: {score:.1f}\n"
-                f"Price: {price}  |  was {tier_label(old)}"
-            )
-        elif new == "STRONG_SELL" and old and old != "STRONG_SELL":
-            send_alert(
-                f"⛔ <b>STRONG BEARISH SIGNAL</b>\n"
-                f"<b>${ticker}</b>  |  Score: {score:.1f}\n"
-                f"Price: {price}  |  was {tier_label(old)}"
-            )
-        elif old and new and old in _RATING_ORDER and new in _RATING_ORDER:
-            if _RATING_ORDER.index(new) > _RATING_ORDER.index(old):
-                old_e = _RATING_EMOJI.get(old, "")
-                new_e = _RATING_EMOJI.get(new, "")
-                send_alert(
-                    f"🔻 <b>SIGNAL DOWNGRADE</b>\n"
-                    f"<b>${ticker}</b>  {old_e} {tier_label(old)} → {new_e} {tier_label(new)}\n"
-                    f"Price: {price}  |  Score: {score:.1f}"
-                )
+        if old not in _RATING_ORDER or new not in _RATING_ORDER:
+            continue
+
+        old_idx, new_idx = _RATING_ORDER.index(old), _RATING_ORDER.index(new)
+        distance = new_idx - old_idx  # positive = downgrade, negative = upgrade
+
+        if distance == 0:
+            continue
+        elif abs(distance) >= 2:
+            emoji = "🚨"
+        elif distance < 0:
+            emoji = "⬆️"
+        else:
+            emoji = "⬇️"
+
+        old_e = _RATING_EMOJI.get(old, "")
+        new_e = _RATING_EMOJI.get(new, "")
+        lines.append(f"{emoji} <b>{ticker}</b>: {old_e} {tier_short(old)} → {new_e} {tier_short(new)} @ {price}")
+
+    if lines:
+        body = "\n".join(lines)
+        send_alert(f"📋 <b>SignalIntel — watchlist changes</b>\n\n{body}")
 
 
 def job_compute_target_prices():
