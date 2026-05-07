@@ -6,6 +6,49 @@ from finvizfinance.screener.technical import Technical
 
 logger = logging.getLogger(__name__)
 
+# ── Exchange normalisation ─────────────────────────────────────────────────
+# FinViz returns short codes (NASD, NYSE, AMEX) or full names. Map to the
+# canonical set used throughout the codebase: NASDAQ, NYSE, AMEX, OTC, Other.
+_EXCHANGE_MAP = {
+    'NASD':    'NASDAQ',
+    'NASDAQ':  'NASDAQ',
+    'NYSE':    'NYSE',
+    'NYSE MKT': 'AMEX',
+    'AMEX':    'AMEX',
+    'OTC':     'OTC',
+    'PINK':    'OTC',
+}
+
+def _normalise_exchange(raw):
+    if not raw:
+        return None
+    canon = _EXCHANGE_MAP.get(raw.strip().upper())
+    if canon:
+        return canon
+    logger.warning(f"Unknown exchange value: {raw!r}")
+    return 'Other'
+
+def _scrape_exchange(soup):
+    """Extract listing exchange from a FinViz quote page BeautifulSoup object.
+
+    finvizfinance/quote.py hardcodes links[3] for Exchange, but FinViz added a
+    market cap tier link at index 3 (circa 2024), pushing the exchange link to
+    index 4. Searching by href pattern (f=exch_) is robust to future shifts.
+    """
+    try:
+        ql = soup.find('div', class_='quote-links')
+        if not ql:
+            return None
+        exch_link = next(
+            (a for a in ql.find_all('a') if 'f=exch_' in (a.get('href') or '')),
+            None
+        )
+        if not exch_link:
+            return None
+        return _normalise_exchange(exch_link.text.strip())
+    except Exception:
+        return None
+
 def _to_int(val):
     try: return int(str(val).replace(",","").strip())
     except: return None
@@ -195,8 +238,9 @@ def scrape_analyst_recom_priority(db_path):
     results = {}
     for ticker in tickers:
         try:
-            data = finvizfinance(ticker).ticker_fundament()
-            row = {}
+            fv   = finvizfinance(ticker)
+            data = fv.ticker_fundament()
+            row  = {}
             recom = data.get('Recom')
             if recom and recom != '-':
                 try: row['analyst_recom'] = float(recom)
@@ -217,6 +261,11 @@ def scrape_analyst_recom_priority(db_path):
                     parsed = parser(v)
                     if parsed is not None:
                         row[dst_col] = parsed
+            # Exchange: reuse the already-fetched page; finvizfinance maps
+            # links[3] to "Exchange" but FinViz now puts exchange at links[4].
+            exch = _scrape_exchange(fv.soup)
+            if exch:
+                row['exchange'] = exch
             if row:
                 results[ticker] = row
             time.sleep(0.5)

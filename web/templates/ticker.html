@@ -455,6 +455,7 @@ async function loadPage() {
                 ${sc.sector ? `<a href="/?tab=sectors" class="badge badge-link">${sc.sector}</a>` : ''}
                 ${sc.industry ? `<a href="/industry/${encodeURIComponent(sc.industry)}" class="badge badge-link">${sc.industry}</a>` : ''}
                     ${sc.country ? `<span class="badge">${(()=>{const flags={'USA':'🇺🇸','UK':'🇬🇧','Canada':'🇨🇦','Germany':'🇩🇪','Japan':'🇯🇵','China':'🇨🇳','Australia':'🇦🇺','France':'🇫🇷'};return (flags[sc.country]||'')+ ' '+sc.country;})()} </span>` : ''}
+                    <span class="badge">${sc.exchange || '—'}</span>
                 </div>
             </div>
             <div class="hero-right">
