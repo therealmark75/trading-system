@@ -2,6 +2,7 @@ __pycache__/
 *.pyc
 *.pyo
 data/trading_system.db
+data/signalintel.db*
 config/settings.py
 venv/
 .DS_Store
