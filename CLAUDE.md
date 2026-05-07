@@ -167,6 +167,32 @@ Margin call mechanic:
 - Rationale: sub-$1 percentage returns are mathematically distorting (penny-stock asymmetry). VEEE at $0.15 was producing +4,380% theoretical returns that are untradeable due to bid-ask spreads and liquidity.
 - Threshold is provisional and may be raised. To change it: update `MIN_PRICE_FOR_SIGNAL` in `config/settings.py`, then re-run `scripts/purge_sub_threshold_rating_changes.py` to clean historical data, then re-run `scripts/rebuild_rating_changes.py` to regenerate transitions.
 
+## Signal Terminology: Internal Codes vs Display Labels
+
+Two separate vocabularies exist for the 7-tier signal system. **Never mix them.**
+
+### Internal codes (storage layer)
+```
+STRONG_BUY  BUY  STRONG_HOLD  HOLD  WEAK_HOLD  SELL  STRONG_SELL
+```
+- Stored in the database: `signal_scores.rating`, `rating_changes.old_rating`, `rating_changes.new_rating`
+- Used in scoring logic, SQL queries, theme/filter comparisons, test assertions
+- Produced by `signals/scorer.py`
+
+### Display labels (presentation layer)
+```
+Very Strong  Strong  Stable  Neutral  Soft  Bearish  Very Bearish
+```
+- User-facing only — appear in templates, Telegram alerts, and JSON responses to the frontend
+- Translated from internal codes via `signals/signal_labels.py`:
+  - `tier_label(rating)` → full label e.g. "Very Strong Signal"
+  - `tier_short(rating)` → short label e.g. "Very Strong"
+
+### The rule
+- Internal codes never appear in user-visible output.
+- Display labels never enter the database, queries, or scoring logic.
+- When adding new code that touches signals, identify which layer you're in and use the appropriate vocabulary. If you're writing a query or scorer condition, use `STRONG_BUY`. If you're rendering a template or composing a message, call `tier_short()`.
+
 ## Notes for Claude Code Sessions
 - Always activate the venv before running Python scripts
 - SQLite DB path is relative: `data/signalintel.db` from project root
