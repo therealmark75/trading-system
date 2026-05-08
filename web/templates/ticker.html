@@ -552,10 +552,6 @@ async function loadPage() {
                     <div class="radar-dim-score hi" id="rd-volume">-</div>
                 </div>
                 <div class="radar-dim">
-                    <div class="radar-dim-name"><div class="radar-dim-dot" style="background:#ff9500"></div>Legal</div>
-                    <div class="radar-dim-score" id="rd-legal">-</div>
-                </div>
-                <div class="radar-dim">
                     <div class="radar-dim-name"><div class="radar-dim-dot" style="background:#ff6b35"></div>Value</div>
                     <div class="radar-dim-score hi" id="rd-value">-</div>
                 </div>
@@ -936,8 +932,6 @@ async function loadEventFeed() {
 }
 
 function initRadarChart(s, lr) {
-    const legalMap = {NONE:100, MINOR:80, CLASS_ACTION:55, SEC_INVESTIGATION:35, SEC_ENFORCEMENT:15, CRIMINAL:5};
-    const legalScore  = legalMap[lr.risk_level] ?? 80;
     const valueScore  = Math.max(0, Math.min(100, 50 + (s.target_upside || 0) * 1.5));
     const sectorScore = s.sector_strength_score != null ? s.sector_strength_score : 50;
     const mom  = s.momentum_score  || 0;
@@ -961,8 +955,6 @@ function initRadarChart(s, lr) {
     document.getElementById('rd-reversion').style.color = revNull ? '#9CA3AF' : scoreColor(rev);
     document.getElementById('rd-volume').textContent    = fmtS(vol);
     document.getElementById('rd-volume').style.color    = scoreColor(vol);
-    document.getElementById('rd-legal').textContent     = lr.risk_label || '-';
-    document.getElementById('rd-legal').style.color     = lr.risk_color || '#94a3b8';
     document.getElementById('rd-value').textContent     = fmtS(Math.round(valueScore * 10) / 10);
     document.getElementById('rd-value').style.color     = scoreColor(valueScore);
     document.getElementById('rd-sector').textContent    = fmtS(sectorScore);
@@ -975,14 +967,14 @@ function initRadarChart(s, lr) {
     const ctx = document.getElementById('radar-chart');
     if (!ctx) return;
 
-    const radarData = [mom, qual, ins, rev, vol, legalScore, valueScore, sectorScore];
+    const radarData = [mom, qual, ins, rev, vol, valueScore, sectorScore];
     const gradient = ctx.getContext('2d');
 
     const fillGrad = gradient.createLinearGradient(0, 0, 0, 280);
     fillGrad.addColorStop(0, 'rgba(0,212,255,0.25)');
     fillGrad.addColorStop(1, 'rgba(0,255,136,0.08)');
 
-    const pointColors = ['#00d4ff','#00ff88','#af52de','#facc15','#8b5cf6','#ff9500','#ff6b35','#fbbf24'];
+    const pointColors = ['#00d4ff','#00ff88','#af52de','#facc15','#8b5cf6','#ff6b35','#fbbf24'];
     if (revNull) pointColors[3] = '#9CA3AF';
 
     const datasets = [{
@@ -999,7 +991,7 @@ function initRadarChart(s, lr) {
     }];
 
     if (revNull) {
-        const nullOverlay = [null, null, null, null, null, null, null, null];
+        const nullOverlay = [null, null, null, null, null, null, null];
         if (revNull) nullOverlay[3] = 8;
         datasets.push({
             data: nullOverlay,
@@ -1018,7 +1010,7 @@ function initRadarChart(s, lr) {
     new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: ['Momentum', 'Quality', 'Insider', 'Reversion', 'Volume', 'Legal', 'Value', 'Sector'],
+            labels: ['Momentum', 'Quality', 'Insider', 'Reversion', 'Volume', 'Value', 'Sector'],
             datasets,
         },
         options: {
