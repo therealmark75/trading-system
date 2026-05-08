@@ -356,6 +356,7 @@ async function loadPage() {
     const s  = data.signal     || {};
     const sc = data.screener   || {};
     const tm = data.metadata   || {};
+    const legalDataPresent = data.legal_risk != null;
     const lr = data.legal_risk || {risk_label:'No data', risk_color:'#6b7280', penalty:0, risk_level:'NONE'};
 
     const TIER_LABELS = {
@@ -506,7 +507,7 @@ async function loadPage() {
                 <div class="score-item" data-tip="Insider activity score based on recent buying and selling by company directors, officers and major shareholders. 100 = strong cluster buying"><div class="score-item-label">Insider</div><div class="score-item-value ${scoreC(s.insider_score)}">${fmt(s.insider_score,1)}</div></div>
                 <div class="score-item" data-tip="Mean reversion signal. Low score = price has moved far from average and may revert. High = trending strongly"><div class="score-item-label">Reversion</div><div class="score-item-value ${scoreC(s.reversion_score)}">${fmt(s.reversion_score,1)}</div></div>
                 <div class="score-item" data-tip="Volume Confirmation score. High score = strong volume confirming price move. Low = price move on weak or declining volume."><div class="score-item-label">Volume</div><div class="score-item-value ${scoreC(s.volume_score)}">${fmt(s.volume_score,1)}</div></div>
-                <div class="score-item" data-tip="SEC EDGAR legal risk assessment. Penalises composite score for active enforcement actions, investigations or class actions"><div class="score-item-label">Legal</div><div class="score-item-value" style="color:${lr.risk_color}">${lr.risk_label}</div></div>
+                <div class="score-item" data-tip="SEC EDGAR legal risk assessment. Penalises composite score for active enforcement actions, investigations or class actions"><div class="score-item-label">Legal</div><div class="score-item-value" style="color:${legalDataPresent ? lr.risk_color : '#9CA3AF'}" ${legalDataPresent ? '' : 'title="No legal data"'}>${legalDataPresent ? lr.risk_label : '—'}</div></div>
                 <div class="score-item" data-tip="Value score derived from 12-month price target upside. Above 50 = priced below target (upside), below 50 = priced above target (downside)."><div class="score-item-label">Value</div><div class="score-item-value ${scoreC(valueScore)}">${fmt(valueScore,1)}</div></div>
                 ${(()=>{
                     const ss = s.sector_strength_score;
@@ -892,7 +893,7 @@ async function loadPage() {
         }).join('');
     }
 
-    initRadarChart(s, lr);
+    initRadarChart(s, lr, legalDataPresent);
     loadEventFeed();
     initCollapsibleCards();
     setTimeout(() => initTradingViewChart(TICKER, 'D'), 100);
@@ -935,15 +936,18 @@ async function loadEventFeed() {
     }
 }
 
-function initRadarChart(s, lr) {
+function initRadarChart(s, lr, legalDataPresent) {
     const legalMap = {NONE:100, MINOR:80, CLASS_ACTION:55, SEC_INVESTIGATION:35, SEC_ENFORCEMENT:15, CRIMINAL:5};
-    const legalScore  = legalMap[lr.risk_level] ?? 80;
+    const legalNull  = !legalDataPresent;
+    const legalScore = legalNull ? 0 : (legalMap[lr.risk_level] ?? 80);
     const valueScore  = Math.max(0, Math.min(100, 50 + (s.target_upside || 0) * 1.5));
     const sectorScore = s.sector_strength_score != null ? s.sector_strength_score : 50;
     const mom  = s.momentum_score  || 0;
     const qual = s.quality_score   || 0;
     const ins  = s.insider_score   || 0;
-    const rev  = s.reversion_score || 0;
+    // NOTE: mom/qual/ins/vol use truthy || 0 (conflates genuine 0 with null); flagged for cleanup
+    const revNull = s.reversion_score == null;
+    const rev  = revNull ? 0 : s.reversion_score;
     const vol  = s.volume_score    || 0;
 
     const scoreColor = v => v >= 70 ? '#00ff88' : v >= 55 ? '#00d4ff' : v >= 40 ? '#ff9500' : '#ff3b5c';
@@ -955,12 +959,12 @@ function initRadarChart(s, lr) {
     document.getElementById('rd-quality').style.color   = scoreColor(qual);
     document.getElementById('rd-insider').textContent   = fmtS(ins);
     document.getElementById('rd-insider').style.color   = scoreColor(ins);
-    document.getElementById('rd-reversion').textContent = fmtS(rev);
-    document.getElementById('rd-reversion').style.color = scoreColor(rev);
+    document.getElementById('rd-reversion').textContent = revNull ? '—' : fmtS(rev);
+    document.getElementById('rd-reversion').style.color = revNull ? '#9CA3AF' : scoreColor(rev);
     document.getElementById('rd-volume').textContent    = fmtS(vol);
     document.getElementById('rd-volume').style.color    = scoreColor(vol);
-    document.getElementById('rd-legal').textContent     = lr.risk_label || '-';
-    document.getElementById('rd-legal').style.color     = lr.risk_color || '#94a3b8';
+    document.getElementById('rd-legal').textContent     = legalNull ? '—' : (lr.risk_label || '-');
+    document.getElementById('rd-legal').style.color     = legalNull ? '#9CA3AF' : (lr.risk_color || '#94a3b8');
     document.getElementById('rd-value').textContent     = fmtS(Math.round(valueScore * 10) / 10);
     document.getElementById('rd-value').style.color     = scoreColor(valueScore);
     document.getElementById('rd-sector').textContent    = fmtS(sectorScore);
@@ -973,29 +977,53 @@ function initRadarChart(s, lr) {
     const ctx = document.getElementById('radar-chart');
     if (!ctx) return;
 
-    const data = [mom, qual, ins, rev, vol, legalScore, valueScore, sectorScore];
+    const radarData = [mom, qual, ins, rev, vol, legalScore, valueScore, sectorScore];
     const gradient = ctx.getContext('2d');
 
     const fillGrad = gradient.createLinearGradient(0, 0, 0, 280);
     fillGrad.addColorStop(0, 'rgba(0,212,255,0.25)');
     fillGrad.addColorStop(1, 'rgba(0,255,136,0.08)');
 
+    const pointColors = ['#00d4ff','#00ff88','#af52de','#facc15','#8b5cf6','#ff9500','#ff6b35','#fbbf24'];
+    if (revNull) pointColors[3] = '#9CA3AF';
+    if (legalNull) pointColors[5] = '#9CA3AF';
+
+    const datasets = [{
+        data: radarData,
+        fill: true,
+        backgroundColor: fillGrad,
+        borderColor: 'rgba(0,212,255,0.85)',
+        borderWidth: 2,
+        pointBackgroundColor: pointColors,
+        pointBorderColor: '#080c14',
+        pointBorderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+    }];
+
+    if (revNull || legalNull) {
+        const nullOverlay = [null, null, null, null, null, null, null, null];
+        if (revNull) nullOverlay[3] = 8;
+        if (legalNull) nullOverlay[5] = 8;
+        datasets.push({
+            data: nullOverlay,
+            fill: false,
+            borderColor: 'rgba(156,163,175,0.5)',
+            borderWidth: 1.5,
+            borderDash: [4, 4],
+            pointBackgroundColor: nullOverlay.map(v => v !== null ? '#9CA3AF' : 'transparent'),
+            pointBorderColor: 'transparent',
+            pointBorderWidth: 0,
+            pointRadius: nullOverlay.map(v => v !== null ? 5 : 0),
+            pointHoverRadius: nullOverlay.map(v => v !== null ? 7 : 0),
+        });
+    }
+
     new Chart(ctx, {
         type: 'radar',
         data: {
             labels: ['Momentum', 'Quality', 'Insider', 'Reversion', 'Volume', 'Legal', 'Value', 'Sector'],
-            datasets: [{
-                data,
-                fill: true,
-                backgroundColor: fillGrad,
-                borderColor: 'rgba(0,212,255,0.85)',
-                borderWidth: 2,
-                pointBackgroundColor: ['#00d4ff','#00ff88','#af52de','#facc15','#8b5cf6','#ff9500','#ff6b35','#fbbf24'],
-                pointBorderColor: '#080c14',
-                pointBorderWidth: 2,
-                pointRadius: 5,
-                pointHoverRadius: 7,
-            }]
+            datasets,
         },
         options: {
             responsive: false,
@@ -1027,7 +1055,7 @@ function initRadarChart(s, lr) {
                     titleFont: { family: "'Space Mono', monospace", size: 10 },
                     bodyFont: { family: "'Space Mono', monospace", size: 11 },
                     callbacks: {
-                        label: ctx => ` ${ctx.raw.toFixed(1)} / 100`,
+                        label: ctx => ctx.raw == null ? ' No data' : ` ${ctx.raw.toFixed(1)} / 100`,
                     }
                 }
             }
