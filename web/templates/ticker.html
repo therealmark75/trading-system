@@ -394,7 +394,7 @@ async function loadPage() {
                 <span class="score-bar-num ${scoreC(b.val)}">${fmt(b.val,1)}</span>
             </div>
             <div class="bar-track">
-                <div class="bar-fill" style="width:${Math.min(100,b.val||0)}%;background:${barC(b.val||0)}"></div>
+                <div class="bar-fill" style="width:${b.val==null?4:Math.min(100,b.val)}%;background:${b.val==null?'#9CA3AF':barC(b.val)}"></div>
             </div>
         </div>`).join('') + `
         <div class="score-bar-row">
@@ -936,27 +936,30 @@ async function loadEventFeed() {
 function initRadarChart(s, lr) {
     const valueScore  = Math.max(0, Math.min(100, 50 + (s.target_upside || 0) * 1.5));
     const sectorScore = s.sector_strength_score != null ? s.sector_strength_score : 50;
-    const mom  = s.momentum_score  || 0;
-    const qual = s.quality_score   || 0;
-    const ins  = s.insider_score   || 0;
-    // NOTE: mom/qual/ins/vol use truthy || 0 (conflates genuine 0 with null); flagged for cleanup
-    const revNull = s.reversion_score == null;
-    const rev  = revNull ? 0 : s.reversion_score;
-    const vol  = s.volume_score    || 0;
+    const momNull  = s.momentum_score  == null;
+    const qualNull = s.quality_score   == null;
+    const insNull  = s.insider_score   == null;
+    const revNull  = s.reversion_score == null;
+    const volNull  = s.volume_score    == null;
+    const mom  = momNull  ? 0 : s.momentum_score;
+    const qual = qualNull ? 0 : s.quality_score;
+    const ins  = insNull  ? 0 : s.insider_score;
+    const rev  = revNull  ? 0 : s.reversion_score;
+    const vol  = volNull  ? 0 : s.volume_score;
 
     const scoreColor = v => v >= 70 ? '#00ff88' : v >= 55 ? '#00d4ff' : v >= 40 ? '#ff9500' : '#ff3b5c';
     const fmtS = v => v !== null && v !== undefined ? v.toFixed(1) : '-';
 
-    document.getElementById('rd-momentum').textContent  = fmtS(mom);
-    document.getElementById('rd-momentum').style.color  = scoreColor(mom);
-    document.getElementById('rd-quality').textContent   = fmtS(qual);
-    document.getElementById('rd-quality').style.color   = scoreColor(qual);
-    document.getElementById('rd-insider').textContent   = fmtS(ins);
-    document.getElementById('rd-insider').style.color   = scoreColor(ins);
-    document.getElementById('rd-reversion').textContent = revNull ? '—' : fmtS(rev);
-    document.getElementById('rd-reversion').style.color = revNull ? '#9CA3AF' : scoreColor(rev);
-    document.getElementById('rd-volume').textContent    = fmtS(vol);
-    document.getElementById('rd-volume').style.color    = scoreColor(vol);
+    document.getElementById('rd-momentum').textContent  = momNull  ? '—' : fmtS(mom);
+    document.getElementById('rd-momentum').style.color  = momNull  ? '#9CA3AF' : scoreColor(mom);
+    document.getElementById('rd-quality').textContent   = qualNull ? '—' : fmtS(qual);
+    document.getElementById('rd-quality').style.color   = qualNull ? '#9CA3AF' : scoreColor(qual);
+    document.getElementById('rd-insider').textContent   = insNull  ? '—' : fmtS(ins);
+    document.getElementById('rd-insider').style.color   = insNull  ? '#9CA3AF' : scoreColor(ins);
+    document.getElementById('rd-reversion').textContent = revNull  ? '—' : fmtS(rev);
+    document.getElementById('rd-reversion').style.color = revNull  ? '#9CA3AF' : scoreColor(rev);
+    document.getElementById('rd-volume').textContent    = volNull  ? '—' : fmtS(vol);
+    document.getElementById('rd-volume').style.color    = volNull  ? '#9CA3AF' : scoreColor(vol);
     document.getElementById('rd-value').textContent     = fmtS(Math.round(valueScore * 10) / 10);
     document.getElementById('rd-value').style.color     = scoreColor(valueScore);
     document.getElementById('rd-sector').textContent    = fmtS(sectorScore);
@@ -977,7 +980,11 @@ function initRadarChart(s, lr) {
     fillGrad.addColorStop(1, 'rgba(0,255,136,0.08)');
 
     const pointColors = ['#00d4ff','#00ff88','#af52de','#facc15','#8b5cf6','#ff6b35','#fbbf24'];
-    if (revNull) pointColors[3] = '#9CA3AF';
+    if (momNull)  pointColors[0] = '#9CA3AF';
+    if (qualNull) pointColors[1] = '#9CA3AF';
+    if (insNull)  pointColors[2] = '#9CA3AF';
+    if (revNull)  pointColors[3] = '#9CA3AF';
+    if (volNull)  pointColors[4] = '#9CA3AF';
 
     const datasets = [{
         data: radarData,
@@ -992,9 +999,14 @@ function initRadarChart(s, lr) {
         pointHoverRadius: 7,
     }];
 
-    if (revNull) {
+    const anyNull = momNull || qualNull || insNull || revNull || volNull;
+    if (anyNull) {
         const nullOverlay = [null, null, null, null, null, null, null];
-        if (revNull) nullOverlay[3] = 8;
+        if (momNull)  nullOverlay[0] = 8;
+        if (qualNull) nullOverlay[1] = 8;
+        if (insNull)  nullOverlay[2] = 8;
+        if (revNull)  nullOverlay[3] = 8;
+        if (volNull)  nullOverlay[4] = 8;
         datasets.push({
             data: nullOverlay,
             fill: false,
