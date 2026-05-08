@@ -76,7 +76,7 @@ REQUEST_TIMEOUT       = 20
 #   MAJOR  (1.0.0 → 2.0.0)  : post-launch, breaking changes to scoring methodology
 # ⚠  Bump BEFORE shipping any change that affects scoring output.
 #    New data tagged with the old version is permanently mis-stamped.
-SCORING_ENGINE_VERSION = "0.11.0"
+SCORING_ENGINE_VERSION = "0.12.0"
 
 # ── Signal universe constraints ───────────────────
 # Floor for NEW signals only. Tickers below this price are not scored
