@@ -148,6 +148,16 @@ tr:hover td{background:rgba(0,212,255,0.03);cursor:pointer;}
     </div>
 
     <div class="filter-section">
+        <span class="filter-label">Exchange</span>
+        <div class="mcap-btns" id="f-exchange">
+            <button class="mcap-btn active" data-exchange="NYSE">NYSE</button>
+            <button class="mcap-btn active" data-exchange="NASDAQ">NASDAQ</button>
+            <button class="mcap-btn active" data-exchange="AMEX">AMEX</button>
+            <button class="mcap-btn active" data-exchange="Other" data-tip="Includes ETFs, NYSE Arca, Cboe BZX listings">Other</button>
+        </div>
+    </div>
+
+    <div class="filter-section">
         <span class="filter-label">Composite Score</span>
         <div class="range-row">
             <input type="number" id="f-score-min" value="0" min="0" max="100" step="1" placeholder="0">
@@ -158,7 +168,7 @@ tr:hover td{background:rgba(0,212,255,0.03);cursor:pointer;}
 
     <div class="filter-section">
         <span class="filter-label">Market Cap</span>
-        <div class="mcap-btns">
+        <div class="mcap-btns" id="f-mcap">
             <button class="mcap-btn active" data-mcap="any">Any</button>
             <button class="mcap-btn" data-mcap="micro">Micro &lt;$300M</button>
             <button class="mcap-btn" data-mcap="small">Small $300M-$2B</button>
@@ -227,7 +237,7 @@ tr:hover td{background:rgba(0,212,255,0.03);cursor:pointer;}
             <thead>
                 <tr>
                     <th data-tip="Stock ticker symbol">TICKER<span class="sort-arrow" id="sa-ticker"></span></th>
-                    <th data-tip="Listing exchange: NASDAQ, NYSE, AMEX, OTC" onclick="setSort('exchange')">EXCHANGE<span class="sort-arrow" id="sa-exchange"></span></th>
+                    <th data-tip="Listing exchange: NYSE · NASDAQ · AMEX · Other (ETFs and NYSE Arca / Cboe BZX listings)" onclick="setSort('exchange')">EXCHANGE<span class="sort-arrow" id="sa-exchange"></span></th>
                     <th data-tip="Company name" onclick="setSort('company')">COMPANY<span class="sort-arrow" id="sa-company"></span></th>
                     <th data-tip="Market sector classification" onclick="setSort('sector')">SECTOR<span class="sort-arrow" id="sa-sector"></span></th>
                     <th data-tip="Total market capitalisation. Micro <$300M, Small $300M-$2B, Mid $2-10B, Large >$10B" onclick="setSort('market_cap')">MKT CAP<span class="sort-arrow" id="sa-market_cap"></span></th>
@@ -269,11 +279,14 @@ const RATING_COLORS = {
 };
 const TIER_SHORT = {STRONG_BUY:'Very Strong',BUY:'Strong',STRONG_HOLD:'Stable',HOLD:'Neutral',WEAK_HOLD:'Soft',SELL:'Bearish',STRONG_SELL:'Very Bearish'};
 
+const _ALL_EXCHANGES = ['NYSE','NASDAQ','AMEX','Other'];
+
 let state = {
     sort: 'composite_score', dir: 'desc', page: 1, per_page: 50,
     sector: '', ratings: [], score_min: 0, score_max: 100,
     mcap: 'any', pe_min: '', pe_max: '', rsi_min: '', rsi_max: '',
     upside_min: '', short_min: '',
+    exchanges: [],
     // theme-specific
     momentum_score_min: 0, insider_score_min: 0, volume_min: 0,
     price_min: '', high_52w_pct_max: '', dividend_yield_min: 0,
@@ -329,6 +342,7 @@ function buildParams() {
     if(state.dividend_yield_min) p.set('dividend_yield_min', state.dividend_yield_min);
     if(state.earnings_days)      p.set('earnings_days', state.earnings_days);
     if(state.legally_clean)      p.set('legally_clean', '1');
+    if(state.exchanges.length > 0) p.set('exchange', state.exchanges.join(','));
     p.set('sort', state.sort);
     p.set('dir', state.dir);
     p.set('page', state.page);
@@ -476,13 +490,19 @@ function resetState() {
     document.querySelectorAll('#f-ratings input').forEach(i => i.checked = true);
     document.getElementById('f-score-min').value = 0;
     document.getElementById('f-score-max').value = 100;
-    document.querySelectorAll('.mcap-btn').forEach(b => b.classList.toggle('active', b.dataset.mcap==='any'));
+    document.querySelectorAll('#f-mcap .mcap-btn').forEach(b => b.classList.toggle('active', b.dataset.mcap==='any'));
+    document.querySelectorAll('#f-exchange .mcap-btn').forEach(b => b.classList.add('active'));
     ['f-pe-min','f-pe-max','f-rsi-min','f-rsi-max','f-upside-min'].forEach(id => {
         document.getElementById(id).value = '';
     });
+    const _ru = new URL(window.location);
+    _ru.searchParams.delete('exchange');
+    history.replaceState(null, '', _ru);
+    try { localStorage.removeItem('si_screener_exchange'); } catch(e) {}
     Object.assign(state, {
         sector:'', ratings:[], score_min:0, score_max:100, mcap:'any',
         pe_min:'', pe_max:'', rsi_min:'', rsi_max:'', upside_min:'', short_min:'',
+        exchanges:[],
         momentum_score_min:0, insider_score_min:0, volume_min:0,
         price_min:'', high_52w_pct_max:'', dividend_yield_min:0,
         earnings_days:0, legally_clean:false,
@@ -595,13 +615,51 @@ function applyPreset(name) {
     if (THEMES[mapped]) { applyTheme(mapped); } else { resetState(); state.ratings = [...ALL_RATINGS]; document.querySelectorAll('#f-ratings input').forEach(i => i.checked = true); state.page = 1; load(); }
 }
 
-// Market cap button toggle
-document.querySelectorAll('.mcap-btn').forEach(btn => {
+// Market cap button toggle (single-select)
+document.querySelectorAll('#f-mcap .mcap-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-        document.querySelectorAll('.mcap-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('#f-mcap .mcap-btn').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
     });
 });
+
+// Exchange pill toggle (multi-select) + hybrid persistence
+function syncExchangeState() {
+    const active = [...document.querySelectorAll('#f-exchange .mcap-btn.active')]
+                       .map(b => b.dataset.exchange);
+    state.exchanges = (active.length === _ALL_EXCHANGES.length || active.length === 0) ? [] : active;
+    const url = new URL(window.location);
+    if (state.exchanges.length > 0) {
+        url.searchParams.set('exchange', state.exchanges.join(','));
+        try { localStorage.setItem('si_screener_exchange', JSON.stringify(state.exchanges)); } catch(e) {}
+    } else {
+        url.searchParams.delete('exchange');
+        try { localStorage.removeItem('si_screener_exchange'); } catch(e) {}
+    }
+    history.replaceState(null, '', url);
+}
+
+document.querySelectorAll('#f-exchange .mcap-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        btn.classList.toggle('active');
+        syncExchangeState();
+        state.page = 1;
+        load();
+    });
+});
+
+// Tooltip for exchange pills with data-tip (reuses #tip-box)
+(function() {
+    const _tipBox = document.getElementById('tip-box');
+    document.querySelectorAll('#f-exchange .mcap-btn[data-tip]').forEach(btn => {
+        btn.addEventListener('mouseenter', () => { _tipBox.textContent = btn.dataset.tip; _tipBox.style.display = 'block'; });
+        btn.addEventListener('mousemove', e => {
+            _tipBox.style.left = Math.min(e.clientX + 14, window.innerWidth - 246) + 'px';
+            _tipBox.style.top  = Math.max(e.clientY - 44, 4) + 'px';
+        });
+        btn.addEventListener('mouseleave', () => { _tipBox.style.display = 'none'; });
+    });
+})();
 
 // Column header tooltips (floating div, follows cursor)
 (function() {
@@ -656,6 +714,33 @@ function exportCSV() {
         a.click();
     });
 }
+
+// Boot: restore exchange filter from URL param (wins) or localStorage (fallback)
+(function() {
+    const _ue = new URLSearchParams(window.location.search).get('exchange');
+    if (_ue) {
+        const _exActive = _ue.split(',');
+        document.querySelectorAll('#f-exchange .mcap-btn').forEach(b => {
+            b.classList.toggle('active', _exActive.includes(b.dataset.exchange));
+        });
+        state.exchanges = (_exActive.length >= _ALL_EXCHANGES.length) ? [] : _exActive;
+        if (state.exchanges.length > 0) {
+            try { localStorage.setItem('si_screener_exchange', JSON.stringify(state.exchanges)); } catch(e) {}
+        } else {
+            try { localStorage.removeItem('si_screener_exchange'); } catch(e) {}
+        }
+    } else {
+        try {
+            const _ls = JSON.parse(localStorage.getItem('si_screener_exchange') || 'null');
+            if (_ls && Array.isArray(_ls) && _ls.length > 0 && _ls.length < _ALL_EXCHANGES.length) {
+                document.querySelectorAll('#f-exchange .mcap-btn').forEach(b => {
+                    b.classList.toggle('active', _ls.includes(b.dataset.exchange));
+                });
+                state.exchanges = _ls;
+            }
+        } catch(e) {}
+    }
+})();
 
 // Boot: check for ?theme= or legacy ?preset= in URL
 const _urlTheme  = new URLSearchParams(window.location.search).get('theme');
