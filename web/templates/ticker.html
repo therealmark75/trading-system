@@ -358,6 +358,131 @@ async function loadPage() {
     const tm = data.metadata   || {};
     const lr = data.legal_risk || {risk_label:'No data', risk_color:'#6b7280', penalty:0, risk_level:'NONE'};
 
+    // ── Component Registry ──────────────────────────────────────────────
+    function genericStrip(c, s, lr) {
+        const r = c.getValue(s, lr);
+        return `
+        <div class="score-bar-row">
+            <div class="score-bar-header">
+                <span class="score-bar-label">${c.label}</span>
+                <span class="score-bar-num ${r.wasNull ? 'mid' : scoreC(r.num)}">${r.display}</span>
+            </div>
+            <div class="bar-track">
+                <div class="bar-fill" style="width:${r.wasNull ? 4 : Math.min(100, r.num)}%;background:${r.wasNull ? '#9CA3AF' : barC(r.num)}"></div>
+            </div>
+        </div>`;
+    }
+    function genericChip(c, s, lr) {
+        const r = c.getValue(s, lr);
+        const cls = r.wasNull ? 'mid' : scoreC(r.num);
+        return `<div class="score-item" data-tip="${c.tooltip}"><div class="score-item-label">${c.label}</div><div class="score-item-value ${cls}">${r.display}</div></div>`;
+    }
+    function radarLegendRow(c) {
+        return `
+                <div class="radar-dim">
+                    <div class="radar-dim-name"><div class="radar-dim-dot" style="background:${c.dotColor}"></div>${c.label}</div>
+                    <div class="radar-dim-score hi" id="rd-${c.key}">-</div>
+                </div>`;
+    }
+    const COMPONENTS = [
+        {
+            key: 'momentum', label: 'Momentum',
+            tooltip: 'Measures price trend strength, RSI momentum and moving average signals. High score = strong upward momentum',
+            dotColor: '#00d4ff', radarIndex: 0, nullOverlay: true, inStrip: true,
+            getValue(s, lr) { const v = s.momentum_score; const w = v == null; return { num: w?0:v, display: w?'—':v.toFixed(1), color: w?'#9CA3AF':barC(v), wasNull: w }; },
+            stripRenderer: null, chipRenderer: null,
+        },
+        {
+            key: 'quality', label: 'Quality',
+            tooltip: 'Fundamental quality score based on P/E ratio vs sector average, EPS growth and return on equity',
+            dotColor: '#00ff88', radarIndex: 1, nullOverlay: true, inStrip: true,
+            getValue(s, lr) { const v = s.quality_score; const w = v == null; return { num: w?0:v, display: w?'—':v.toFixed(1), color: w?'#9CA3AF':barC(v), wasNull: w }; },
+            stripRenderer: null, chipRenderer: null,
+        },
+        {
+            key: 'insider', label: 'Insider',
+            tooltip: 'Insider activity score based on recent buying and selling by company directors, officers and major shareholders. 100 = strong cluster buying',
+            dotColor: '#af52de', radarIndex: 2, nullOverlay: true, inStrip: true,
+            getValue(s, lr) { const v = s.insider_score; const w = v == null; return { num: w?0:v, display: w?'—':v.toFixed(1), color: w?'#9CA3AF':barC(v), wasNull: w }; },
+            stripRenderer: null, chipRenderer: null,
+        },
+        {
+            key: 'reversion', label: 'Reversion',
+            tooltip: 'Mean reversion signal. Low score = price has moved far from average and may revert. High = trending strongly',
+            dotColor: '#facc15', radarIndex: 3, nullOverlay: true, inStrip: true,
+            getValue(s, lr) { const v = s.reversion_score; const w = v == null; return { num: w?0:v, display: w?'—':v.toFixed(1), color: w?'#9CA3AF':barC(v), wasNull: w }; },
+            stripRenderer: null, chipRenderer: null,
+        },
+        {
+            key: 'volume', label: 'Volume',
+            tooltip: 'Volume Confirmation score. High score = strong volume confirming price move. Low = price move on weak or declining volume.',
+            dotColor: '#8b5cf6', radarIndex: 4, nullOverlay: true, inStrip: true,
+            getValue(s, lr) { const v = s.volume_score; const w = v == null; return { num: w?0:v, display: w?'—':v.toFixed(1), color: w?'#9CA3AF':barC(v), wasNull: w }; },
+            stripRenderer: null, chipRenderer: null,
+        },
+        {
+            key: 'value', label: 'Value',
+            tooltip: 'Value score derived from 12-month price target upside. Above 50 = priced below target (upside), below 50 = priced above target (downside).',
+            dotColor: '#ff6b35', radarIndex: 5, nullOverlay: false, inStrip: false,
+            getValue(s, lr) { const v = Math.max(0, Math.min(100, 50 + (s.target_upside || 0) * 1.5)); return { num: v, display: v.toFixed(1), color: barC(v), wasNull: false }; },
+            stripRenderer: null, chipRenderer: null,
+        },
+        {
+            key: 'sector', label: 'Sector',
+            tooltip: 'Sector relative strength based on 7-day performance of the sector ETF (XLK for Technology, XLF for Financial, etc). Top-performing sectors boost composite score; lagging sectors apply a drag. Weight: ±7.5% max.',
+            dotColor: '#fbbf24', radarIndex: 6, nullOverlay: false, inStrip: false,
+            getValue(s, lr) { const v = s.sector_strength_score != null ? s.sector_strength_score : 50; return { num: v, display: fmt(v, 0), color: barC(v), wasNull: false }; },
+            stripRenderer: null,
+            chipRenderer(s, lr) {
+                const ss = s.sector_strength_score;
+                const mod = s.sector_modifier_applied;
+                if (ss == null) return '';
+                const ssC = ss >= 70 ? 'hi' : ss >= 40 ? 'mid' : 'bad';
+                const modStr = mod != null ? (mod >= 0 ? '+' : '') + fmt(mod, 1) : '';
+                return `<div class="score-item" data-tip="${this.tooltip}"><div class="score-item-label">Sector</div><div class="score-item-value ${ssC}">${fmt(ss, 0)}${modStr ? ` <span style="font-size:10px;color:${mod >= 0 ? '#00ff88' : '#ff3b5c'}">(${modStr})</span>` : ''}</div></div>`;
+            },
+        },
+        {
+            key: 'legal', label: 'Legal',
+            tooltip: 'SEC EDGAR legal risk assessment. Penalises composite score for active enforcement actions, investigations or class actions',
+            dotColor: null, radarIndex: null, nullOverlay: false, inStrip: true,
+            getValue(s, lr) {
+                const isNone = lr.scraped_at && lr.risk_level === 'NONE';
+                return {
+                    num: null,
+                    display: !lr.scraped_at ? 'Not analysed' : isNone ? 'Clean' : lr.risk_label,
+                    color: lr.scraped_at ? lr.risk_color : '#6b7280',
+                    wasNull: false,
+                };
+            },
+            stripRenderer(s, lr) {
+                const r = this.getValue(s, lr);
+                const isNone = lr.scraped_at && lr.risk_level === 'NONE';
+                const lrSign = (lr.penalty || 0) > 0 ? '+' : '';
+                return `
+        <div class="score-bar-row">
+            <div class="score-bar-header">
+                <span class="score-bar-label">Legal</span>
+                <span style="font-family:var(--mono);font-size:11px;font-weight:700;color:${r.color}">${r.display}${isNone ? ' ✓' : ''}</span>
+            </div>
+            ${lr.scraped_at && !isNone ? `<div style="margin-top:5px;display:flex;align-items:center;gap:8px">
+                <span style="font-family:var(--mono);font-size:10px;padding:2px 8px;border-radius:3px;background:${lr.risk_color}22;color:${lr.risk_color};border:1px solid ${lr.risk_color}44">${lrSign}${lr.penalty||0} pts</span>
+                <span style="font-size:10px;color:var(--muted2)">applied to composite</span>
+            </div>` : ''}
+        </div>`;
+            },
+            chipRenderer(s, lr) {
+                const r = this.getValue(s, lr);
+                return `<div class="score-item" data-tip="${this.tooltip}"><div class="score-item-label">Legal</div><div class="score-item-value" style="color:${r.color}">${r.display}</div></div>`;
+            },
+        },
+    ];
+    const radarLabels = COMPONENTS
+        .filter(c => c.radarIndex !== null)
+        .sort((a, b) => a.radarIndex - b.radarIndex)
+        .map(c => c.label);
+    // ── End Component Registry ───────────────────────────────────────────
+
     const TIER_LABELS = {
         STRONG_BUY:'Very Strong Signal', BUY:'Strong Signal',
         STRONG_HOLD:'Stable Signal', HOLD:'Neutral Signal',
@@ -447,7 +572,7 @@ async function loadPage() {
         </tr>`;
     }).join('') || '<tr><td colspan="3" style="color:var(--muted2);text-align:center;padding:16px">No history yet</td></tr>';
 
-    const valueScore = Math.max(0, Math.min(100, 50 + (s.target_upside || 0) * 1.5));
+    const valueScore = COMPONENTS.find(c => c.key === 'value').getValue(s, lr).num;
 
     document.getElementById('page-content').innerHTML = `
         <!-- Hero -->
