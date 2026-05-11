@@ -546,7 +546,6 @@ async function loadPage() {
         </tr>`;
     }).join('') || '<tr><td colspan="3" style="color:var(--muted2);text-align:center;padding:16px">No history yet</td></tr>';
 
-    const valueScore = COMPONENTS.find(c => c.key === 'value').getValue(s, lr).num;
     const scoreChipsHTML = COMPONENTS
         .map(c => c.chipRenderer ? c.chipRenderer(s, lr) : genericChip(c, s, lr))
         .filter(html => html !== '')
@@ -955,7 +954,7 @@ async function loadPage() {
         }).join('');
     }
 
-    initRadarChart(s, lr);
+    initRadarChart(s, lr, COMPONENTS, radarLabels);
     loadEventFeed();
     initCollapsibleCards();
     setTimeout(() => initTradingViewChart(TICKER, 'D'), 100);
@@ -998,37 +997,36 @@ async function loadEventFeed() {
     }
 }
 
-function initRadarChart(s, lr) {
-    const valueScore  = Math.max(0, Math.min(100, 50 + (s.target_upside || 0) * 1.5));
-    const sectorScore = s.sector_strength_score != null ? s.sector_strength_score : 50;
-    const momNull  = s.momentum_score  == null;
-    const qualNull = s.quality_score   == null;
-    const insNull  = s.insider_score   == null;
-    const revNull  = s.reversion_score == null;
-    const volNull  = s.volume_score    == null;
-    const mom  = momNull  ? 0 : s.momentum_score;
-    const qual = qualNull ? 0 : s.quality_score;
-    const ins  = insNull  ? 0 : s.insider_score;
-    const rev  = revNull  ? 0 : s.reversion_score;
-    const vol  = volNull  ? 0 : s.volume_score;
-
+function initRadarChart(s, lr, COMPONENTS, radarLabels) {
     const scoreColor = v => v >= 70 ? '#00ff88' : v >= 55 ? '#00d4ff' : v >= 40 ? '#ff9500' : '#ff3b5c';
     const fmtS = v => v !== null && v !== undefined ? v.toFixed(1) : '-';
 
-    document.getElementById('rd-momentum').textContent  = momNull  ? '—' : fmtS(mom);
-    document.getElementById('rd-momentum').style.color  = momNull  ? '#9CA3AF' : scoreColor(mom);
-    document.getElementById('rd-quality').textContent   = qualNull ? '—' : fmtS(qual);
-    document.getElementById('rd-quality').style.color   = qualNull ? '#9CA3AF' : scoreColor(qual);
-    document.getElementById('rd-insider').textContent   = insNull  ? '—' : fmtS(ins);
-    document.getElementById('rd-insider').style.color   = insNull  ? '#9CA3AF' : scoreColor(ins);
-    document.getElementById('rd-reversion').textContent = revNull  ? '—' : fmtS(rev);
-    document.getElementById('rd-reversion').style.color = revNull  ? '#9CA3AF' : scoreColor(rev);
-    document.getElementById('rd-volume').textContent    = volNull  ? '—' : fmtS(vol);
-    document.getElementById('rd-volume').style.color    = volNull  ? '#9CA3AF' : scoreColor(vol);
-    document.getElementById('rd-value').textContent     = fmtS(Math.round(valueScore * 10) / 10);
-    document.getElementById('rd-value').style.color     = scoreColor(valueScore);
-    document.getElementById('rd-sector').textContent    = fmtS(sectorScore);
-    document.getElementById('rd-sector').style.color   = scoreColor(sectorScore);
+    const radarComps = COMPONENTS
+        .filter(c => c.radarIndex !== null)
+        .sort((a, b) => a.radarIndex - b.radarIndex);
+
+    const radarData   = Array(radarComps.length).fill(0);
+    const pointColors = radarComps.map(c => c.dotColor);
+    const nullOverlay = Array(radarComps.length).fill(null);
+    let anyNull = false;
+
+    radarComps.forEach(c => {
+        const r = c.getValue(s, lr);
+        radarData[c.radarIndex]   = r.num;
+        if (r.wasNull) {
+            pointColors[c.radarIndex] = '#9CA3AF';
+            nullOverlay[c.radarIndex] = 8;
+            anyNull = true;
+        }
+    });
+
+    radarComps.forEach(c => {
+        const r  = c.getValue(s, lr);
+        const el = document.getElementById('rd-' + c.key);
+        if (!el) return;
+        el.textContent = r.wasNull ? '—' : fmtS(r.num);
+        el.style.color = r.wasNull ? '#9CA3AF' : scoreColor(r.num);
+    });
 
     const centerEl = document.getElementById('radar-center-num');
     centerEl.textContent = s.composite_score ? s.composite_score.toFixed(1) : '-';
@@ -1037,19 +1035,10 @@ function initRadarChart(s, lr) {
     const ctx = document.getElementById('radar-chart');
     if (!ctx) return;
 
-    const radarData = [mom, qual, ins, rev, vol, valueScore, sectorScore];
     const gradient = ctx.getContext('2d');
-
     const fillGrad = gradient.createLinearGradient(0, 0, 0, 280);
     fillGrad.addColorStop(0, 'rgba(0,212,255,0.25)');
     fillGrad.addColorStop(1, 'rgba(0,255,136,0.08)');
-
-    const pointColors = ['#00d4ff','#00ff88','#af52de','#facc15','#8b5cf6','#ff6b35','#fbbf24'];
-    if (momNull)  pointColors[0] = '#9CA3AF';
-    if (qualNull) pointColors[1] = '#9CA3AF';
-    if (insNull)  pointColors[2] = '#9CA3AF';
-    if (revNull)  pointColors[3] = '#9CA3AF';
-    if (volNull)  pointColors[4] = '#9CA3AF';
 
     const datasets = [{
         data: radarData,
@@ -1064,14 +1053,7 @@ function initRadarChart(s, lr) {
         pointHoverRadius: 7,
     }];
 
-    const anyNull = momNull || qualNull || insNull || revNull || volNull;
     if (anyNull) {
-        const nullOverlay = [null, null, null, null, null, null, null];
-        if (momNull)  nullOverlay[0] = 8;
-        if (qualNull) nullOverlay[1] = 8;
-        if (insNull)  nullOverlay[2] = 8;
-        if (revNull)  nullOverlay[3] = 8;
-        if (volNull)  nullOverlay[4] = 8;
         datasets.push({
             data: nullOverlay,
             fill: false,
@@ -1089,7 +1071,7 @@ function initRadarChart(s, lr) {
     new Chart(ctx, {
         type: 'radar',
         data: {
-            labels: ['Momentum', 'Quality', 'Insider', 'Reversion', 'Volume', 'Value', 'Sector'],
+            labels: radarLabels,
             datasets,
         },
         options: {
