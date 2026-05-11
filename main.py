@@ -526,12 +526,14 @@ def main():
             id="fmp_earnings", name="FMP Earnings Calendar 06:05",
         )
 
-        # FMP dividend refresh (weekly, Sunday 03:00)
-        scheduler.add_job(
-            job_fmp_dividends,
-            CronTrigger(hour=3, minute=0, day_of_week="sun"),
-            id="fmp_dividends", name="FMP Dividend Refresh Sunday 03:00",
-        )
+        # TODO: re-enable after BUG A fix — consecutive-429 circuit breaker
+        # in scrapers/fmp_scraper.py _get(). Currently disabled because
+        # the dividend job blocks the scheduler when FMP rate-limits.
+        # scheduler.add_job(
+        #     job_fmp_dividends,
+        #     CronTrigger(hour=3, minute=0, day_of_week="sun"),
+        #     id="fmp_dividends", name="FMP Dividend Refresh Sunday 03:00",
+        # )
 
         # Economic calendar refresh (daily, 06:30)
         def job_economic_calendar():
