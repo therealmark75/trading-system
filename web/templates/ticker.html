@@ -450,7 +450,7 @@ async function loadPage() {
                 const isNone = lr.scraped_at && lr.risk_level === 'NONE';
                 return {
                     num: null,
-                    display: !lr.scraped_at ? 'Not analysed' : isNone ? 'Clean' : lr.risk_label,
+                    display: !lr.scraped_at ? 'Not analysed' : isNone ? 'Clean ✓' : lr.risk_label,
                     color: lr.scraped_at ? lr.risk_color : '#6b7280',
                     wasNull: false,
                 };
