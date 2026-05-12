@@ -50,7 +50,7 @@ def _scrape_exchange(soup):
         return None
 
 def _to_int(val):
-    try: return int(str(val).replace(",","").strip())
+    try: return int(float(str(val).replace(",","").strip()))
     except: return None
 
 def _to_float(val):
