@@ -116,7 +116,6 @@ def _normalise_technical(df):
         if not t: continue
         result[t] = {
             "rsi_14":       _to_float(row.get("RSI")),
-            "avg_volume":   _to_int(row.get("Avg Volume")),
             "sma_50_pct":   _pct_field(row.get("SMA50")),
             "sma_200_pct":  _pct_field(row.get("SMA200")),
             "high_52w_pct": _pct_field(row.get("52W High")),
@@ -165,7 +164,7 @@ def scrape_sector(sector, delay=2.5):
     # Fetch analyst recom + insider/short + rel_volume via custom view
     # Columns: 1=Ticker, 26=Insider Own, 27=Insider Trans, 30=Float Short, 62=Recom, 64=Rel Volume
     from finvizfinance.screener.custom import Custom
-    custom_df = _fetch_with_retry(Custom(), filters, columns=[1, 26, 27, 30, 62, 64])
+    custom_df = _fetch_with_retry(Custom(), filters, columns=[1, 26, 27, 30, 62, 63, 64])
     custom_data = {}
     if custom_df is not None and not custom_df.empty:
         for _, row in custom_df.iterrows():
@@ -177,6 +176,7 @@ def scrape_sector(sector, delay=2.5):
                     "insider_transactions": str(row.get("Insider Trans") or ""),
                     "short_interest_pct":  _pct_field(row.get("Short Float")),
                     "rel_volume":          _to_float(row.get("Rel Volume")),
+                    "avg_volume":          _to_int(row.get("Avg Volume")),
                 }
     time.sleep(delay + random.uniform(0,1))
 
