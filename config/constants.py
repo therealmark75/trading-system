@@ -11,6 +11,8 @@ DATABASE_PATH = "data/trading_system.db"
 # ── Scraping schedule (24h format) ────────────────
 SCREENER_SCRAPE_TIMES  = ["08:00", "12:00", "16:30"]   # market open, midday, close
 INSIDER_SCRAPE_TIMES   = ["09:00", "17:00"]             # morning + after-hours sweep
+YAHOO_PRIORITY_TIMES   = ["02:00", "02:15"]             # daily Mon-Fri analyst + earnings
+YAHOO_BULK_DAYS        = ["sun", "mon", "tue"]          # weekly bulk jobs spread Sun-Tue
 
 # ── FinViz sectors to track (one at a time, Phase 1) ──
 SECTORS = [
@@ -65,7 +67,8 @@ USER_AGENTS = [
     "Mozilla/5.0 (X11; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0",
 ]
 
-REQUEST_DELAY_SECONDS = 2.5   # polite crawl delay between requests
+REQUEST_DELAY_SECONDS       = 2.5   # polite crawl delay between requests
+YAHOO_REQUEST_DELAY_SECONDS = 1.0   # yfinance free-tier: ~1.5 req/sec empirical ceiling
 REQUEST_TIMEOUT       = 20
 
 # ── Scoring engine version ────────────────────────
