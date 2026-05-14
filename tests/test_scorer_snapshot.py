@@ -72,12 +72,15 @@ _SYNTHETIC_ROWS = [
 
     # Profile: STRONG_SELL — collapsed fundamentals, RSI mid-range + far from 52w low
     # so reversion_score stays low (~15) and does not trip the reversion >= 75 HOLD branch.
-    # insider_score = 0 (CEO+CFO+Chairman all selling); composite ~18.
+    # insider_score = 0 (CEO+CFO+Chairman all selling).
+    # Phase 2b-ii: enrichment maps drive earnings/piotroski/analyst_mom to worst tier;
+    # Altman Z < 0 (market_cap "240M" + distressed balance sheet) → altman_penalty = -60.
+    # Combined: composite ~19 before Altman, clamped to 0 after -60 penalty → STRONG_SELL.
     {"ticker": "SS07", "company": "StrongSell Corp", "sector": "Financials",
      "price": 20.0, "change_pct": -2.5, "sma_50_pct": -7.0, "sma_200_pct": -20.0,
      "rsi_14": 58.0, "rel_volume": 0.7, "roe": -25.0, "eps_growth_this_yr": -45.0,
      "eps_growth_next_yr": -30.0, "short_interest_pct": 35.0, "analyst_recom": 4.8,
-     "low_52w_pct": 45.0, "high_52w_pct": -50.0},
+     "low_52w_pct": 45.0, "high_52w_pct": -50.0, "market_cap": "240M"},
 
     # Profile: legal MINOR row — composite is reduced by -5 penalty
     {"ticker": "LM08", "company": "Legal Minor Inc", "sector": "Technology",
@@ -159,27 +162,89 @@ _SYNTHETIC_SECTOR_MAP = {
     "NeutralSector": 50.0,
 }
 
-# ── Snapshot — updated 2026-05-14 (Phase 2b-i coverage patch) ────────────────
-# SS07: rewritten with mid-range RSI + far from 52w low so reversion_score ~15;
-#       HOLD branch no longer pre-empts STRONG_SELL.
-# WH14: new ticker added for WEAK_HOLD coverage (composite ~32, insider 34).
+# ── Phase 2b-ii enrichment maps ───────────────────────────────────────────────
+# Only SS07 has enrichment data — all other tickers remain P5 neutral (50.0/0).
+# SS07: 4 quarters of extreme misses (earnings → 0), Piotroski F=2 (→ 20),
+#        analyst net=-4 (→ 20), Altman Z≈-0.25 (market_cap "240M") → penalty -60.
+# Combined effect: raw composite ~19 before Altman, clamped to 0 after -60 → STRONG_SELL.
+
+_SYNTHETIC_EARNINGS_MAP = {
+    "SS07": [
+        {"fiscal_quarter": "2025Q4", "eps_actual": -0.50, "eps_estimate": 0.10, "surprise_pct": -600.0, "reported_at": "2026-02-01"},
+        {"fiscal_quarter": "2025Q3", "eps_actual": -0.30, "eps_estimate": 0.05, "surprise_pct": -700.0, "reported_at": "2025-11-01"},
+        {"fiscal_quarter": "2025Q2", "eps_actual": -0.10, "eps_estimate": 0.08, "surprise_pct": -225.0, "reported_at": "2025-08-01"},
+        {"fiscal_quarter": "2025Q1", "eps_actual": -0.05, "eps_estimate": 0.06, "surprise_pct": -183.3, "reported_at": "2025-05-01"},
+    ],
+}
+
+_SYNTHETIC_FINANCIALS_MAP = {
+    "SS07": {
+        # 2 fiscal years required so Piotroski Lock 1 (< 2 years) does not trigger.
+        # Y0=2024: F=2 (only F4 OCF>NI and F9 asset-turnover pass); → piotroski_score=20.
+        # Altman (Y0=2024): Z≈-0.25 (distress zone) → altman_penalty=-60.
+        "INCOME": {
+            "2024": {"NetIncome": -50_000_000, "TotalRevenue": 200_000_000, "GrossProfit": 20_000_000, "EBIT": -45_000_000},
+            "2023": {"NetIncome": -10_000_000, "TotalRevenue": 220_000_000, "GrossProfit": 35_000_000, "EBIT":  -5_000_000},
+        },
+        "BALANCE": {
+            "2024": {
+                "TotalAssets":                            100_000_000,
+                "TotalLiabilitiesNetMinorityInterest":    180_000_000,
+                "LongTermDebt":                           120_000_000,
+                "CurrentAssets":                           15_000_000,
+                "CurrentLiabilities":                      40_000_000,
+                "WorkingCapital":                         -25_000_000,
+                "RetainedEarnings":                       -90_000_000,
+                "OrdinarySharesNumber":                    12_000_000,
+            },
+            "2023": {
+                "TotalAssets":                            130_000_000,
+                "TotalLiabilitiesNetMinorityInterest":    150_000_000,
+                "LongTermDebt":                           100_000_000,
+                "CurrentAssets":                           25_000_000,
+                "CurrentLiabilities":                      35_000_000,
+                "WorkingCapital":                         -10_000_000,
+                "RetainedEarnings":                       -40_000_000,
+                "OrdinarySharesNumber":                    10_000_000,
+            },
+        },
+        "CASHFLOW": {
+            "2024": {"OperatingCashFlow": -20_000_000},
+            "2023": {"OperatingCashFlow":  -5_000_000},
+        },
+    },
+}
+
+_SYNTHETIC_INST_OWN_MAP = {}   # No tickers — all P5 neutral (inst_own_score=50.0)
+
+_SYNTHETIC_ANALYST_MOM_MAP = {
+    "SS07": {"upgrades_90d": 0, "downgrades_90d": 4, "net_momentum": -4},
+}
+
+# ── Snapshot — updated 2026-05-14 (Phase 2b-ii: composite rebalance + enrichment maps) ──
+# v0.13.0: 4 new enrichment scorers (earnings, piotroski, inst_own, analyst_mom) wired in.
+# Composite weights rebalanced 1.10 → 1.60-sum; Altman applied as additive penalty.
+# SS07 now exercises all 4 enrichment paths: earnings=0, piotroski=20, altman_pen=-60,
+#       analyst_mom=20 → composite clamped to 0.0 → STRONG_SELL ✓
+# SN12/SL11 dropped from BUY → STRONG_HOLD (neutral pull from new 50.0 components;
+#             they remain sector-modifier coverage tickers, not tier-specific).
 # Re-generate with: python -c "from tests.test_scorer_snapshot import _SYNTHETIC_ROWS, ..."
 # Do NOT modify this to match broken output — fix the refactor instead.
 EXPECTED_SNAPSHOT = {
-    "SB01": {"composite_score_raw": 88.6, "composite_score": 88.6, "rating": "STRONG_BUY",  "legal_penalty": 0,  "sector_modifier_applied":  0.0},
-    "BU02": {"composite_score_raw": 70.6, "composite_score": 70.6, "rating": "BUY",         "legal_penalty": 0,  "sector_modifier_applied":  0.0},
-    "SH10": {"composite_score_raw": 67.8, "composite_score": 68.8, "rating": "BUY",         "legal_penalty": 0,  "sector_modifier_applied":  1.02},
-    "SN12": {"composite_score_raw": 66.9, "composite_score": 66.9, "rating": "BUY",         "legal_penalty": 0,  "sector_modifier_applied":  0.0},
-    "SL11": {"composite_score_raw": 66.9, "composite_score": 65.9, "rating": "BUY",         "legal_penalty": 0,  "sector_modifier_applied": -1.0},
-    "SH03": {"composite_score_raw": 60.5, "composite_score": 60.5, "rating": "STRONG_HOLD", "legal_penalty": 0,  "sector_modifier_applied":  0.0},
-    "LN09": {"composite_score_raw": 58.9, "composite_score": 58.9, "rating": "STRONG_HOLD", "legal_penalty": 0,  "sector_modifier_applied":  0.0},
-    "LM08": {"composite_score_raw": 57.8, "composite_score": 57.8, "rating": "STRONG_HOLD", "legal_penalty": -5, "sector_modifier_applied":  0.0},
+    "SB01": {"composite_score_raw": 76.6, "composite_score": 76.6, "rating": "STRONG_BUY",  "legal_penalty": 0,  "sector_modifier_applied":  0.0},
+    "BU02": {"composite_score_raw": 64.2, "composite_score": 64.2, "rating": "BUY",         "legal_penalty": 0,  "sector_modifier_applied":  0.0},
+    "SH10": {"composite_score_raw": 62.2, "composite_score": 63.2, "rating": "BUY",         "legal_penalty": 0,  "sector_modifier_applied":  0.93},
+    "SN12": {"composite_score_raw": 61.6, "composite_score": 61.6, "rating": "STRONG_HOLD", "legal_penalty": 0,  "sector_modifier_applied":  0.0},
+    "SL11": {"composite_score_raw": 61.6, "composite_score": 60.7, "rating": "STRONG_HOLD", "legal_penalty": 0,  "sector_modifier_applied": -0.92},
+    "SH03": {"composite_score_raw": 57.2, "composite_score": 57.2, "rating": "STRONG_HOLD", "legal_penalty": 0,  "sector_modifier_applied":  0.0},
+    "LN09": {"composite_score_raw": 56.1, "composite_score": 56.1, "rating": "STRONG_HOLD", "legal_penalty": 0,  "sector_modifier_applied":  0.0},
+    "LM08": {"composite_score_raw": 53.8, "composite_score": 53.8, "rating": "STRONG_HOLD", "legal_penalty": -5, "sector_modifier_applied":  0.0},
     "NL13": {"composite_score_raw": 50.0, "composite_score": 50.0, "rating": "STRONG_HOLD", "legal_penalty": 0,  "sector_modifier_applied":  0.0},
-    "HO04": {"composite_score_raw": 43.1, "composite_score": 43.1, "rating": "HOLD",        "legal_penalty": 0,  "sector_modifier_applied":  0.0},
-    "WH05": {"composite_score_raw": 33.4, "composite_score": 33.4, "rating": "SELL",        "legal_penalty": 0,  "sector_modifier_applied":  0.0},
-    "WH14": {"composite_score_raw": 31.9, "composite_score": 31.9, "rating": "WEAK_HOLD",   "legal_penalty": 0,  "sector_modifier_applied":  0.0},
-    "SE06": {"composite_score_raw": 24.5, "composite_score": 24.5, "rating": "SELL",        "legal_penalty": 0,  "sector_modifier_applied":  0.0},
-    "SS07": {"composite_score_raw": 18.0, "composite_score": 18.0, "rating": "STRONG_SELL", "legal_penalty": 0,  "sector_modifier_applied":  0.0},
+    "HO04": {"composite_score_raw": 45.3, "composite_score": 45.3, "rating": "HOLD",        "legal_penalty": 0,  "sector_modifier_applied":  0.0},
+    "WH05": {"composite_score_raw": 38.6, "composite_score": 38.6, "rating": "SELL",        "legal_penalty": 0,  "sector_modifier_applied":  0.0},
+    "WH14": {"composite_score_raw": 37.6, "composite_score": 37.6, "rating": "WEAK_HOLD",   "legal_penalty": 0,  "sector_modifier_applied":  0.0},
+    "SE06": {"composite_score_raw": 32.5, "composite_score": 32.5, "rating": "SELL",        "legal_penalty": 0,  "sector_modifier_applied":  0.0},
+    "SS07": {"composite_score_raw":  0.0, "composite_score":  0.0, "rating": "STRONG_SELL", "legal_penalty": 0,  "sector_modifier_applied":  0.0},
 }
 
 
@@ -191,19 +256,21 @@ def test_score_all_tickers_snapshot():
     composite_score_raw, composite_score, rating, legal_penalty, and
     sector_modifier_applied that exactly match EXPECTED_SNAPSHOT.
 
-    Catches: screener_rows->ticker_data_rows rename breaking the iteration path,
-             compute_composite weight defaults changing, legal penalty applied
-             twice or not at all, sector modifier formula drift, the four new
-             Phase 2b-ii no-op kwargs accidentally affecting output.
+    Catches: compute_composite weight defaults changing, legal/Altman penalty applied
+             twice or not at all, sector modifier formula drift, enrichment scorers
+             producing wrong outputs (SS07 exercises all 4 new enrichment paths).
 
     Ignores: fields not in the snapshot (flags, sub-scores, company, sector),
-             tickers not in the synthetic dataset, changes to Phase 2b-ii scorer
-             functions (they are not yet wired in).
+             tickers not in the synthetic dataset (12 tickers use P5 neutral enrichment).
     """
     signals = score_all_tickers(
         _SYNTHETIC_ROWS, _SYNTHETIC_INSIDERS,
         legal_risk_map=_SYNTHETIC_LEGAL_MAP,
         sector_strength_map=_SYNTHETIC_SECTOR_MAP,
+        earnings_map=_SYNTHETIC_EARNINGS_MAP,
+        financials_map=_SYNTHETIC_FINANCIALS_MAP,
+        inst_own_map=_SYNTHETIC_INST_OWN_MAP,
+        analyst_mom_map=_SYNTHETIC_ANALYST_MOM_MAP,
     )
     actual = {sig.ticker: sig for sig in signals}
 
