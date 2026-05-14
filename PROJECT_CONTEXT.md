@@ -1017,18 +1017,6 @@ URGENT (pre-launch, decision-not-engineering):
 
 STRUCTURAL DEBT:
 
-- WATCHLIST DATA-LOSS BUG: 11 May discovery. Watchlists persist on
-  plain server restart but appear to reset when there's a code
-  change between restart events. Initial SQL diagnostic ruled out
-  hypothesis 1 (session/user_id instability) and hypothesis 3
-  (in-memory only storage). Likely a startup-path init function
-  with a conditional DDL branch tied to code state. Diagnostic
-  queued: capture exact restart workflow at next occurrence
-  (kill-and-restart sequence, any scripts involved), then audit
-  web/app.py startup code for code-change-triggered table
-  drops/recreates. Could share root cause with the 9 May ADD COLUMN
-  guard pattern.
-
 - COMPONENT METADATA CONSUMERS: the JS-only registry is the right
   call for now (YAGNI), but if any future consumer needs Python
   access to component labels/tooltips (admin dashboard, email
@@ -1045,16 +1033,10 @@ STRUCTURAL DEBT:
   problem. Proposed: 90-min hard cap, inventory only, no fixes during
   the session. Yahoo brings its own data and may supersede some columns.
 
-- SECRETS LEAKAGE GATE smarter than literal string match. 7 May
-  near-miss: ALERT_CONFIG.smtp_pass slipped past grep for
-  TOKEN|API_KEY|PASSWORD|SECRET|CHAT_ID. Better: enumerate every
-  variable name in tracked config files and explicitly classify
-  each as secret/non-secret.
+- TEST ISOLATION REFACTOR: tonight's watchlist data-loss bug (commit ffd5b8a) was patched via save-and-restore in the offending test's teardown. Underlying issue: tests/test_smoke.py and likely other test files run against the live production DB (data/trading_system.db) with no isolation. Proper fix: pytest fixture creating a temp DB per test run, with schema init and teardown. Multi-session work. Migration scope: every test currently importing from `database.db` and connecting to DATABASE_PATH directly, plus conftest.py fixture changes. Estimated 20+ test files affected.
 
 - PRE-COMMIT HOOK for diff review on auth-adjacent files (Phase 2
   infrastructure, mechanical Scope Discipline enforcement).
-
-- 7 MAY AUDIT TABLE REVIEW RESOLVED: No audit table from 7 May morning survives in repo (Finding C). However, secondary investigation found the backdoor was introduced in commit 9e02e7d (6 May 18:26), with the side-effect disclosed in the commit-message bullet but not escalated for review. CC subsequently misdescribed the function as a pure reader in 7949805 (6 May 20:59) while a test comment in the same commit acknowledged the side-effect existed. P17 enforcement is sufficient for audit-completeness; the gap was scope-discipline on auth-adjacent changes. P23 added to invariants. Pre-commit hook for auth-adjacent files (still queued in FOLLOWUPS) is the mechanical layer.
 
 - PENNY SCREENER EXCHANGE FILTER (post-Yahoo): deferred from 9 May
   per Phase 1 finding that "Other" bucket is dominated by ETFs
@@ -1070,22 +1052,12 @@ STRUCTURAL DEBT:
 
 SMALL / COSMETIC:
 
-- VACUUM BACKUP FILE: `data/trading_system.db.backup_pre_vacuum_20260513_064920`
-  (363MB) created during the 13 May VACUUM. Delete after ~24h of clean
-  post-VACUUM scrape cycles confirm no regression (so from 14 May 2026
-  06:50 BST onward). Small single-file commit.
-
 - DATA RETENTION STRATEGY (post-Yahoo): screener_snapshots grows ~33k
   rows/day across three daily scrapes; linear projection ~12M rows/year
   just from the screener. DB currently 328MB post-VACUUM. Worth thinking
   about archival or summarisation policies before the DB grows past
   a few GB, but not urgent. Better understood after Yahoo lands and
   total data volume is clearer.
-
-- TEST EM-DASH CLEANUP: the two original freshness tests in
-  `tests/test_data_integrity.py` still use em-dashes in assertion
-  messages ("older than 72h —") while the three new ones (12 May
-  expansion) use commas. One-line cleanup pending.
 
 - LEGAL RISK COVERAGE: ~99% of tickers have no legal_risk row as of
   9 May 2026 (scraper actively catching up at ~10/day). State 1
@@ -1105,10 +1077,6 @@ SMALL / COSMETIC:
 
 - FAVICON 404 in browser console: pre-existing, low priority,
   cosmetic only.
-
-- PUSH 14 COMMITS TO REMOTE: 9 Phase 2a + 5 Phase 2b-i commits sit
-  on local main, unpushed as of 14 May 2026. Push window TBD when
-  Mark is ready. No branch work needed, straight push from local main.
 
 ---
 
