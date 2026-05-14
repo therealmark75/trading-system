@@ -1393,6 +1393,113 @@ def get_legal_risk_map(db_path: str) -> dict:
     } for r in rows}
 
 
+def get_earnings_enrichment_map(db_path: str) -> dict:
+    """Return {ticker: [list of quarters, most-recent first]} for all rows in earnings_history.
+
+    Each entry: {fiscal_quarter, eps_actual, eps_estimate, surprise_pct, reported_at}.
+    Catches: earnings scraper job death or missing surprise data.
+    Ignores: tickers not yet scraped (scorer treats absent key as empty list → neutral 50.0).
+    """
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute(
+        "SELECT ticker, fiscal_quarter, eps_actual, eps_estimate, surprise_pct, reported_at "
+        "FROM earnings_history ORDER BY ticker, fiscal_quarter DESC"
+    )
+    rows = cur.fetchall()
+    conn.close()
+    result: dict = {}
+    for r in rows:
+        result.setdefault(r["ticker"], []).append({
+            "fiscal_quarter": r["fiscal_quarter"],
+            "eps_actual":     r["eps_actual"],
+            "eps_estimate":   r["eps_estimate"],
+            "surprise_pct":   r["surprise_pct"],
+            "reported_at":    r["reported_at"],
+        })
+    return result
+
+
+def get_financials_enrichment_map(db_path: str) -> dict:
+    """Return {ticker: {stmt_type: {fiscal_year: {line_item_key: value}}}} from financial_statements.
+
+    line_item_key is stored verbatim from yfinance (PascalCase).
+    Catches: financial scraper job death or missing line items.
+    Ignores: tickers not yet scraped (scorer treats absent key as missing → neutral / no-penalty).
+    """
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute(
+        "SELECT ticker, statement_type, fiscal_year, line_item_key, value FROM financial_statements"
+    )
+    rows = cur.fetchall()
+    conn.close()
+    result: dict = {}
+    for r in rows:
+        t  = r["ticker"]
+        st = r["statement_type"]
+        fy = r["fiscal_year"]
+        result.setdefault(t, {}).setdefault(st, {}).setdefault(fy, {})[r["line_item_key"]] = r["value"]
+    return result
+
+
+def get_inst_ownership_map(db_path: str) -> dict:
+    """Return {ticker: {total_pct_held, holder_count, filing_date}} from institutional_holders.
+
+    Uses the most recent filing_date per ticker; sums pct_out across all holders on that date.
+    Catches: institutional holders scraper job death.
+    Ignores: tickers not yet scraped (scorer treats absent key as None → neutral 50.0).
+    """
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute("""
+        SELECT ih.ticker,
+               SUM(ih.pct_out)  AS total_pct_held,
+               COUNT(*)         AS holder_count,
+               ih.filing_date
+        FROM institutional_holders ih
+        INNER JOIN (
+            SELECT ticker, MAX(filing_date) AS max_fd
+            FROM institutional_holders
+            GROUP BY ticker
+        ) latest ON latest.ticker = ih.ticker AND latest.max_fd = ih.filing_date
+        GROUP BY ih.ticker
+    """)
+    rows = cur.fetchall()
+    conn.close()
+    return {r["ticker"]: {
+        "total_pct_held": r["total_pct_held"],
+        "holder_count":   r["holder_count"],
+        "filing_date":    r["filing_date"],
+    } for r in rows}
+
+
+def get_analyst_momentum_map(db_path: str, window_days: int = 90) -> dict:
+    """Return {ticker: {upgrades_90d, downgrades_90d, net_momentum}} from analyst_changes.
+
+    Counts upgrades (action IN ('up', 'init')) and downgrades (action='down') within window_days.
+    Catches: analyst changes scraper job death.
+    Ignores: tickers with no analyst activity in window (scorer treats absent key as None → neutral 50.0).
+    """
+    conn = get_connection(db_path)
+    cur  = conn.cursor()
+    cur.execute(f"""
+        SELECT ticker,
+               COUNT(CASE WHEN action IN ('up', 'init') THEN 1 END) AS upgrades,
+               COUNT(CASE WHEN action = 'down'          THEN 1 END) AS downgrades
+        FROM analyst_changes
+        WHERE event_date >= date('now', '-{int(window_days)} days')
+        GROUP BY ticker
+    """)
+    rows = cur.fetchall()
+    conn.close()
+    return {r["ticker"]: {
+        "upgrades_90d":   r["upgrades"],
+        "downgrades_90d": r["downgrades"],
+        "net_momentum":   r["upgrades"] - r["downgrades"],
+    } for r in rows}
+
+
 def get_watchlist_tickers(db_path: str, alerts_only: bool = False) -> set:
     """Return set of all distinct tickers present in any watchlist (any user).
 

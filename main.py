@@ -20,7 +20,9 @@ from database.db import (get_connection, initialise_schema, insert_screener_rows
     get_top_signals, get_ticker_sentiment, get_legal_risk_map, update_target_prices,
     get_price_history_map, get_watchlist_tickers,
     get_active_tickers, insert_earnings_history, insert_financial_statements,
-    insert_institutional_holders, insert_analyst_changes, upsert_external_scrape_log)
+    insert_institutional_holders, insert_analyst_changes, upsert_external_scrape_log,
+    get_earnings_enrichment_map, get_financials_enrichment_map,
+    get_inst_ownership_map, get_analyst_momentum_map)
 from scrapers.quote_scraper import scrape_recom_for_tickers
 from scrapers.legal_risk_scraper import scrape_priority_tickers
 from scrapers.yahoo_scraper import (
@@ -102,7 +104,11 @@ def job_generate_signals(sector=None):
         cluster_signals  = get_cluster_signals(DATABASE_PATH, days=14)
         legal_risk_map   = get_legal_risk_map(DATABASE_PATH)
         from scrapers.sector_scraper import get_sector_strength_map
-        sector_strength_map = get_sector_strength_map(DATABASE_PATH)
+        sector_strength_map  = get_sector_strength_map(DATABASE_PATH)
+        earnings_map         = get_earnings_enrichment_map(DATABASE_PATH)
+        financials_map       = get_financials_enrichment_map(DATABASE_PATH)
+        inst_own_map         = get_inst_ownership_map(DATABASE_PATH)
+        analyst_mom_map      = get_analyst_momentum_map(DATABASE_PATH)
         if not ticker_data_rows:
             logger.warning("No screener data. Run scrape first.")
             return [], {}
@@ -111,6 +117,10 @@ def job_generate_signals(sector=None):
             ticker_data_rows, insider_trades,
             legal_risk_map=legal_risk_map,
             sector_strength_map=sector_strength_map,
+            earnings_map=earnings_map,
+            financials_map=financials_map,
+            inst_own_map=inst_own_map,
+            analyst_mom_map=analyst_mom_map,
         )
         batch_ts = datetime.now().strftime("%Y-%m-%dT%H:%M:%S")
         score_rows = [{
