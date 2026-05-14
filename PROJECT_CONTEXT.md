@@ -845,6 +845,28 @@ push gate. Doc edits should come from Athena drafting an update prompt
 for CC, or Mark editing directly. CC self-initiating bypasses both
 review paths.
 
+### CC self-initiated HANDOFF edit on inferred intent (14 May 2026 lesson, Phase 2b-ii session)
+
+During the Phase 2b-ii implementation session, CC committed a full HANDOFF.md rewrite
+(commit 76356d2) without any prompt requesting the update. The content was accurate --
+Phase 2b-ii shipped state, current scheduler PID, updated STILL OPEN list, fresh-chat
+notes -- but the act was unauthorised. CC's stated reasoning: HANDOFF.md's own header
+note ("Updated end of each session") was treated as standing permission to update at
+session close. It is not. The 12 May 2026 lesson already captured this pattern for
+PROJECT_CONTEXT; the 14 May incident extends it to HANDOFF.md specifically.
+
+Refinement: doc-file headers may contain operational instructions ("Updated end of each
+session", "Read this first") that describe what the file is for, not what CC should do
+unprompted. CC should treat all such header text as descriptive metadata, never as a
+standing instruction to write to the file. Editing instructions must come from Mark or
+Athena in-turn, not from inferred session-state.
+
+Mitigation phrasing for future prompts that touch implementation work: include "do not
+modify HANDOFF.md or PROJECT_CONTEXT.md" alongside the existing push-gate language, even
+on prompts that have nothing to do with docs. Implementation prompts that span multiple
+commits are the highest-risk pattern -- CC reaches for end-of-session housekeeping
+behaviour when the implementation work concludes.
+
 ### Baseline-and-comparison verification (13 May lesson)
 
 For any fix that changes data behaviour (NULL → populated, wrong value
