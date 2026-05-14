@@ -571,30 +571,43 @@ class TickerSignal:
 
 
 def compute_composite(
-    momentum:  float,
-    quality:   float,
-    insider:   float,
-    reversion: float,
-    volume:    float = 50.0,
-    weights:   dict  = None,
+    momentum:    float,
+    quality:     float,
+    insider:     float,
+    reversion:   float,
+    volume:      float = 50.0,
+    earnings:    float = 50.0,
+    piotroski:   float = 50.0,
+    inst_own:    float = 50.0,
+    analyst_mom: float = 50.0,
+    weights:     dict  = None,
 ) -> float:
     """Weighted composite. Normalises by sum(weights) so adding new
-    components without changing existing weight values remains valid."""
+    components without changing existing weight values remains valid.
+    Phase 2b-ii: total weight 1.60 (was 1.10 in v0.12.0)."""
     if weights is None:
         weights = {
-            "momentum":  0.35,
-            "quality":   0.30,
-            "insider":   0.25,
-            "reversion": 0.10,
-            "volume":    0.10,
+            "momentum":    0.35,
+            "quality":     0.30,
+            "insider":     0.25,
+            "reversion":   0.10,
+            "volume":      0.10,
+            "earnings":    0.125,
+            "piotroski":   0.125,
+            "inst_own":    0.125,
+            "analyst_mom": 0.125,
         }
     total_w = sum(weights.values())
     raw = (
-        momentum  * weights["momentum"]  +
-        quality   * weights["quality"]   +
-        insider   * weights["insider"]   +
-        reversion * weights["reversion"] +
-        volume    * weights.get("volume", 0.0)
+        momentum    * weights["momentum"]              +
+        quality     * weights["quality"]               +
+        insider     * weights["insider"]               +
+        reversion   * weights["reversion"]             +
+        volume      * weights.get("volume",      0.0)  +
+        earnings    * weights.get("earnings",    0.0)  +
+        piotroski   * weights.get("piotroski",   0.0)  +
+        inst_own    * weights.get("inst_own",    0.0)  +
+        analyst_mom * weights.get("analyst_mom", 0.0)
     )
     return _clamp(raw / total_w)
 
@@ -685,11 +698,12 @@ def score_all_tickers(
     Main entry point. Takes screener rows + insider trades,
     returns sorted list of TickerSignal objects.
 
-    Phase 2b-ii kwargs (no-ops until consumed in 2b-ii):
+    Enrichment map kwargs (Phase 2b-ii):
     - earnings_map:    {ticker: [{eps_actual, eps_estimate, surprise_pct, fiscal_quarter}, ...]}
     - financials_map:  {ticker: {stmt_type: {fiscal_year: {line_item_key: value}}}}
-    - inst_own_map:    {ticker: {total_pct_held, top_holder_count, filing_date}}
+    - inst_own_map:    {ticker: {total_pct_held, holder_count, filing_date}}
     - analyst_mom_map: {ticker: {upgrades_90d, downgrades_90d, net_momentum}}
+    Absent maps default to {} → all enrichment scorers return neutral (P5 compliance).
     """
     legal_risk_map      = legal_risk_map      or {}
     sector_strength_map = sector_strength_map or {}
@@ -722,6 +736,14 @@ def score_all_tickers(
         r_score = score_mean_reversion(row)
         v_score = score_volume(row.get("rel_volume"), row.get("change_pct"))
 
+        # Phase 2b-ii enrichment scores
+        e_score   = score_earnings_surprise(ticker, earnings_map.get(ticker, []))
+        p_score   = score_piotroski(ticker, financials_map.get(ticker, {}))
+        io_score  = score_inst_ownership(ticker, inst_own_map.get(ticker))
+        am_score  = score_analyst_momentum(ticker, analyst_mom_map.get(ticker))
+        altman_pen = score_altman_penalty(ticker, financials_map.get(ticker, {}),
+                                          row.get("market_cap"))
+
         legal_data = legal_risk_map.get(ticker)
         if legal_data is None:
             missing_legal.append(ticker)
@@ -731,8 +753,11 @@ def score_all_tickers(
             legal_penalty    = legal_data.get("penalty", 0)
             legal_risk_level = legal_data.get("risk_level", "NONE")
 
-        raw_composite    = compute_composite(m_score, q_score, i_score, r_score, v_score, weights)
-        c_score_raw      = _clamp(raw_composite + legal_penalty)
+        raw_composite = compute_composite(
+            m_score, q_score, i_score, r_score, v_score,
+            e_score, p_score, io_score, am_score, weights,
+        )
+        c_score_raw = _clamp(raw_composite + legal_penalty + altman_pen)
 
         # ── Sector relative strength modifier ────────────────────────────────
         sector           = row.get("sector", "")
@@ -770,6 +795,11 @@ def score_all_tickers(
             analyst_recom           = row.get("analyst_recom"),
             short_interest          = row.get("short_interest_pct"),
             insider_count           = len(ticker_insiders),
+            earnings_score          = round(e_score, 1),
+            piotroski_score         = round(p_score, 1),
+            altman_penalty          = altman_pen,
+            inst_own_score          = round(io_score, 1),
+            analyst_mom_score       = round(am_score, 1),
         )
         results.append(sig)
 
