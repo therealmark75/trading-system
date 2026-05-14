@@ -213,7 +213,7 @@ target-price work function, called inline by job_generate_signals (the
 trailing job_compute_target_prices cron wrapper was removed 9 May 2026).
 
 `config/constants.py`: TRACKED. SCORING_ENGINE_VERSION (currently
-0.12.0), DATABASE_PATH, SECTORS, SCREENER_SCRAPE_TIMES,
+0.13.0), DATABASE_PATH, SECTORS, SCREENER_SCRAPE_TIMES,
 NEWS_SCRAPE_TIMES, INSIDER_SCRAPE_TIMES, MIN_PRICE_FOR_SIGNAL,
 ALERT_MIN_COMPOSITE_SCORE, REQUEST_DELAY_SECONDS.
 
@@ -324,20 +324,24 @@ Built (8):
    (climax/confirmed/mild/low). Reads rel_volume from
    screener_snapshots Custom view column 64.
 
-Composite weighting (compute_composite): 5 components contribute via
-weighted average: momentum (0.35), quality (0.30), insider (0.25),
-reversion (0.10), volume (0.10). Sum = 1.10, normalised by total_w.
-Legal applies additively as penalty (NONE=0, MINOR=-5, CLASS_ACTION=-15,
-SEC_INVESTIGATION=-30, SEC_ENFORCEMENT=-45, CRIMINAL=-60). Sector
-strength applies multiplicatively. Value's integration into composite
-is currently unclear; scoped for review during Yahoo pipeline session.
+Composite weighting (compute_composite): 9 components contribute via
+weighted average (sum = 1.60, normalised by total_w): momentum (0.35),
+quality (0.30), insider (0.25), reversion (0.10), volume (0.10),
+earnings_surprise (0.125), piotroski (0.125), inst_own (0.125),
+analyst_mom (0.125). Legal applies additively as penalty (NONE=0,
+MINOR=-5, CLASS_ACTION=-15, SEC_INVESTIGATION=-30, SEC_ENFORCEMENT=-45,
+CRIMINAL=-60). Altman Z-score also applies additively (Z≥3→0,
+Z≥1.8→-10, Z≥0→-30, Z<0→-60); all-or-nothing (any missing input → 0).
+Both penalties applied before `_clamp`. Sector strength applies
+multiplicatively. Value's integration into composite is currently
+unclear; scoped for review during Yahoo pipeline session.
 
 Components 9-16 land in the Yahoo pipeline session (next major work).
 Ticker page rendering is now array-driven via the COMPONENTS registry
 in ticker.html (11 May 2026 refactor), so new components will be
 registry additions, not template surgery.
 
-### SCORING_ENGINE_VERSION: 0.12.0
+### SCORING_ENGINE_VERSION: 0.13.0
 
 Bump policy: PATCH = bug fix without scoring change; MINOR = new
 component, weight change, OR substantive scoring substrate change
@@ -351,6 +355,10 @@ Version history:
   Custom view bugs repaired
 - 0.12.0: Position A NULL handling for score_mean_reversion; 37-row P5
   violation fixed; first prod rows 9 May 2026 11:38 BST.
+- 0.13.0: 5 Yahoo enrichment scorers added (earnings_surprise,
+  piotroski, inst_own, analyst_mom, altman_penalty); composite
+  rebalanced to 9-component / 1.60-sum; Altman penalty additive;
+  first prod rows 14 May 2026 14:19 BST.
 
 The 11 May refactor (component registry in ticker.html) did NOT bump
 the version, purely presentational, no scoring substrate change.
@@ -399,6 +407,7 @@ ID when relevant.
 | P21 | Profile coverage matrices in Phase 2 prompts require explicit per-row verification gates confirming each matrix row produced the expected rating — not just that the total ticker count matches. Total-count agreement does not imply per-row correctness; synthetic inputs designed for "deep bearish" can inadvertently maximise a reversion scorer and route through HOLD before STRONG_SELL (14 May 2026, SS07 diagnosis B) |
 | P22 | Session date is empirical context, not conversation-primed context. Any session involving "yesterday / today / tonight / overnight" temporal reasoning must ground on the actual current date stated explicitly at session start. Both CC and Athena are subject to date-blindness from primed context; the discipline is symmetric |
 | P23 | Auth-adjacent side-effects require explicit escalation in audit, not just disclosure. Commits that add or modify side-effects in auth-adjacent functions (`current_user()`, login, logout, session handling, tier checks) must flag the change in the audit table with "AUTH SIDE-EFFECT — REQUIRES REVIEW" or equivalent. Disclosure in a commit-message bullet is necessary but not sufficient. The 7 May 2026 BUG-001-REOPENED backdoor was introduced in commit 9e02e7d (May 6 18:26), disclosed in that commit's bullet, then misdescribed in commit 7949805 the next morning — neither instance flagged the side-effect for review. P17 would not have caught this; the function was named, just not escalated. The pre-commit hook for auth-adjacent diff review (FOLLOWUPS) is the mechanical enforcement layer for P23 |
+| P24 | Doc-file header text is descriptive metadata, never standing permission for CC to write. Headers such as "Updated end of each session" describe the file's intended use, not an instruction CC may act on. CC must not self-initiate edits to HANDOFF.md or PROJECT_CONTEXT.md. Editing instructions must come from Mark or Athena in-turn. Implementation prompts spanning multiple commits are the highest-risk pattern — CC reaches for end-of-session housekeeping when the implementation work concludes. Mitigation: include "do not modify HANDOFF.md or PROJECT_CONTEXT.md" on all implementation prompts regardless of stated scope |
 
 ---
 
@@ -867,6 +876,43 @@ on prompts that have nothing to do with docs. Implementation prompts that span m
 commits are the highest-risk pattern -- CC reaches for end-of-session housekeeping
 behaviour when the implementation work concludes.
 
+### Snapshot enrichment coverage (14 May 2026 lesson)
+
+When new enrichment paths are wired into `score_all_tickers`, the
+snapshot test's synthetic fixtures must exercise those paths. Empty
+enrichment maps (`{}`) leave all new scorers at their P5 neutral value
+(50.0 or 0 for penalty) and cannot catch regressions in the scorer
+logic.
+
+Rule: when adding a scorer, add a snapshot-fixture row that drives the
+scorer to a non-neutral output. For Phase 2b-ii, SS07 was the chosen
+ticker. Its synthetic data was tuned so each new scorer produces a
+degraded signal (earnings=0.0, piotroski=20.0, altman_pen=-60,
+analyst_mom=20.0), routing SS07 to STRONG_SELL and filling the P21
+matrix's seventh tier.
+
+The "change only when you mean to" artefact only earns that name if its
+input fixtures actually exercise the new code. An empty-map snapshot
+test that passes is a false positive.
+
+### Altman Z-score empirical calibration queued (14 May 2026)
+
+The Altman Z-score thresholds (Z≥3 safe, Z≥1.8 grey zone, Z≥0
+distress, Z<0 severe) were calibrated on 1968-era US manufacturing
+companies. SignalIntel's ticker universe is tech-heavy, asset-light, and
+growth-oriented. These stocks routinely carry negative retained earnings,
+high liabilities relative to equity, and low working capital — all of
+which push the Z-score into the distress zone without reflecting actual
+bankruptcy risk.
+
+Before v0.13.0 data accumulates, queue a distribution check: compute
+Z-scores for production tickers that have at least 2 fiscal years of
+`financial_statements` data, plot the distribution, and verify the
+penalty tiers (0/-10/-30/-60) are calibrated appropriately for this
+universe. If the majority of the ticker universe scores Z<1.8 under the
+all-or-nothing model, the penalty is suppressing composite scores
+systematically rather than selectively. See FOLLOWUPS: URGENT.
+
 ### Baseline-and-comparison verification (13 May lesson)
 
 For any fix that changes data behaviour (NULL → populated, wrong value
@@ -1026,6 +1072,18 @@ The Phase 1 + Phase 2 pattern is the embodiment of this.
 
 URGENT (pre-launch, decision-not-engineering):
 
+- ALTMAN Z DISTRIBUTION CHECK (14 May 2026): Before v0.13.0 scoring
+  data accumulates, verify the penalty tier calibration on the
+  production ticker universe. Compute Z-scores for tickers with 2+
+  years of `financial_statements` data; plot the distribution; check
+  what fraction fall in Z<1.8 (grey zone penalty = -10) or Z<0
+  (severe penalty = -60). Altman's original thresholds were calibrated
+  on 1968 manufacturing companies. Tech-heavy, asset-light growth
+  stocks may cluster in the grey zone without actual distress. If the
+  distribution is skewed, the penalty tiers need adjustment before
+  production data is meaningful for backtesting. Actionable as soon
+  as financial_statements data begins landing (Monday 18 May bulk job).
+
 - BULLISH ACCURACY DECISION GATE: re-evaluate Strong tier after
   components 8-16 are live and 30 days of post-completion data. If
   still under 55% win rate, reconsider launch positioning. Cannot be
@@ -1038,6 +1096,16 @@ URGENT (pre-launch, decision-not-engineering):
   document the caveat and retain it.
 
 STRUCTURAL DEBT:
+
+- PHASE 2C DIRECTION TBD (14 May 2026): Programme plan for Phase 2c
+  lists flag substrate, rendering, and end-to-end verification. Before
+  starting, decision lock needed: (1) which flags to surface first
+  (short squeeze, Piotroski F-score breakout, earnings surprise
+  inflection); (2) whether flag substrate belongs in the DB or is
+  computed in-flight from signal_scores; (3) rendering surface (ticker
+  page card, screener column, watchlist badge). Blocked on Yahoo data
+  volume — flag logic is only useful once enrichment tables have
+  enough rows to produce meaningful signals.
 
 - COMPONENT METADATA CONSUMERS: the JS-only registry is the right
   call for now (YAGNI), but if any future consumer needs Python
