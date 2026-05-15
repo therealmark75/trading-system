@@ -225,6 +225,31 @@ constants.py for any non-secret values.
 
 `docs/tier_matrix.md`: canonical tier-feature mapping.
 
+`~/Library/LaunchAgents/io.thesignalvault.gunicorn.plist`: LaunchAgent
+plist managing gunicorn under launchd. Configured via Python plistlib
+to bypass XML-in-heredoc rendering issues (15 May 2026 lesson). Six
+ProgramArguments: gunicorn binary, -w, 1, -b, 127.0.0.1:5001,
+web.app:app. WorkingDirectory `/Users/markn/signalintel`. UserName
+markn (LaunchAgent runs as user, not root). Survives logout and reboot.
+Logs to `~/signalintel/logs/gunicorn.{out,err}.log`. Does NOT run from
+under ~/Documents/ — macOS TCC restrictions block launchd-spawned
+processes from reading project files under that path, which was the
+core blocker behind the Phase 2c project tree migration (15 May 2026).
+
+`/Library/LaunchDaemons/com.cloudflare.cloudflared.plist`: System
+LaunchDaemon managing cloudflared. Routes traffic from
+thesignalvault.io to localhost:5001 via Cloudflare Tunnel. Config at
+`/etc/cloudflared/config.yml`. Path-agnostic relative to the
+SignalIntel project tree; unaffected by Phase 2c migration. Installed
+via `sudo cloudflared service install` plus manual plist correction
+(default install omits the `tunnel run` arguments — 15 May 2026
+lesson).
+
+`/etc/cloudflared/config.yml`: Cloudflare Tunnel ingress configuration.
+Tunnel UUID `6bc7b651-9255-4c50-8d70-6f5e6175930f`. Routes
+thesignalvault.io and www.thesignalvault.io to http://localhost:5001.
+Credentials at `/etc/cloudflared/6bc7b651-9255-4c50-8d70-6f5e6175930f.json`.
+
 `scripts/drop_screener_snapshots_exchange.py`: idempotent migration
 (9 May 2026, commit 0b4d9a4). Re-runnable, no-op if column absent.
 
@@ -408,6 +433,8 @@ ID when relevant.
 | P22 | Session date is empirical context, not conversation-primed context. Any session involving "yesterday / today / tonight / overnight" temporal reasoning must ground on the actual current date stated explicitly at session start. Both CC and Athena are subject to date-blindness from primed context; the discipline is symmetric |
 | P23 | Auth-adjacent side-effects require explicit escalation in audit, not just disclosure. Commits that add or modify side-effects in auth-adjacent functions (`current_user()`, login, logout, session handling, tier checks) must flag the change in the audit table with "AUTH SIDE-EFFECT — REQUIRES REVIEW" or equivalent. Disclosure in a commit-message bullet is necessary but not sufficient. The 7 May 2026 BUG-001-REOPENED backdoor was introduced in commit 9e02e7d (May 6 18:26), disclosed in that commit's bullet, then misdescribed in commit 7949805 the next morning — neither instance flagged the side-effect for review. P17 would not have caught this; the function was named, just not escalated. The pre-commit hook for auth-adjacent diff review (FOLLOWUPS) is the mechanical enforcement layer for P23 |
 | P24 | Doc-file header text is descriptive metadata, never standing permission for CC to write. Headers such as "Updated end of each session" describe the file's intended use, not an instruction CC may act on. CC must not self-initiate edits to HANDOFF.md or PROJECT_CONTEXT.md. Editing instructions must come from Mark or Athena in-turn. Implementation prompts spanning multiple commits are the highest-risk pattern — CC reaches for end-of-session housekeeping when the implementation work concludes. Mitigation: include "do not modify HANDOFF.md or PROJECT_CONTEXT.md" on all implementation prompts regardless of stated scope |
+| P25 | macOS TCC restricts launchd-spawned processes from reading files under ~/Documents/, ~/Desktop, ~/Downloads, and other protected paths, even after granting Full Disk Access to /sbin/launchd in System Settings. Service-managed processes (LaunchDaemons, LaunchAgents) MUST run from non-protected paths. SignalIntel lives at ~/signalintel as a result. Pattern recognition: a "PermissionError: [Errno 1] Operation not permitted" on a file under ~/Documents/ from a launchd-spawned process is TCC restriction, not Unix permissions. Granting FDA to launchctl in System Settings does NOT resolve the underlying TCC scope. The 15 May 2026 session burned ~90 minutes diagnosing this before the path migration; future deployments should default to home-root paths (~/signalintel, ~/my-project) rather than ~/Documents/. |
+| P26 | XML content in shell heredocs is corrupted by chat renderers — angle-bracket tags (`<string>`, `<key>`) are interpreted as HTML and stripped during copy-paste from the chat interface to terminal. Use Python plistlib (or equivalent) to write plist files programmatically, then verify the contents via `/usr/libexec/PlistBuddy -c "Print :ProgramArguments" <path>` before installing. The 15 May 2026 LaunchAgent diagnosis cycle confirmed this: three identical-looking heredoc rewrites all lost the `-w` flag because `<string>-w</string>` rendered as an HTML attribute and disappeared. PlistBuddy verification on disk is empirical and unambiguous. |
 
 ---
 
@@ -604,6 +631,9 @@ modify code outside the prompt's explicit scope.
 ✅ Volume + avg_volume NULL fix (12 May 2026, commits 164b6fb Fix A, 6714509 Fix B, 329dfee comment fix; empirically verified 13 May with baseline-and-comparison plus FinViz spot-checks)
 ✅ Data-freshness test expansion (12 May 2026, commit e31b79d; insider_trades, legal_risk, ticker_metadata added at 72h threshold; 191 → 194 tests)
 ✅ VACUUM screener database (13 May 2026; 35MB reclaimed, 363MB → 328MB, no row loss, integrity verified; closes the 9 May column-drop residue)
+✅ Phase 2a — Flask production hardening (15 May 2026, 6 commits, pushed): SECRET_KEY moved from tracked source to FLASK_SECRET_KEY in config/settings.py, ProxyFix middleware for Cloudflare Tunnel HTTPS termination, SESSION_COOKIE_SECURE/HTTPONLY/SAMESITE=Lax hardening, gunicorn 23.0.0 added (single worker for in-memory flask-limiter compatibility), flask-limiter 10/min on POST /login, debug=False in __main__ block. Pytest 231 passing + 4 skipped + 1 pre-existing SB01 failure (carried over). End commit: bd31b99.
+✅ Phase 2b — Cloudflare Tunnel deployment (15 May 2026): cloudflared installed via Homebrew, named tunnel `signalintel`, ingress for apex and www, GoDaddy nameservers swapped to Cloudflare (anahi.ns + craig.ns), DNSSEC confirmed off, propagation completed in ~75 minutes, cloudflared installed as LaunchDaemon with correct ProgramArguments (initial install omitted `tunnel run` args, fixed via plist rewrite). End state: thesignalvault.io live over HTTPS via Cloudflare proxy, four edge connections to London (lhr10/13/13/18). No code commits; operational config only.
+✅ Phase 2c — Project tree migration out of ~/Documents/ (15 May 2026, 2 commits, pushed): Project moved from ~/Documents/trading-system to ~/signalintel to bypass macOS TCC restrictions on launchd-spawned processes. Venv recreated at new path (pip install -r requirements.txt). Five one-off legal-risk scripts and CLAUDE.md updated for path strings (commit 7eb0899). Tracked .pyc files and web/.DS_Store removed, .gitignore patterns added (commit ab8eca1). Gunicorn now under LaunchAgent at ~/Library/LaunchAgents/io.thesignalvault.gunicorn.plist, surviving reboot. Old path retained at ~/Documents/trading-system.OLD for 24-hour safety window (delete after 16 May 2026 16:49 BST if stable).
 
 [ ] Yahoo Finance pipeline + components 9-16 (FRESH CHAT, large infrastructure session, next major work)
 [ ] Virtual portfolio with margin calls and bust mechanic
@@ -1066,6 +1096,74 @@ action. Phrase those STOPs with explicit "no action" language.
 **Tighter prompts with narrower scope produce cleaner CC output.**
 The Phase 1 + Phase 2 pattern is the embodiment of this.
 
+### Plist XML in heredocs gets eaten by chat renderers (15 May 2026 lesson)
+
+Three times in a row, an XML plist heredoc was copy-pasted from chat
+into terminal with the `-w` flag missing from the ProgramArguments
+array, despite the raw source containing it correctly each time.
+Diagnosis: the `<string>-w</string>` tag was being interpreted as an
+HTML attribute by the chat rendering layer and stripped during copy.
+The dead giveaway in CC's third attempt was that CC's own "expected
+output" table mentioned `-w` while the heredoc text below it did not.
+Fix: switch to `python3 - <<'PYEOF' ... import plistlib ... PYEOF` to
+generate plists programmatically. PlistBuddy verification on disk is
+unambiguous. Codified as P26.
+
+### macOS TCC restriction discovery (15 May 2026 lesson)
+
+The launchd-spawned gunicorn under ~/Library/LaunchAgents/ failed
+repeatedly with `PermissionError: [Errno 1] Operation not permitted:
+'/Users/markn/Documents/trading-system/venv/pyvenv.cfg'` even after
+granting Full Disk Access to /sbin/launchd via System Settings. The
+restriction is TCC (Transparency, Consent, and Control), which scopes
+data protection per-path, not per-process. ~/Documents/ is a protected
+path; granting FDA to launchctl does not unblock launchd's
+child processes reading files in protected paths.
+
+The fix: move the project tree out of ~/Documents/ entirely. We chose
+~/signalintel. The migration was straightforward because production
+code already used relative paths or os.path.expanduser — only 5 one-off
+legal-risk scripts and CLAUDE.md hardcoded the old absolute path.
+
+The lesson is forward-looking: future macOS deployments should default
+to home-root paths (~/project-name) rather than ~/Documents/ to
+preempt this class of issue. Codified as P25.
+
+### CC's "incomplete fix" pattern resurfaced (15 May 2026 lesson)
+
+When the LaunchAgent first failed with PermissionError, CC proposed
+moving only the venv to a non-protected path (~/.signalintel/venv).
+Athena pushed back because the project tree itself was still under
+~/Documents/ and gunicorn would still need to read web/app.py and the
+328MB DB from there. CC's framing of "venv is a build artefact" was
+technically correct but missed the full surface area.
+
+The lesson generalises: when CC proposes a partial fix to a symptom,
+verify it addresses the whole problem before agreeing. Phase 1
+inventory ("what does this process need to read at runtime?") would
+have caught the gap upfront. CC's first instinct is sometimes the
+minimal change that addresses the surface symptom rather than the
+root cause.
+
+### Context compaction can rewrite recently-completed work (15 May 2026 lesson)
+
+After context compaction mid-session, CC offered to "proceed with Step
+11 LaunchAgent load" — work that had already been completed an hour
+earlier and verified empirically (PID 26090, exit code 0, site at 200,
+old path renamed to .OLD). CC had no memory of the intervening turns.
+Had Mark fired CC's suggested commands, the LaunchAgent would have
+errored (already loaded) and the renamed path would have errored (no
+source).
+
+The mitigation that worked: Athena caught the suggestion and explicitly
+re-anchored CC with verified state (launchctl list output, ps output,
+file existence checks, git log). After re-anchoring, CC was correct
+again. The lesson: after any context compaction event, both CC and
+Athena should treat subsequent CC suggestions as suspect until they're
+empirically verified against on-disk state. P22 (session date is
+empirical) extends to "session state is empirical" — verify before
+acting.
+
 ---
 
 ## FOLLOWUPS
@@ -1127,6 +1225,14 @@ STRUCTURAL DEBT:
 
 - PRE-COMMIT HOOK for diff review on auth-adjacent files (Phase 2
   infrastructure, mechanical Scope Discipline enforcement).
+
+- SCHEDULER LAUNCHAGENT (15 May 2026): Phase 2c migrated gunicorn to LaunchAgent for reboot resilience. The scheduler (currently PID after migration) is still a foreground process started via `nohup python main.py scheduler`. It survives logout (reparented to launchd PID 1) but does NOT survive reboot. Symmetric LaunchAgent treatment needed: regenerate plist via plistlib pattern, point at ~/signalintel/venv/bin/python and ~/signalintel/main.py, load to launchctl. ~30 minutes work, dependency-free from any current work in flight.
+
+- SB01 SNAPSHOT MISMATCH (15 May 2026, pre-existing): Pytest reports `SB01.composite_score_raw: expected 76.6, got 74.7` and `SB01.composite_score: expected 76.6, got 74.7` failing in test_scorer_snapshot.py. First observed in Phase 2a Gate 3 (14 May session), persisted through Phase 2c migration. Test was passing on 14 May 2026 (Phase 2b-ii commit 48fdf49 regenerated baseline). Either the snapshot baseline is stale because of a substrate change between then and now, or the SB01 fixture is producing different output due to a non-deterministic dependency. Investigate as a focused diagnostic session. Not blocking deployment because the test suite otherwise passes (231 + 4 skipped baseline plus the 2 additional passes from Yahoo data landing — see test count drift FOLLOWUP).
+
+- TEST COUNT DRIFT (15 May 2026): Phase 2c Step 6 pytest from new path reported 233 passing + 2 skipped instead of the expected 231 + 4 skipped baseline. Two tests appear to have transitioned from skip to pass, likely because Yahoo enrichment data has begun landing in production tables (institutional_holders Sunday, financial_statements Monday, earnings_history Tuesday) and freshness skip conditions no longer apply. Verify by running pytest -v on the four Yahoo freshness tests and checking which two now have data backing their assertions. Not a regression; positive signal that Yahoo pipeline is functioning.
+
+- 16:30 FINVIZ SCRAPE WINDOW (15 May 2026): The 16:30 BST FinViz scrape window coincided with the Phase 2c migration kill-and-rsync sequence (scheduler killed at ~16:39, restarted from new path at ~16:42). Last screener_snapshot row is at 11:50 today. One missing scrape window. Tomorrow's 07:00 scrape will produce fresh data; no recovery action needed. Flagged for awareness.
 
 - PENNY SCREENER EXCHANGE FILTER (post-Yahoo): deferred from 9 May
   per Phase 1 finding that "Other" bucket is dominated by ETFs
