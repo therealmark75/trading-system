@@ -9,6 +9,8 @@ from flask import (Flask, jsonify, render_template, request,
                    redirect, url_for, session, flash)
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.middleware.proxy_fix import ProxyFix
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -34,6 +36,13 @@ app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 app.config["SESSION_COOKIE_SECURE"]   = True
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
+
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=[],
+    storage_uri="memory://",
+)
 
 # Ensure user tables exist
 initialise_user_schema(DATABASE_PATH)
@@ -160,6 +169,7 @@ def index():
 
 
 @app.route("/login", methods=["GET","POST"])
+@limiter.limit("10 per minute", methods=["POST"])
 def login():
     if "user_id" in session:
         return redirect(url_for("index"))
