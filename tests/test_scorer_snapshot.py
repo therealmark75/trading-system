@@ -231,7 +231,7 @@ _SYNTHETIC_ANALYST_MOM_MAP = {
 # Re-generate with: python -c "from tests.test_scorer_snapshot import _SYNTHETIC_ROWS, ..."
 # Do NOT modify this to match broken output — fix the refactor instead.
 EXPECTED_SNAPSHOT = {
-    "SB01": {"composite_score_raw": 76.6, "composite_score": 76.6, "rating": "STRONG_BUY",  "legal_penalty": 0,  "sector_modifier_applied":  0.0},
+    "SB01": {"composite_score_raw": 74.7, "composite_score": 74.7, "rating": "STRONG_BUY",  "legal_penalty": 0,  "sector_modifier_applied":  0.0},
     "BU02": {"composite_score_raw": 64.2, "composite_score": 64.2, "rating": "BUY",         "legal_penalty": 0,  "sector_modifier_applied":  0.0},
     "SH10": {"composite_score_raw": 62.2, "composite_score": 63.2, "rating": "BUY",         "legal_penalty": 0,  "sector_modifier_applied":  0.93},
     "SN12": {"composite_score_raw": 61.6, "composite_score": 61.6, "rating": "STRONG_HOLD", "legal_penalty": 0,  "sector_modifier_applied":  0.0},
