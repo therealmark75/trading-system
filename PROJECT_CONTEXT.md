@@ -1234,6 +1234,8 @@ STRUCTURAL DEBT:
 
 - 16:30 FINVIZ SCRAPE WINDOW (15 May 2026): The 16:30 BST FinViz scrape window coincided with the Phase 2c migration kill-and-rsync sequence (scheduler killed at ~16:39, restarted from new path at ~16:42). Last screener_snapshot row is at 11:50 today. One missing scrape window. Tomorrow's 07:00 scrape will produce fresh data; no recovery action needed. Flagged for awareness.
 
+- MOBILE RESPONSIVENESS (15 May 2026): SignalIntel UI was built for laptop/desktop viewports. On phone Chrome, horizontal scrolling required to access top nav (Dashboard, Signal Tiers, Screener, etc.); sidebar headers cut off. Login flow works on phone after cache clear. The product is usable on phone but not designed for it. Multi-session work to retrofit responsive CSS across all templates, mobile nav redesign, touch-optimised filters, mobile-friendly table behaviour for screener and watchlist. Phase 3 candidate. Defer until Guy's feedback identifies which mobile workflows matter most (alerts? watchlist checking? screener browsing?) — informs which surfaces to optimise first.
+
 - PENNY SCREENER EXCHANGE FILTER (post-Yahoo): deferred from 9 May
   per Phase 1 finding that "Other" bucket is dominated by ETFs
   (ARKW, IFRA, IEO etc., listed on NYSE Arca / Cboe BZX). Penny
