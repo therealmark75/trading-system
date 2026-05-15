@@ -8,6 +8,7 @@ from functools import wraps
 from flask import (Flask, jsonify, render_template, request,
                    redirect, url_for, session, flash)
 from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.middleware.proxy_fix import ProxyFix
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -29,6 +30,7 @@ from config.settings import FLASK_SECRET_KEY
 
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = FLASK_SECRET_KEY
+app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
 
 # Ensure user tables exist
 initialise_user_schema(DATABASE_PATH)
