@@ -31,6 +31,9 @@ from config.settings import FLASK_SECRET_KEY
 app = Flask(__name__, template_folder="templates", static_folder="static")
 app.secret_key = FLASK_SECRET_KEY
 app.wsgi_app = ProxyFix(app.wsgi_app, x_for=1, x_proto=1, x_host=1)
+app.config["SESSION_COOKIE_SECURE"]   = True
+app.config["SESSION_COOKIE_HTTPONLY"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
 
 # Ensure user tables exist
 initialise_user_schema(DATABASE_PATH)
