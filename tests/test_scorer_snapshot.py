@@ -21,8 +21,45 @@ Ignores:
     financials_map, inst_own_map, analyst_mom_map) — those are None here
     and expected to produce no-op 50.0/0 contributions
 """
+from datetime import datetime as _real_datetime, timezone
+
 import pytest
+
 from signals.scorer import score_all_tickers
+
+
+# ── Time pin for insider window stability ────────────────────────────────────
+# score_insider uses datetime.now() - 30d as the trade-inclusion cutoff. The
+# synthetic insider trade dates below (2026-04-15 .. 2026-04-28) were calibrated
+# against a pin in the 2026-05-15 .. 2026-05-19 band (verified empirically by
+# sweeping the cutoff): SB01's 2026-04-15 buy must fall *outside* the 30-day
+# window, and SS07's 2026-04-18 sale must remain *inside*. Without a pin the
+# cutoff slides daily — SS07's window expires fully on 2026-05-28.
+
+class _PinnedDatetime(_real_datetime):
+    """datetime subclass whose now() returns 2026-05-16 12:00 UTC.
+
+    Subclassing preserves .replace(tzinfo=None), arithmetic with timedelta,
+    and datetime.strptime — all used by signals.scorer.score_insider.
+    """
+    @classmethod
+    def now(cls, tz=None):
+        pinned = _real_datetime(2026, 5, 16, 12, 0, 0, tzinfo=timezone.utc)
+        if tz is None:
+            return pinned.replace(tzinfo=None)
+        return pinned.astimezone(tz)
+
+
+@pytest.fixture
+def pin_scorer_clock(monkeypatch):
+    """Pin signals.scorer.datetime to _PinnedDatetime for the duration of a test.
+
+    Applied per-test (not autouse): keeps the pin scoped to snapshot tests
+    that depend on calibrated insider trade ages, so other tests that may
+    rely on real time remain unaffected.
+    """
+    import signals.scorer as _scorer
+    monkeypatch.setattr(_scorer, "datetime", _PinnedDatetime)
 
 
 # ── Synthetic input dataset ───────────────────────────────────────────────────
@@ -221,7 +258,11 @@ _SYNTHETIC_ANALYST_MOM_MAP = {
     "SS07": {"upgrades_90d": 0, "downgrades_90d": 4, "net_momentum": -4},
 }
 
-# ── Snapshot — updated 2026-05-14 (Phase 2b-ii: composite rebalance + enrichment maps) ──
+# ── Snapshot calibrated against datetime.now() = 2026-05-16 12:00 UTC ────────
+# Pinned via the _PinnedDatetime monkeypatch fixture at the top of this file.
+# If insider trade dates in _SYNTHETIC_INSIDERS change, the pin date and
+# EXPECTED values must be revalidated together.
+# Originating calibration: Phase 2b-ii (composite rebalance + enrichment maps).
 # v0.13.0: 4 new enrichment scorers (earnings, piotroski, inst_own, analyst_mom) wired in.
 # Composite weights rebalanced 1.10 → 1.60-sum; Altman applied as additive penalty.
 # SS07 now exercises all 4 enrichment paths: earnings=0, piotroski=20, altman_pen=-60,
@@ -250,7 +291,7 @@ EXPECTED_SNAPSHOT = {
 
 # ── Test ──────────────────────────────────────────────────────────────────────
 
-def test_score_all_tickers_snapshot():
+def test_score_all_tickers_snapshot(pin_scorer_clock):
     """
     Behaviour-preservation: score_all_tickers on SYNTHETIC_ROWS must produce
     composite_score_raw, composite_score, rating, legal_penalty, and
