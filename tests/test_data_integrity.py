@@ -275,3 +275,91 @@ def test_insert_screener_rows_schema_alignment(tmp_path):
     }
     inserted = insert_screener_rows(db_path, [row])
     assert inserted == 1
+
+
+# ── FMP output table freshness gates ─────────────────────────────────────────
+
+def test_fmp_earnings_calendar_freshness(db):
+    """
+    Latest earnings_calendar last_updated must be within 72 hours.
+    Skipped if the table is empty (FMP scraper not yet run on this deploy).
+
+    Catches: fmp_earnings job (mon-fri 06:05) dying silently.
+    Ignores: weekends and holidays — 72h cutoff covers the Sat/Sun gap.
+    Ignores: tickers with no upcoming earnings — empty refresh is acceptable
+    when FMP returns zero rows for the look-ahead window.
+    """
+    row = db.execute("SELECT MAX(last_updated) FROM earnings_calendar").fetchone()
+    if row[0] is None:
+        pytest.skip("earnings_calendar is empty — FMP earnings scraper not yet run")
+    latest = datetime.fromisoformat(row[0])
+    if latest.tzinfo is None:
+        latest = latest.replace(tzinfo=timezone.utc)
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=72)
+    assert latest >= cutoff, f"earnings_calendar last updated {row[0]} — older than 72h"
+
+
+def test_fmp_dividends_freshness(db):
+    """
+    Latest dividends last_updated must be within 14 days.
+    Skipped if the table is empty (weekly Sunday job has not yet run).
+
+    Catches: fmp_dividends weekly job (Sun 03:00) dying silently.
+    Ignores: one-week skip tolerance — 14d covers a single missed Sunday run.
+    Ignores: non-dividend payers — excluded from the refresh set by design.
+    """
+    row = db.execute("SELECT MAX(last_updated) FROM dividends").fetchone()
+    if row[0] is None:
+        pytest.skip("dividends is empty — FMP dividend scraper not yet run")
+    latest = datetime.fromisoformat(row[0])
+    if latest.tzinfo is None:
+        latest = latest.replace(tzinfo=timezone.utc)
+    cutoff = datetime.now(timezone.utc) - timedelta(days=14)
+    assert latest >= cutoff, f"dividends last updated {row[0]} — older than 14 days"
+
+
+def test_fmp_price_targets_freshness(db):
+    """
+    Latest fmp_price_targets last_updated must be within 14 days.
+    Skipped if the table is empty (lazy-populated cache — scoring job has
+    not yet warmed the cache on this deploy).
+
+    Catches: target_price pipeline stalling — the table is populated lazily
+    by the daily scoring job's compute_targets_batch path, so a frozen
+    last_updated implies the scoring job itself has died.
+    Ignores: cache-window staleness up to 7 days — get_price_targets_map's
+    own WHERE clause already filters at 7d, so a 14d threshold (= 2× cache
+    window) alerts only on actual stall, not normal cache rotation.
+    """
+    row = db.execute("SELECT MAX(last_updated) FROM fmp_price_targets").fetchone()
+    if row[0] is None:
+        pytest.skip("fmp_price_targets is empty — scoring job has not yet populated cache")
+    latest = datetime.fromisoformat(row[0])
+    if latest.tzinfo is None:
+        latest = latest.replace(tzinfo=timezone.utc)
+    cutoff = datetime.now(timezone.utc) - timedelta(days=14)
+    assert latest >= cutoff, f"fmp_price_targets last updated {row[0]} — older than 14 days"
+
+
+def test_fmp_economic_calendar_freshness(db):
+    """
+    Latest economic_calendar scraped_at must be within 72 hours.
+
+    Note: this table uses `scraped_at` (TEXT NOT NULL), NOT `last_updated`
+    like the other three FMP tables — economic_calendar is defined in
+    database/db.py rather than scrapers/fmp_scraper.py and follows the
+    older naming convention.
+
+    Skipped if the table is empty (FMP economic scraper not yet run).
+
+    Catches: economic_calendar job (mon-fri 06:30) dying silently.
+    Ignores: weekends — 72h cutoff covers Sat/Sun without false positives.
+    """
+    row = db.execute("SELECT MAX(scraped_at) FROM economic_calendar").fetchone()
+    if row[0] is None:
+        pytest.skip("economic_calendar is empty — FMP economic scraper not yet run")
+    latest = datetime.fromisoformat(row[0])
+    if latest.tzinfo is None:
+        latest = latest.replace(tzinfo=timezone.utc)
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=72)
+    assert latest >= cutoff, f"economic_calendar last scraped {row[0]} — older than 72h"
